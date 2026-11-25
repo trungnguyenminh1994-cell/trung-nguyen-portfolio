@@ -6,8 +6,9 @@
   var root = document.documentElement;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* 1. Word de-blur reveal (Maelle signature load motion) */
+  /* 1. Word de-blur reveal (Maelle signature load motion, progressive enhancement) */
   if (!reduced) {
+    root.classList.add('pf-anim');
     document.querySelectorAll('[data-words]').forEach(function (el) {
       var start = parseFloat(el.getAttribute('data-words-start') || '0.04');
       var step = parseFloat(el.getAttribute('data-words-step') || '0.055');

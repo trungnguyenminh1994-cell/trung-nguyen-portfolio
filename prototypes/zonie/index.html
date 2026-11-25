@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zone Prototype</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
+<link rel="stylesheet" href="vendor/leaflet.min.css">
+<link rel="stylesheet" href="vendor/MarkerCluster.css">
+<link rel="stylesheet" href="vendor/MarkerCluster.Default.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Caacupe+One&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap" rel="stylesheet">
 <style>
@@ -618,7 +618,15 @@ html[data-frame="off"] .screen-wrap{border-radius:0;}
 </style>
 
 <style id="pf-embed-overrides">
+#leafmap {
+  background-color: #EFECE6;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.55) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.55) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
 html.pf-embed, html.pf-embed body {
+  width: 100%;
   height: 100%;
   min-height: 100%;
   margin: 0;
@@ -631,7 +639,7 @@ html.pf-embed body {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 16px 12px !important;
+  padding: 12px !important;
 }
 html.pf-embed .zv-panel { display: none !important; }
 html.pf-embed .stage {
@@ -639,13 +647,17 @@ html.pf-embed .stage {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
   padding: 0 !important;
   overflow: visible !important;
 }
 html.pf-embed .phone {
-  margin: 0 auto !important;
+  flex: none !important;
+  width: 418px !important;
+  height: 872px !important;
+  margin: 0 !important;
   box-shadow: 0 22px 48px rgba(18,18,18,0.16), 0 0 0 1px rgba(18,18,18,0.08) !important;
   transform-origin: center center !important;
 }
@@ -653,21 +665,6 @@ html.pf-embed .phone {
 <script>
 if (location.search.indexOf('embed=1') !== -1) {
   document.documentElement.classList.add('pf-embed');
-  window.addEventListener('DOMContentLoaded', function () {
-    function scaleEmbed() {
-      var phone = document.querySelector('.phone');
-      if (!phone) return;
-      phone.style.transform = '';
-      var availW = window.innerWidth - 28;
-      var availH = window.innerHeight - 28;
-      var k = Math.min(1, availW / phone.offsetWidth, availH / phone.offsetHeight);
-      if (k < 1) phone.style.transform = 'scale(' + k.toFixed(4) + ')';
-      try { if (typeof map !== 'undefined' && map) setTimeout(function(){ map.invalidateSize(); }, 80); } catch(e){}
-    }
-    window.addEventListener('resize', scaleEmbed);
-    window.addEventListener('load', scaleEmbed);
-    setTimeout(scaleEmbed, 120);
-  });
 }
 </script>
 
@@ -1021,8 +1018,8 @@ if (location.search.indexOf('embed=1') !== -1) {
   </section>
 </aside>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script src="vendor/leaflet.min.js"></script>
+<script src="vendor/leaflet.markercluster.min.js"></script>
 <script>
 /* =========================================================================
    ZONE — interactive design prototype
@@ -1353,7 +1350,7 @@ $('#devNav').addEventListener('click', e=>{
   showScreen(btn.dataset.screen);
   if(btn.dataset.screen==='map'){
     if(btn.dataset.forceOnboarding) $('#onboardingBackdrop').classList.add('show');
-    else if(location.search.indexOf('skipOnboarding=1')!==-1){state.onboarded=true;} if(!state.onboarded) $('#onboardingBackdrop').classList.add('show');
+    else if(!state.onboarded) $('#onboardingBackdrop').classList.add('show');
   }
 });
 
@@ -3510,9 +3507,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initOnboarding();
   initSettingsProfileEditor();
   applyAvatarChips();
-  initMap();
-  renderLists();
-  if(location.search.indexOf('skipOnboarding=1')!==-1){state.onboarded=true;} if(!state.onboarded) $('#onboardingBackdrop').classList.add('show');
+  try { if (typeof L !== 'undefined') initMap(); } catch (e) { console.warn('Map init:', e); }
+  try { renderLists(); } catch (e) { console.warn('List init:', e); }
+  var qs = new URLSearchParams(location.search);
+  var reqScreen = qs.get('screen');
+  if (reqScreen === 'zone') {
+    state.onboarded = true;
+    try { openZone('z1'); showScreen('zone'); } catch (e) { console.warn('Zone open:', e); }
+  } else if (reqScreen === 'map') {
+    state.onboarded = true;
+    showScreen('map');
+  } else if (reqScreen === 'welcome') {
+    state.onboarded = false;
+    $('#onboardingBackdrop').classList.add('show');
+  } else if (!state.onboarded) {
+    $('#onboardingBackdrop').classList.add('show');
+  }
 });
 
 </script>
@@ -3526,6 +3536,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
   function fit(){
     phone.style.transform=''; phone.style.marginBottom='';
+    if(H.classList.contains('pf-embed')){
+      var awE=Math.max(240, window.innerWidth-24), ahE=Math.max(360, window.innerHeight-24);
+      var kE=Math.min(1, awE/phone.offsetWidth, ahE/phone.offsetHeight);
+      if(kE<1){ phone.style.transform='scale('+kE.toFixed(4)+')'; }
+      return;
+    }
     if(!H.classList.contains('zv-on') || S.z==='100') return;
     var cs=getComputedStyle(stage), ah=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom), aw=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
     var k=Math.min(1, ah/phone.offsetHeight, aw/phone.offsetWidth);

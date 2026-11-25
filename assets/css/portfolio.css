@@ -1137,32 +1137,29 @@ ul, ol { list-style: none; }
 }
 
 /* ==========================================================================
-   Load Animations (Maelle word de-blur & staggered fade)
+   Load Animations (Progressive enhancement: visible by default if JS disabled)
    ========================================================================== */
 .pf-w {
   display: inline-block;
-  opacity: 0;
-  filter: blur(5px);
-  transform: translateY(10px);
   transition: opacity 0.5s var(--pf-easing-reveal) var(--d, 0s),
               filter 0.5s var(--pf-easing-reveal) var(--d, 0s),
               transform 0.5s var(--pf-easing-reveal) var(--d, 0s);
 }
-.is-loaded .pf-w {
-  opacity: 1;
-  filter: blur(0);
-  transform: none;
+.pf-anim:not(.is-loaded) .pf-w {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateY(10px);
 }
 .pf-fade {
-  opacity: 0;
   transition: opacity 0.75s var(--pf-easing-standard) 0.4s;
 }
 .pf-fade-late {
-  opacity: 0;
   transition: opacity 0.7s var(--pf-easing-standard) 0.85s;
 }
-.is-loaded .pf-fade,
-.is-loaded .pf-fade-late { opacity: 1; }
+.pf-anim:not(.is-loaded) .pf-fade,
+.pf-anim:not(.is-loaded) .pf-fade-late {
+  opacity: 0;
+}
 
 /* ==========================================================================
    Responsive: Collapse to Single Column Below 1000px (Maelle breakpoint)

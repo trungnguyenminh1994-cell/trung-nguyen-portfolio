@@ -30,7 +30,7 @@
 <body>
 <a class="pf-skip-link" href="#main">Skip to main content</a>
 <header class="pf-nav pf-nav--case">
-  <a class="pf-nav__brand" href="../../" aria-label="Trung Nguyen home">
+  <a class="pf-nav__brand" href="../../index.html" aria-label="Trung Nguyen home">
     <i class="pf-dot pf-dot--md pf-dot--ink" aria-hidden="true"></i>
     <span>Trung Nguyen</span>
   </a>
@@ -43,7 +43,7 @@
 <main id="main" class="pf-main pf-main--case">
   <!-- Left sticky column: back link and numbered section index -->
   <aside class="pf-left" aria-label="Case study navigation">
-    <a class="pf-back" href="../../">← All work</a>
+    <a class="pf-back" href="../../index.html">← All work</a>
     <nav class="pf-toc pf-fade" aria-label="Sections">
       <p class="pf-toc__label">Contents</p>
       <a href="#context"><span class="pf-toc__num">01</span><span>Context</span></a><a href="#problem"><span class="pf-toc__num">02</span><span>Problem</span></a><a href="#role"><span class="pf-toc__num">03</span><span>My role</span></a><a href="#approach"><span class="pf-toc__num">04</span><span>Approach</span></a><a href="#deep-dive"><span class="pf-toc__num">05</span><span>Design System</span></a><a href="#solutions"><span class="pf-toc__num">06</span><span>Key solutions</span></a><a href="#tradeoffs"><span class="pf-toc__num">07</span><span>Trade-offs</span></a><a href="#outcome"><span class="pf-toc__num">08</span><span>Outcome</span></a><a href="#reflection"><span class="pf-toc__num">09</span><span>Reflection</span></a>
@@ -169,13 +169,16 @@
             <div>
               <p class="pf-cell__kicker">Live Interactive HTML Prototype</p>
               <h3 class="pf-sub__title">Play with the live Zonie HTML prototype.</h3>
-              <p class="pf-cell__body">This is the real interactive prototype created before the native SwiftUI build. Complete the quick welcome card or explore District 1 zones directly.</p>
+              <p class="pf-cell__body">This is the real interactive prototype created before the native SwiftUI build. Jump straight into Zone Canvas to double-tap boards into Focus Mode, or explore the Map and Welcome onboarding.</p>
             </div>
             <div class="pf-proto-box__actions">
               <a class="pf-action-btn" href="../../prototypes/zonie/index.html" target="_blank" rel="noopener noreferrer">Open full-screen prototype ↗</a>
             </div>
           </div>
-          <iframe class="pf-proto-embed" src="../../prototypes/zonie/index.html?embed=1" title="Zonie interactive HTML prototype" loading="lazy"></iframe>
+          <div class="pf-proto-tabs" data-proto-tabs="proto-frame-zonie" role="group" aria-label="Prototype screen shortcuts">
+            <button type="button" class="pf-proto-tab is-active" data-proto-src="../../prototypes/zonie/index.html?embed=1&screen=zone" aria-pressed="true">Zone Canvas &amp; Focus Mode</button><button type="button" class="pf-proto-tab" data-proto-src="../../prototypes/zonie/index.html?embed=1&screen=map" aria-pressed="false">Map Discovery</button><button type="button" class="pf-proto-tab" data-proto-src="../../prototypes/zonie/index.html?embed=1&screen=welcome" aria-pressed="false">Welcome &amp; Onboarding</button>
+          </div>
+          <iframe id="proto-frame-zonie" class="pf-proto-embed pf-proto-embed--desktop" src="../../prototypes/zonie/index.html?embed=1&screen=zone" title="Zonie interactive prototype"></iframe>
         </div>
     </section>
 
@@ -187,7 +190,7 @@
       <div class="pf-grid pf-grid--3"><div class="pf-cell"><h3 class="pf-cell__title">Designers who structure tasks well can ship real front-end with AI.</h3><p class="pf-cell__body">AI multiplies execution speed dramatically, but only when paired with unambiguous visual specs, locked design tokens, and disciplined verification after every round.</p></div><div class="pf-cell"><h3 class="pf-cell__title">Live prototypes beat static handoff slides.</h3><p class="pf-cell__body">Feeling drag inertia, zoom clamping, and off-screen wayfinding firsthand exposed dozens of micro-UX flaws I would never have noticed on a static artboard.</p></div><div class="pf-cell"><h3 class="pf-cell__title">Performance is part of UI craft.</h3><p class="pf-cell__body">Smooth 60fps canvas panning, thermal-aware motion throttling, and deterministic layout math matter just as much as color and typography.</p></div></div>
     </section>
 
-    <a class="pf-next" href="../djaminn/">
+    <a class="pf-next" href="../djaminn/index.html">
       <div>
         <span class="pf-next__kicker">Read next <i class="pf-dot" aria-hidden="true"></i> Music App · UI &amp; Design System</span>
         <p class="pf-next__title">Djaminn: Giving musicians a reason to come back and jam.</p>
