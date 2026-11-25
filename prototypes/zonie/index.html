@@ -1,0 +1,3558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zone Prototype</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Caacupe+One&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap" rel="stylesheet">
+<style>
+.msi{font-family:'Material Symbols Outlined'; font-weight:normal; font-style:normal; font-size:22px; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-smoothing:antialiased; vertical-align:middle; font-variation-settings:'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
+.msi.msi-fill{font-variation-settings:'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
+</style>
+<style>
+:root{
+  --paper:#FCFCFC;
+  --paper-2:#F3F3F3;
+  --ink:#212121;
+  --ink-soft:#A4A4A4;
+  --line:#E4E4E4;
+  --card:#FFFFFF;
+  /* primary brand color, used across the whole app */
+  --primary:#FFB400;
+  --primary-dark:#CC9000;
+  --primary-tint:#FFF3D6;
+  --primary-text-on-btn:#2B1D00;
+  --pill-gray:#F5F5F5;
+  /* tertiary accent — used sparingly (~30%), mainly the "you are here" map dot and focus states */
+  --tertiary:#FF24BD;
+  --tertiary-tint:#FFE0F7;
+  /* fixed decoration palette for user-chosen sticker/draw/text colors (independent of brand colors) */
+  --deco-green:#3FBF5F;
+  --blue:#2F8CFF;
+  --blue-tint:#E4EFFF;
+  --yellow:#FFC93C;
+  --shadow: 0 10px 26px rgba(33,33,33,0.14);
+  --shadow-sm: 0 3px 10px rgba(33,33,33,0.12);
+  --radius-lg: 26px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter', system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, #2A2740 0%, #17151F 55%, #0F0E15 100%);
+  min-height:100vh;
+  color:var(--ink);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:32px 16px 60px;
+}
+h1,h2,h3{font-family:'Caacupe One', 'Inter', sans-serif; font-weight:400; margin:0;}
+button{font-family:inherit;}
+
+/* ---------- Top dev bar ---------- */
+.dev-bar{
+  width:100%;
+  max-width:920px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:22px;
+  flex-wrap:wrap;
+}
+.dev-bar .brand{
+  color:#F6F1E4;
+  font-family:'Caacupe One',sans-serif; font-weight:400;
+  font-size:20px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.dev-bar .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 4px rgba(34,196,104,.25);}
+.dev-nav{display:flex;gap:6px;background:rgba(255,255,255,0.08);padding:5px;border-radius:999px;backdrop-filter:blur(6px);}
+.dev-nav button{
+  border:none;background:transparent;color:#CFC9DC;font-size:13px;font-weight:600;
+  padding:8px 14px;border-radius:999px;cursor:pointer;transition:.15s;white-space:nowrap;
+}
+.dev-nav button.active{background:var(--primary);color:#0E2A18;}
+.dev-nav button:not(.active):hover{color:#fff;}
+.dev-reset{
+  border:1px solid rgba(255,255,255,0.18);background:transparent;color:#CFC9DC;
+  font-size:12.5px;padding:8px 12px;border-radius:999px;cursor:pointer;
+}
+.dev-reset:hover{border-color:#fff;color:#fff;}
+
+/* ---------- Phone frame ---------- */
+.stage{display:flex; gap:26px; align-items:flex-start; justify-content:center; flex-wrap:wrap; width:100%; max-width:920px;}
+.phone{
+  width:390px;
+  height:844px;
+  background:#000;
+  border-radius:52px;
+  padding:14px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05) inset;
+  position:relative;
+  flex-shrink:0;
+}
+.phone::before{
+  content:"";
+  position:absolute; top:14px; left:50%; transform:translateX(-50%);
+  width:120px; height:26px; background:#000; border-radius:16px; z-index:50;
+}
+.screen-wrap{
+  width:100%; height:100%;
+  background:var(--paper);
+  border-radius:38px;
+  overflow:hidden;
+  position:relative;
+}
+.screen{
+  position:absolute; inset:0;
+  display:none;
+  flex-direction:column;
+  opacity:0;
+}
+.screen.active{display:flex; opacity:1;}
+.statusbar{
+  height:48px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
+  padding:0 26px 0 30px; font-size:13px; font-weight:600; color:var(--ink); z-index:40;
+}
+
+/* side notes panel (feedback) */
+.notes-panel{
+  width:260px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;
+  padding:20px;
+  color:#D9D4E6;
+  font-size:13px;
+  line-height:1.55;
+}
+.notes-panel h3{color:#fff; font-size:15px; margin-bottom:10px;}
+.notes-panel .tag{
+  display:inline-block; font-size:11px; font-weight:700; color:var(--primary);
+  background:rgba(34,196,104,0.15); padding:3px 8px; border-radius:999px; margin-bottom:8px;
+}
+.notes-panel ul{padding-left:16px; margin:8px 0 16px;}
+.notes-panel li{margin-bottom:6px;}
+.notes-panel .divider{height:1px;background:rgba(255,255,255,0.12);margin:14px 0;}
+
+/* ---------- shared bits ---------- */
+.btn{
+  border:none; cursor:pointer; border-radius:999px; font-weight:700; font-size:15px;
+  padding:15px 20px; transition:.15s; text-align:center;
+}
+.btn-primary{background:var(--primary); color:var(--primary-text-on-btn);}
+.btn-primary:active{background:var(--primary-dark); color:#fff;}
+.btn-primary:disabled{background:#D8D2C4; color:#A9A296; cursor:not-allowed;}
+.btn-ghost{background:transparent; color:var(--ink); border:1.5px solid var(--line);}
+.btn-ghost:active{border-color:var(--ink);}
+.icon-btn{
+  width:38px;height:38px;border-radius:50%;border:none;background:var(--card);
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;
+  box-shadow:var(--shadow-sm);
+}
+.icon-btn:active{transform:scale(0.92);}
+
+/* ================= ONBOARDING ================= */
+#screen-onboarding{
+  background: var(--paper);
+  justify-content:center;
+  padding:0 28px;
+  position:relative;
+  overflow:hidden;
+}
+.onb-card{
+  background:var(--card); border-radius:28px; padding:38px 26px; text-align:center;
+  box-shadow:var(--shadow); position:relative;
+}
+.onb-title{font-size:28px; line-height:1.15; margin-bottom:10px;}
+.onb-sub{font-size:14px; color:var(--ink-soft); font-weight:500; margin-bottom:26px; line-height:1.5;}
+.avatar-picker-wrap{position:relative; width:130px; margin:0 auto 26px;}
+.avatar-picker{
+  width:130px; height:130px; border-radius:50%; border:2px dashed #D0D0D0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer;
+  background:#fff; overflow:hidden; position:relative;
+}
+.avatar-picker.filled{border-style:solid; border-color:transparent;}
+.avatar-picker img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
+.avatar-picker .ap-icon{font-size:26px; color:#BDBDBD;}
+.avatar-picker .ap-label{font-size:12px; color:#BDBDBD; font-weight:600;}
+.ap-remove{
+  position:absolute; top:-2px; right:-2px; width:28px; height:28px; border-radius:50%; background:#E8E8E8;
+  border:2px solid #fff; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15); color:#4A4A4A;
+}
+.ap-remove .msi{font-size:16px;}
+.onb-back{
+  width:34px; height:34px; border-radius:50%; border:none; background:var(--paper-2);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; margin-bottom:10px; color:#3A3A3A;
+}
+/* mobile apps never show a desktop-style scrollbar track — hide it everywhere content scrolls */
+.avatar-grid, .sheet, .se-grid{scrollbar-width:none; -ms-overflow-style:none;}
+.avatar-grid::-webkit-scrollbar, .sheet::-webkit-scrollbar, .se-grid::-webkit-scrollbar{display:none; width:0; height:0;}
+.avatar-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-height:280px; overflow-y:auto; padding:2px 2px 4px;}
+.avatar-opt{aspect-ratio:1; border-radius:50%; overflow:hidden; cursor:pointer; border:3px solid transparent; background:var(--paper-2);}
+.avatar-opt img{width:100%; height:100%; object-fit:cover; display:block;}
+.avatar-opt:active{border-color:var(--primary);}
+.field-label{font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:8px; display:block; text-align:left;}
+.text-input{
+  width:100%; border:1.5px solid var(--line); background:var(--card); border-radius:14px;
+  padding:15px 16px; font-size:15.5px; font-family:inherit; color:var(--ink); margin-bottom:22px; font-weight:600;
+}
+.text-input:focus{outline:none; border-color:var(--ink-soft);}
+.text-input::placeholder{color:#C6C6C6; font-weight:400;}
+
+/* ================= MAP SCREEN ================= */
+#screen-map{background:var(--paper);}
+.map-top{
+  position:absolute; top:56px; left:16px; right:16px; z-index:30;
+}
+.search-bar{
+  background:var(--card); border-radius:999px; box-shadow:var(--shadow-sm);
+  display:flex; align-items:center; gap:8px; padding:8px 8px 8px 18px; font-size:14px; color:var(--ink-soft);
+}
+.search-bar input{border:none; outline:none; font-size:14px; font-family:inherit; flex:1; background:transparent; color:var(--ink); font-weight:500;}
+.search-bar .sb-icon{font-size:15px; color:#3A3A3A; flex-shrink:0;}
+.avatar-chip{
+  width:36px;height:36px;border-radius:50%; display:flex;align-items:center;justify-content:center;
+  font-size:16px; border:none; cursor:pointer; overflow:hidden; flex-shrink:0; background:var(--paper-2);
+}
+.remove-direction-btn{
+  position:absolute; bottom:92px; left:50%; transform:translateX(-50%); z-index:30;
+  background:#fff; border:none; border-radius:999px; box-shadow:var(--shadow);
+  padding:9px 16px; font-size:13px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:6px;
+  cursor:pointer; width:fit-content;
+}
+.remove-direction-btn .msi{font-size:15px; color:var(--ink-soft);}
+.direction-dest-dot{position:relative; width:18px; height:18px;}
+.ddd-dot{position:absolute; inset:0; border-radius:50%; background:var(--tertiary); border:3px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,0.35);}
+.ddd-ring{position:absolute; inset:-6px; border-radius:50%; border:2px solid var(--tertiary); opacity:0.35;}
+#leafmap{position:absolute; inset:0; z-index:1;}
+.leaflet-container{background:#EDEDED; font-family:inherit;}
+
+.marker-pill{
+  background:#fff; border-radius:16px; box-shadow:var(--shadow); padding:9px 0 9px 10px; display:flex;
+  flex-direction:column; cursor:pointer; position:relative; width:100%; box-sizing:border-box;
+  border:2px solid transparent;
+}
+.marker-pill.has-new-reaction{border-color:var(--primary);}
+.map-reaction-flag{
+  align-self:flex-start; font-size:12px; font-weight:700; color:var(--primary); margin:0 0 4px 4px;
+}
+.marker-pill .mp-row{display:flex; align-items:stretch;}
+.marker-pill .mp-left{display:flex; align-items:center; gap:10px; flex:1; min-width:0; cursor:pointer;}
+.marker-pill .mp-textblock{min-width:0;}
+.marker-pill .mp-name{font-family:'Caacupe One', sans-serif; font-size:18px; font-weight:500; line-height:1.25; color:var(--ink); white-space:normal; word-break:break-word; cursor:pointer;}
+.marker-pill .mp-addr{font-size:11px; color:var(--ink-soft); font-weight:400; line-height:1.35; margin-top:3px; white-space:normal; word-break:break-word;}
+.marker-pill .mp-actions{display:flex; flex-direction:column; width:60px; flex-shrink:0; align-items:center; justify-content:center; gap:6px;}
+.marker-pill .mp-fav-zone, .marker-pill .mp-direction-zone{
+  display:flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:50%;
+  background:var(--paper-2); border:none; cursor:pointer; flex-shrink:0;
+}
+.marker-pill .mp-heart{color:#B0B0B0; font-size:20px;}
+.marker-pill .mp-heart.is-fav{color:var(--primary); font-variation-settings:'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
+.marker-pill .mp-direction-zone .msi{color:#3A3A3A; font-size:19px;}
+.mp-footer{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:4px;}
+.mp-notes-count{color:var(--tertiary); font-size:12px; font-weight:500; cursor:pointer;}
+.mp-notes-count.mp-no-notes{color:var(--ink-soft); cursor:default;}
+.mp-not-joined{color:var(--ink-soft); font-size:12px; font-weight:500;}
+.marker-tail{
+  width:32px; height:32px; margin:8px auto 0; border-radius:50%; background:#fff;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,0.3);
+}
+.marker-tail .msi{font-size:24px; color:var(--tertiary);}
+.marker-dot{display:none;}
+.cluster-pill{
+  background:#fff; color:var(--ink); font-weight:700; font-size:12.5px; padding:9px 16px; border-radius:999px;
+  box-shadow:var(--shadow); white-space:nowrap; position:relative;
+}
+.cluster-region{
+  border-radius:50%; background:rgba(255,36,189,0.18); border:2px solid var(--tertiary);
+}
+.create-zone-wrap{
+  position:absolute; z-index:751; display:flex; flex-direction:column; align-items:center;
+  transform:translate(-50%,-100%); animation:pop-in .18s ease;
+}
+.create-zone-card{background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:16px; width:100%; box-sizing:border-box;}
+.czc-addr{font-size:16px; font-weight:700; color:var(--ink); line-height:1.3; margin-bottom:14px; white-space:normal; word-break:break-word;}
+.czc-btn{width:100%; display:flex; align-items:center; justify-content:center; gap:4px; font-size:14px; padding:11px 16px;}
+.czc-btn:disabled{opacity:.6; cursor:default;}
+.you-are-here{position:relative; width:32px; height:32px;}
+.yah-dot{position:absolute; inset:8px; border-radius:50%; background:var(--primary); border:3px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,0.35);}
+.yah-pulse{position:absolute; inset:0; border-radius:50%; background:var(--primary); opacity:0.35; animation:yah-pulse 2s ease-out infinite;}
+@keyframes yah-pulse{0%{transform:scale(0.4); opacity:0.5;} 100%{transform:scale(1); opacity:0;}}
+@keyframes pop-in{from{transform:translate(-50%,-100%) scale(0.5); opacity:0;} to{transform:translate(-50%,-100%) scale(1); opacity:1;}}
+
+.bottom-bar{
+  position:absolute; bottom:26px; left:50%; transform:translateX(-50%); z-index:30;
+  background:#fff; border-radius:999px; box-shadow:var(--shadow); display:flex; padding:4px;
+}
+.bottom-bar button{
+  position:relative; border:none; background:transparent; cursor:pointer; border-radius:50%;
+  width:46px; height:46px; display:flex; align-items:center; justify-content:center; color:var(--ink);
+}
+.bottom-bar button .msi{font-size:21px; color:#3A3A3A;}
+.bottom-bar button:active{background:var(--paper-2);}
+.locate-btn{
+  position:absolute; bottom:32px; right:16px; z-index:30; width:46px; height:46px; border-radius:50%;
+  background:#fff; border:none; box-shadow:var(--shadow); cursor:pointer; display:flex; align-items:center;
+  justify-content:center; color:#3A3A3A;
+}
+.locate-btn .msi{font-size:20px;}
+.locate-btn:active{background:var(--paper-2);}
+
+/* bottom sheet */
+.sheet-backdrop{position:absolute; inset:0; background:rgba(20,18,26,0.4); z-index:800; opacity:0; pointer-events:none; transition:.2s;}
+.sheet-backdrop.show{opacity:1; pointer-events:auto;}
+.sheet{
+  position:absolute; left:0; right:0; bottom:0; background:#fff; border-radius:26px 26px 0 0;
+  z-index:801; padding:18px 20px 26px; box-shadow:0 -10px 30px rgba(0,0,0,0.2);
+  transform:translateY(100%); transition:.25s cubic-bezier(.32,.72,0,1); max-height:78%; overflow-y:auto;
+}
+.sheet.show{transform:translateY(0);}
+.sheet-handle{width:36px;height:4px;background:var(--line); border-radius:99px; margin:0 auto 14px;}
+.sheet-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+.sheet-head h3{font-size:18px;}
+.sheet-head .x{cursor:pointer; font-size:15px; color:var(--ink-soft); background:var(--paper-2); width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.zone-row{display:flex; flex-direction:column; border-radius:0; border-bottom:1px solid var(--paper-2);}
+.zone-row .zr-row{display:flex; align-items:stretch; padding:8px 0;}
+.zr-reaction-flag{
+  background:var(--primary-tint); color:var(--primary); font-size:11px; font-weight:700;
+  padding:2px 8px; margin-top:2px;
+}
+.zone-row:last-child{border-bottom:none;}
+.zone-row .zr-left{display:flex; gap:12px; align-items:center; flex:1; min-width:0; padding:4px 0; cursor:pointer;}
+.zone-row .zr-name{font-family:'Caacupe One', sans-serif; font-size:18px; font-weight:500;}
+.zone-row .zr-addr{font-size:11px; color:var(--ink-soft); font-weight:400; margin-top:2px;}
+.zone-row .zr-actions{display:flex; flex-direction:column; width:56px; flex-shrink:0; align-items:center; justify-content:center; gap:6px;}
+.zone-row .zr-fav-zone, .zone-row .zr-direction-zone{
+  display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%;
+  background:var(--paper-2); border:none; cursor:pointer; flex-shrink:0;
+}
+.zone-row .zr-heart{font-size:19px; color:#B0B0B0;}
+.zone-row .zr-heart.is-fav{color:var(--primary); font-variation-settings:'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
+.zone-row .zr-direction-zone .msi{font-size:18px; color:#3A3A3A;}
+.zr-footer{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:3px;}
+.empty-hint{font-size:13px; color:var(--ink-soft); text-align:center; padding:20px 10px;}
+.settings-row{display:flex; align-items:center; justify-content:space-between; padding:14px 2px; border-bottom:1px solid var(--paper-2);}
+.zone-settings-row{
+  display:flex; align-items:center; gap:12px; width:100%; padding:14px 4px; border:none; background:none;
+  cursor:pointer; font-size:14.5px; font-weight:700; color:var(--ink); text-align:left; font-family:inherit;
+}
+.zone-settings-row.danger{color:#E23;}
+.zone-settings-row .msi{font-size:20px;}
+.settings-row:last-child{border-bottom:none;}
+.settings-row .sr-title{font-size:14.5px; font-weight:600;}
+.settings-row .sr-sub{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+.toggle{width:44px;height:26px;border-radius:99px;background:var(--line); position:relative; cursor:pointer; flex-shrink:0;}
+.toggle.on{background:var(--primary);}
+.toggle::after{content:"";position:absolute; width:20px;height:20px;background:#fff;border-radius:50%; top:3px; left:3px; transition:.15s; box-shadow:0 1px 3px rgba(0,0,0,0.3);}
+.toggle.on::after{left:21px;}
+
+/* ---------- Modal (centered) ---------- */
+.modal-backdrop{position:absolute; inset:0; background:rgba(20,18,26,0.45); z-index:900; display:none; align-items:center; justify-content:center; padding:24px;}
+.modal-backdrop.show{display:flex;}
+.modal-card{background:#fff; border-radius:24px; padding:24px; width:100%; box-shadow:var(--shadow); position:relative; animation:modal-in .18s ease;}
+@keyframes modal-in{from{transform:scale(0.94) translateY(8px); opacity:0;} to{transform:scale(1) translateY(0); opacity:1;}}
+.modal-card h3{font-size:19px; margin-bottom:8px; text-align:center;}
+.modal-card p{font-size:13.5px; color:var(--ink-soft); line-height:1.5; text-align:center; margin-bottom:18px;}
+.modal-actions{display:flex; gap:10px;}
+.modal-actions .btn{flex:1;}
+
+/* ================= ZONE CANVAS ================= */
+#screen-zone{background:#FAFAFA;}
+.zone-header{
+  position:absolute; top:0; left:0; right:0; z-index:40; padding:52px 16px 12px;
+  display:flex; align-items:center; gap:10px; pointer-events:none;
+  transition:transform .3s ease, opacity .3s ease;
+}
+.zone-header.hidden{transform:translateY(-130%); opacity:0; pointer-events:none;}
+.zh-back{width:36px;height:36px;border-radius:50%;background:#fff; border:none; box-shadow:var(--shadow-sm); font-size:15px; cursor:pointer; flex-shrink:0; pointer-events:auto;}
+.zh-pill{
+  flex:1; min-width:0; background:#fff; border-radius:22px; box-shadow:var(--shadow-sm); padding:11px 16px;
+  display:flex; align-items:center; gap:8px; pointer-events:none;
+}
+.zh-titlewrap{flex:1; min-width:0;}
+.zh-title{font-family:'Caacupe One', sans-serif; font-weight:400; font-size:17px; line-height:1.25; color:var(--ink);}
+.zh-address{font-size:11px; font-weight:400; color:var(--ink-soft); line-height:1.3; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.zh-history-hint{font-size:11.5px; color:var(--primary-dark); font-weight:600; cursor:pointer; display:flex; align-items:center; gap:4px; margin-top:8px; pointer-events:auto; width:fit-content;}
+.zh-search{font-size:15px; color:#3A3A3A; flex-shrink:0; cursor:pointer; background:none; border:none; pointer-events:auto;}
+
+/* ---- Name change history sheet ---- */
+.nh-intro{font-size:12.5px; color:var(--ink-soft); margin:-4px 0 14px; line-height:1.4;}
+.nh-row{display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding:10px 2px; border-bottom:1px solid var(--paper-2);}
+.nh-row:last-child{border-bottom:none;}
+.nh-row .nh-name{font-size:14.5px; font-weight:700; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.nh-row .nh-current-tag{font-size:10.5px; font-weight:700; color:var(--tertiary); background:var(--tertiary-tint); padding:2px 8px; border-radius:999px;}
+.nh-row .nh-date{font-size:12px; color:var(--ink-soft); flex-shrink:0; white-space:nowrap;}
+.nh-divider{height:1px; background:var(--line); margin:16px 0;}
+.nh-queue-note{font-size:12.5px; color:var(--ink-soft); margin-bottom:12px; line-height:1.4; background:var(--paper-2); padding:10px 12px; border-radius:12px;}
+.nh-pending{background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:16px; text-align:center;}
+.nh-pending .nh-pending-title{font-size:13.5px; font-weight:700; color:var(--ink); margin-bottom:4px; display:flex; align-items:center; justify-content:center; gap:6px;}
+.nh-pending .nh-pending-title .msi{font-size:18px; color:var(--deco-green); font-variation-settings:'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
+.nh-pending .nh-pending-sub{font-size:12.5px; color:var(--ink-soft); margin-bottom:14px; line-height:1.4;}
+
+.canvas-viewport{position:absolute; inset:0; overflow:hidden; touch-action:none; background-image:radial-gradient(circle, #DCDCDC 1.3px, transparent 1.3px); background-size:18px 18px; cursor:grab;}
+.canvas-viewport.grabbing{cursor:grabbing;}
+.canvas-track{position:absolute; top:0; left:0; transform-origin:0 0; width:1400px;}
+
+/* ---- board (zoomed-out state): fixed square, label lives OUTSIDE above it ---- */
+.board{
+  position:absolute; border:2px solid #B7B7B7; border-radius:20px;
+  background:rgba(255,255,255,0.2); overflow:hidden; cursor:pointer;
+  transition:border-color .15s, box-shadow .15s;
+}
+.board.focused-proximity{border-color:var(--tertiary); box-shadow:0 8px 26px rgba(255,36,189,0.22); z-index:20;}
+.board.dragging{box-shadow:0 18px 32px rgba(0,0,0,0.32); z-index:30; cursor:grabbing;}
+.board-inner{position:relative; width:100%; height:100%;}
+.board-inner-content{position:absolute; top:0; left:0;}
+
+/* ---- the currently-"newest" board just gets a tertiary border + glow — same
+   BOARD_SIZE box, same position as every other board, nothing resized or shifted.
+   Its label (below) gets a matching bordered pill so the two read as one highlighted
+   unit even though, like every board/label pair, they're still separate elements. ---- */
+.board.highlight-newest{
+  border-color:var(--tertiary); border-width:3px;
+  box-shadow:0 0 0 3px rgba(255,36,189,0.15); z-index:21;
+}
+.board.has-new-reaction{
+  border-color:var(--primary); border-width:3px;
+  box-shadow:0 0 0 3px rgba(255,180,0,0.18); z-index:21;
+}
+
+.board-label{
+  position:absolute; display:flex; align-items:center; gap:6px; white-space:nowrap; z-index:25;
+  transform-origin:bottom left; pointer-events:none;
+}
+.board-label .board-avatar{width:20px; height:20px; border-radius:50%; object-fit:cover; background:var(--paper-2); flex-shrink:0;}
+.board-label .board-title{font-family:'Caacupe One', sans-serif; font-weight:400; font-size:15px; color:var(--ink); line-height:1;}
+.board-label.is-you{background:var(--primary); padding:4px; padding-right:12px; border-radius:999px;}
+
+/* "Newest Notes N" now sits BELOW the bordered notes frame (not stacked under the
+   avatar+name label above it) — its own element, own anchor point. */
+.board-subcaption{
+  position:absolute; z-index:25; pointer-events:none; transform-origin:top left; white-space:nowrap;
+}
+.board-subcaption .newest-flag{
+  font-family:'Inter', sans-serif; font-size:10.5px; color:var(--tertiary); font-weight:400; white-space:nowrap;
+}
+.board-subcaption .reaction-flag{
+  font-family:'Inter', sans-serif; font-size:10.5px; color:var(--primary); font-weight:400; white-space:nowrap;
+}
+
+/* ---- items inside a board: photo / sticker / text / draw — all peers ---- */
+.board-item{position:absolute; touch-action:none; user-select:none;}
+.board-item img, .board img{ -webkit-user-drag:none; user-drag:none; -webkit-touch-callout:none; pointer-events:none; }
+.board-item.selected{outline:2px dashed var(--ink-soft); outline-offset:4px; z-index:10;}
+.board-item.item-dragging{opacity:.85; z-index:12;}
+.bi-action{
+  position:absolute; width:24px; height:24px; border-radius:50%; background:#1A1A1A; color:#fff;
+  display:none; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.35);
+}
+.bi-action .msi{font-size:13px;}
+.board-item .bi-del{top:-12px; right:-12px; background:#E23;}
+.board-item .bi-front{top:-12px; left:-12px;}
+.board-item .bi-resize{bottom:-12px; right:-12px; cursor:nwse-resize;}
+.board-item.selected .bi-del, .board-item.selected .bi-front, .board-item.selected .bi-resize{display:flex; align-items:center; justify-content:center;}
+.board-item.resize-limit{outline:2px solid #E23; outline-offset:4px;}
+.item-photo{border-radius:13px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.1); background:#fff;}
+.item-photo img{width:100%; height:100%; object-fit:cover; display:block;}
+.item-sticker{font-size:34px; line-height:1; filter:drop-shadow(0 3px 4px rgba(0,0,0,0.25));}
+.item-text{font-weight:800; font-size:19px; white-space:pre-wrap; padding:2px 4px; min-width:20px; line-height:1.2; text-shadow:0 2px 6px rgba(0,0,0,0.15);}
+.item-text[contenteditable="true"]{outline:none; cursor:text;}
+
+/* reactions dropped on someone else's board — a plain white card + shadow, with the
+   reactor's avatar peeking out of the top-left corner, so they read as "someone left this
+   here" rather than blending in with the board owner's own posts */
+.board-item.item-reaction{background:#fff; border-radius:14px; box-shadow:0 5px 16px rgba(0,0,0,0.18); padding:9px;}
+.board-item.item-reaction .item-sticker{filter:none;}
+.board-item.item-reaction .item-text{text-shadow:none;}
+.board-item .reactor-avatar{
+  position:absolute; top:-9px; left:-9px; width:24px; height:24px; border-radius:50%;
+  border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.3); object-fit:cover; background:var(--paper-2); z-index:3;
+}
+.item-hidden-badge{position:absolute; top:6px; left:6px; background:rgba(20,18,26,0.75); color:#fff; font-size:10px; font-weight:700; padding:4px 8px; border-radius:999px; z-index:5; display:flex; align-items:center; gap:4px;}
+
+/* ---- off-screen "radar" indicators: point toward a target board that's out of view ---- */
+.indicator-pill{
+  position:absolute; z-index:32; display:flex; align-items:center; gap:3px;
+  font-family:'Inter', sans-serif; font-weight:600; font-size:10px; color:#1A1A1A;
+  cursor:pointer; white-space:nowrap; padding:4px 8px; border-radius:999px; box-shadow:var(--shadow-sm);
+}
+.indicator-pill .msi{font-size:12px;}
+.indicator-pill.ind-newest{background:var(--tertiary); color:#fff;}
+.indicator-pill.ind-you{background:var(--primary); color:#2B1D00;}
+
+/* same off-screen "radar" idea, one level up — points toward a JOINED zone (not a board)
+   that has a reaction waiting, from anywhere on the map screen itself */
+.map-indicator-pill{
+  position:absolute; z-index:29; display:flex; align-items:center; gap:5px;
+  font-family:'Inter', sans-serif; font-weight:700; font-size:13px; color:#2B1D00;
+  cursor:pointer; white-space:nowrap; padding:9px 14px; border-radius:999px; box-shadow:var(--shadow);
+  background:var(--primary);
+}
+.map-indicator-pill .msi{font-size:16px;}
+
+/* ---- focus mode: one board takes over the whole canvas area ---- */
+.focus-overlay{position:absolute; inset:0; z-index:55; background-color:#FAFAFA; background-image:radial-gradient(circle, #DCDCDC 1.3px, transparent 1.3px); background-size:18px 18px; overflow:hidden; touch-action:none;}
+.focus-track{position:absolute; top:0; left:0;}
+.focus-topbar{position:absolute; top:0; left:0; right:0; z-index:20; display:flex; align-items:center; gap:10px; padding:52px 16px 10px; pointer-events:none;}
+.focus-back{width:36px;height:36px;border-radius:50%;background:#fff; border:none; box-shadow:var(--shadow-sm); font-size:15px; cursor:pointer; flex-shrink:0; pointer-events:auto;}
+.focus-label{display:flex; align-items:center; gap:8px; background:#fff; border-radius:999px; box-shadow:var(--shadow-sm); padding:8px 14px 8px 8px; pointer-events:auto;}
+.focus-label img{width:24px; height:24px; border-radius:50%; object-fit:cover;}
+.focus-label span{font-family:'Caacupe One'; font-size:15px; color:var(--ink);}
+
+
+.note-toolbar{
+  position:absolute; left:0; right:0; bottom:24px; z-index:56;
+  display:flex; flex-direction:column; align-items:center; gap:8px; pointer-events:none;
+}
+.toolbar-row{
+  display:flex; align-items:center; gap:4px; background:var(--pill-gray); border-radius:999px;
+  box-shadow:var(--shadow); padding:6px; pointer-events:auto;
+}
+.tool-btn{border:none; background:transparent; width:46px;height:46px;border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.15s; color:#3A3A3A;}
+.tool-btn.active{background:var(--ink); color:#fff;}
+.tool-btn:disabled{opacity:.35; cursor:not-allowed;}
+.tool-status-pill{
+  display:flex; align-items:center; gap:8px; padding:10px 14px; background:#fff; border-radius:999px;
+  box-shadow:var(--shadow); cursor:pointer; max-width:230px; pointer-events:auto;
+}
+.tool-status-row{display:flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 8px;}
+.tsp-add-btn{
+  display:flex; align-items:center; gap:4px; border:none; background:var(--ink); color:#fff; font-size:12.5px; font-weight:700;
+  padding:10px 14px; border-radius:999px; cursor:pointer; box-shadow:var(--shadow); white-space:nowrap; flex-shrink:0; pointer-events:auto;
+}
+.tsp-add-btn .msi{font-size:15px;}
+#drawStatusPill.tool-status-pill{margin:0 auto 8px;}
+.tsp-dot{width:16px;height:16px;border-radius:50%; border:1.5px solid var(--line); flex-shrink:0;}
+.tool-status-pill span:not(.tsp-dot){font-size:12.5px; font-weight:700; color:var(--ink); white-space:nowrap;}
+.tool-status-pill .tsp-chevron{font-size:16px !important; color:var(--ink-soft) !important; font-weight:400 !important; margin-left:auto;}
+.sticker-opt{font-size:24px; cursor:pointer; flex-shrink:0; width:36px;height:36px; display:flex; align-items:center; justify-content:center; border-radius:10px;}
+.sticker-opt:active{background:var(--paper-2);}
+.se-tabs{display:flex; gap:6px; background:var(--paper-2); border-radius:12px; padding:4px; margin-bottom:16px;}
+.se-tab{flex:1; border:none; background:transparent; padding:9px 0; border-radius:9px; font-size:13px; font-weight:700; color:var(--ink-soft); cursor:pointer;}
+.se-tab.on{background:#fff; color:var(--ink); box-shadow:var(--shadow-sm);}
+.se-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px; max-height:260px; overflow-y:auto; padding-bottom:4px;}
+.se-grid .sticker-opt{width:100%; height:44px; font-size:26px; border-radius:12px;}
+
+/* custom color tool: SV square + hue strip, kept in sync with the preset dots below it —
+   picking a preset dims this (it's not "selected" anymore), touching this directly clears
+   whichever preset was picked */
+.color-picker{margin-bottom:16px; transition:opacity .15s;}
+.color-picker.cp-dimmed{opacity:.4;}
+.cp-sv{position:relative; width:100%; height:130px; border-radius:14px; margin-bottom:12px; cursor:pointer; touch-action:none;}
+.cp-sv-cursor{position:absolute; width:18px;height:18px; border-radius:50%; border:2.5px solid #fff; box-shadow:0 0 0 1px rgba(0,0,0,0.35), 0 2px 5px rgba(0,0,0,0.3); transform:translate(-50%,-50%); pointer-events:none;}
+.cp-hue{position:relative; width:100%; height:16px; border-radius:999px; cursor:pointer; touch-action:none;
+  background:linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);}
+.cp-hue-cursor{position:absolute; top:50%; width:22px;height:22px; border-radius:50%; border:2.5px solid #fff; box-shadow:0 0 0 1px rgba(0,0,0,0.35), 0 2px 5px rgba(0,0,0,0.3); transform:translate(-50%,-50%); pointer-events:none;}
+.cp-presets{display:flex; gap:10px; margin-bottom:4px;}
+.cp-preset{width:30px;height:30px;border-radius:50%; cursor:pointer; border:2px solid #fff; box-shadow:0 0 0 1.5px var(--line); flex-shrink:0;}
+.cp-preset.on{box-shadow:0 0 0 2.5px var(--ink);}
+.stroke-opts{display:flex; gap:8px;}
+.stroke-opts .size-opt{flex:1; text-align:center; padding:11px 0;}
+.font-opt{border:1.5px solid var(--line); border-radius:10px; padding:7px 12px; font-size:12.5px; font-weight:700; cursor:pointer; flex-shrink:0; background:#fff;}
+.font-opt.on{border-color:var(--ink); background:var(--ink); color:#fff;}
+.size-opt{border:1.5px solid var(--line); border-radius:10px; padding:7px 11px; font-size:11.5px; font-weight:700; cursor:pointer; flex-shrink:0; background:#fff;}
+.size-opt.on{border-color:var(--blue); background:var(--blue-tint); color:var(--blue);}
+
+
+.toast{position:absolute; left:50%; bottom:110px; transform:translateX(-50%); background:var(--ink); color:#fff; font-size:12.5px; font-weight:600; padding:10px 16px; border-radius:999px; z-index:90; opacity:0; pointer-events:none; transition:.2s; white-space:nowrap;}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+.camera-opt{display:flex; align-items:center; gap:14px; background:var(--paper-2); border-radius:16px; padding:14px 16px; margin-bottom:10px; cursor:pointer;}
+.camera-opt:active{background:#EAEAEA;}
+.camera-opt .msi{font-size:22px; color:#3A3A3A;}
+.camera-opt .co-title{font-size:15px; font-weight:700; color:var(--ink);}
+.camera-opt .co-sub{font-size:12px; color:var(--ink-soft); margin-top:1px;}
+
+
+/* ---------- App viewer (demo.md D2b): demo bar on top, device in the middle, settings always open on the right ---------- */
+html.zv-on, html.zv-on body{height:100%; overflow:hidden;}
+html.zv-on body{display:grid; grid-template-columns:minmax(0,1fr) 320px; grid-template-rows:auto minmax(0,1fr); padding:0; align-items:stretch;}
+html.zv-on .demo-bar{grid-column:1 / -1; grid-row:1;}
+html.zv-on .stage{grid-column:1; grid-row:2; max-width:none; min-height:0; overflow:auto; padding:24px; flex-wrap:nowrap; justify-content:center; align-items:flex-start;}
+.phone{width:var(--zv-w,390px); height:var(--zv-h,844px); transform-origin:top center;}
+html[data-frame="off"] .phone{padding:0; border-radius:0; background:transparent;}
+html[data-frame="off"] .phone::before{display:none;}
+html[data-frame="off"] .screen-wrap{border-radius:0;}
+.zv-panel{grid-column:2; grid-row:2; min-height:0; overflow:auto; padding:20px 16px 32px; display:flex; flex-direction:column; gap:22px;
+  background:rgba(255,255,255,0.05); border-left:1px solid rgba(255,255,255,0.1); color:#D9D4E6; font-size:13px; line-height:1.5;}
+.zv-kicker{font-size:12px; color:#A79FC0;}
+.zv-head h2{color:#fff; font-size:22px; margin-top:2px;}
+.zv-sec{display:flex; flex-direction:column; gap:10px;}
+.zv-sec h3{font-family:'Inter',sans-serif; font-weight:700; font-size:12px; letter-spacing:.04em; text-transform:uppercase; color:#A79FC0;}
+.zv-row{display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; color:#fff; font-size:14px;}
+.zv-row input{width:18px; height:18px; accent-color:var(--primary);}
+.zv-opts{display:flex; flex-direction:column; gap:4px;}
+.zv-opt{display:flex; justify-content:space-between; align-items:baseline; gap:8px; width:100%; padding:8px 12px; border:0; border-radius:12px; background:transparent; color:#fff; font-size:14px; text-align:left; cursor:pointer;}
+.zv-opt small{color:#A79FC0; font-size:12px;}
+.zv-opt:hover{background:rgba(255,255,255,0.06);}
+.zv-opt.is-on{background:rgba(255,180,0,0.18); box-shadow:inset 0 0 0 1px var(--primary);}
+.zv-chips{display:flex; gap:8px; flex-wrap:wrap;}
+.zv-chip{border:1px solid rgba(255,255,255,0.18); background:transparent; color:#CFC9DC; font-size:13px; font-weight:600; padding:7px 12px; border-radius:999px; cursor:pointer;}
+.zv-chip.is-on{background:var(--primary); border-color:var(--primary); color:var(--primary-text-on-btn);}
+.zv-panel .dev-nav{flex-direction:column; align-items:stretch; border-radius:16px; backdrop-filter:none;}
+.zv-panel .dev-nav button{text-align:left; white-space:normal;}
+.zv-panel .dev-nav button.active{color:var(--primary-text-on-btn);}
+.zv-panel .dev-reset{align-self:flex-start;}
+.zv-panel ul{padding-left:16px; margin:0;}
+.zv-panel li{margin-bottom:6px;}
+.zv-note{font-size:12px; color:#A79FC0; margin:0;}
+.zv-panel :is(button,input):focus-visible{outline:2px solid var(--primary); outline-offset:2px;}
+@media (max-width: 859px){
+  html:not(.zv-on) body > .demo-bar{margin-bottom:24px;}
+  html:not(.zv-on) .zv-panel{width:100%; max-width:440px; margin-top:24px; border:1px solid rgba(255,255,255,0.1); border-radius:20px;}
+}
+</style>
+
+<style id="pf-embed-overrides">
+html.pf-embed, html.pf-embed body {
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #F7F7F7 !important;
+}
+html.pf-embed body {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px 12px !important;
+}
+html.pf-embed .zv-panel { display: none !important; }
+html.pf-embed .stage {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+html.pf-embed .phone {
+  margin: 0 auto !important;
+  box-shadow: 0 22px 48px rgba(18,18,18,0.16), 0 0 0 1px rgba(18,18,18,0.08) !important;
+  transform-origin: center center !important;
+}
+</style>
+<script>
+if (location.search.indexOf('embed=1') !== -1) {
+  document.documentElement.classList.add('pf-embed');
+  window.addEventListener('DOMContentLoaded', function () {
+    function scaleEmbed() {
+      var phone = document.querySelector('.phone');
+      if (!phone) return;
+      phone.style.transform = '';
+      var availW = window.innerWidth - 28;
+      var availH = window.innerHeight - 28;
+      var k = Math.min(1, availW / phone.offsetWidth, availH / phone.offsetHeight);
+      if (k < 1) phone.style.transform = 'scale(' + k.toFixed(4) + ')';
+      try { if (typeof map !== 'undefined' && map) setTimeout(function(){ map.invalidateSize(); }, 80); } catch(e){}
+    }
+    window.addEventListener('resize', scaleEmbed);
+    window.addEventListener('load', scaleEmbed);
+    setTimeout(scaleEmbed, 120);
+  });
+}
+</script>
+
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen-wrap">
+
+      <!-- ============ MAP ============ -->
+      <div class="screen active" id="screen-map">
+        <div class="statusbar"><span>9:41</span><span>●●● ▂▄▆ 100%</span></div>
+        <div id="leafmap"></div>
+        <div class="map-top">
+          <div class="search-bar">
+            <input type="text" id="zoneSearchInput" placeholder="Search zones near you...">
+            <span class="sb-icon msi">search</span>
+            <div class="avatar-chip" id="mapAvatarChip"></div>
+          </div>
+        </div>
+        <div id="mapIndicatorLayer"></div>
+
+        <div class="modal-backdrop" id="onboardingBackdrop">
+          <div class="onb-card" style="max-width:320px;">
+
+            <div id="onbStepWelcome">
+              <h1 class="onb-title">Welcome !</h1>
+              <p class="onb-sub">Pick a profile photo and a name. That's it, no password needed.</p>
+
+              <div class="avatar-picker-wrap">
+                <div class="avatar-picker" id="avatarPicker">
+                  <span class="msi ap-icon">image</span>
+                  <span class="ap-label">Add photo</span>
+                </div>
+                <button class="ap-remove" id="avatarRemoveBtn" style="display:none;"><span class="msi">close</span></button>
+              </div>
+
+              <span class="field-label">User name</span>
+              <input type="text" class="text-input" id="usernameInput" placeholder="e.g. Saigon Sunshine" maxlength="20">
+
+              <button class="btn btn-primary" style="width:100%;" id="continueBtn" disabled>Continue</button>
+            </div>
+
+            <div id="onbStepAvatarPicker" style="display:none;">
+              <button class="onb-back" id="avatarPickerBackBtn"><span class="msi">chevron_left</span></button>
+              <h1 class="onb-title" style="font-size:24px;">Select your avatar</h1>
+              <p class="onb-sub">Please select your avatar &amp; user name</p>
+              <button class="btn btn-ghost" style="width:100%; border-radius:999px; margin-bottom:18px;" id="chooseFromGalleryBtn">Choose from gallery</button>
+              <div class="avatar-grid" id="avatarGrid"></div>
+            </div>
+
+          </div>
+        </div>
+        <button class="remove-direction-btn" id="removeDirectionBtn" style="display:none;">
+          <span class="msi">close</span> Remove Direction
+        </button>
+        <div class="bottom-bar">
+          <button id="btnFav" title="Favorite zones"><span class="msi">favorite_border</span></button>
+          <button id="btnJoined" title="Joined zones"><span class="msi">add_location</span></button>
+        </div>
+        <button class="locate-btn" id="btnLocate" title="My location"><span class="msi">my_location</span></button>
+
+        <div class="sheet-backdrop" id="mapSheetBackdrop"></div>
+        <div class="sheet" id="sheetFav">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Favorite zones</h3><div class="x" data-close-sheet><span class="msi">close</span></div></div>
+          <div id="favList"></div>
+        </div>
+        <div class="sheet" id="sheetJoined">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Joined zones</h3><div class="x" data-close-sheet><span class="msi">close</span></div></div>
+          <div id="joinedList"></div>
+        </div>
+        <div class="sheet" id="sheetSettings">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Settings</h3><div class="x" data-close-sheet><span class="msi">close</span></div></div>
+
+          <div id="settingsStepMain" style="text-align:center;">
+            <div class="avatar-picker-wrap">
+              <div class="avatar-picker" id="settingsAvatarPicker">
+                <span class="msi ap-icon">image</span>
+                <span class="ap-label">Add photo</span>
+              </div>
+              <button class="ap-remove" id="settingsAvatarRemoveBtn" style="display:none;"><span class="msi">close</span></button>
+            </div>
+            <span class="field-label">User name</span>
+            <input type="text" class="text-input" id="settingsUsernameInput" placeholder="e.g. Saigon Sunshine" maxlength="20">
+          </div>
+
+          <div id="settingsStepAvatarPicker" style="display:none; text-align:center;">
+            <button class="onb-back" id="settingsAvatarPickerBackBtn"><span class="msi">chevron_left</span></button>
+            <h1 class="onb-title" style="font-size:20px;">Select your avatar</h1>
+            <p class="onb-sub">Please select your avatar</p>
+            <button class="btn btn-ghost" style="width:100%; border-radius:999px; margin-bottom:18px;" id="settingsChooseFromGalleryBtn">Choose from gallery</button>
+            <div class="avatar-grid" id="settingsAvatarGrid"></div>
+          </div>
+
+          <div class="settings-row">
+            <div><div class="sr-title">Rename &amp; interaction notifications</div><div class="sr-sub">Notify me when my zone gets a rename request</div></div>
+            <div class="toggle on" id="toggleNotif"></div>
+          </div>
+        </div>
+
+        <div class="modal-backdrop" id="createZoneBackdrop">
+          <div class="modal-card" id="createZoneModal" style="max-width:320px;">
+            <!-- filled by JS: step address -> step name -->
+          </div>
+        </div>
+
+        <!-- lives here (not in #screen-zone) because it's triggered from the map pill and the
+             Favorite Zones list, both of which are only ever visible while #screen-map is active;
+             a hidden ancestor screen collapses this to 0x0 and makes it silently non-interactive -->
+        <div class="modal-backdrop" id="joinZoneBackdrop">
+          <div class="modal-card" style="max-width:320px;">
+            <h3>Join this zone?</h3>
+            <p>You'll get your own notes area here, visible to everyone else in the zone.</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <button class="btn btn-primary" style="width:100%;" id="joinZoneConfirmBtn">Join zone</button>
+              <button class="btn btn-ghost" style="width:100%;" data-close-modal>Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-backdrop" id="outOfRangeBackdrop">
+          <div class="modal-card" style="max-width:320px;">
+            <h3>Out of range</h3>
+            <p>You can only create a zone within 6km of your location. Move closer and try again.</p>
+            <button class="btn btn-primary" style="width:100%;" data-close-modal>Got it</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ ZONE DETAIL CANVAS ============ -->
+      <div class="screen" id="screen-zone">
+        <div class="zone-header" id="zoneHeader">
+          <button class="zh-back" id="zoneBackBtn"><span class="msi">chevron_left</span></button>
+          <div class="zh-pill">
+            <div class="zh-titlewrap">
+              <div class="zh-title" id="zoneTitle">Block Buzz</div>
+              <div class="zh-address" id="zoneAddress">Hẻm 88, Phường Bến Nghé</div>
+              <div class="zh-history-hint" id="zoneNameHistoryHint"><span class="msi" style="font-size:14px;">history</span> Name change history</div>
+            </div>
+            <button class="zh-search" id="toolZoneSettings" title="Zone settings"><span class="msi">more_vert</span></button>
+          </div>
+        </div>
+
+        <div class="canvas-viewport" id="canvasViewport">
+          <div class="canvas-track" id="canvasTrack">
+            <div id="boardsLayer"></div>
+          </div>
+        </div>
+
+        <div id="indicatorLayer"></div>
+
+        <div class="note-toolbar">
+          <div class="tool-status-pill" id="drawStatusPill" style="display:none;">
+            <span class="tsp-dot" id="drawStatusDot"></span>
+            <span id="drawStatusLabel">Stroke: Thin</span>
+            <span class="msi tsp-chevron">expand_more</span>
+          </div>
+          <div class="tool-status-row" id="textStatusRow" style="display:none;">
+            <div class="tool-status-pill" id="textStatusPill">
+              <span class="tsp-dot" id="textStatusDot"></span>
+              <span id="textStatusLabel">Style: Inter</span>
+              <span class="msi tsp-chevron">expand_more</span>
+            </div>
+            <button class="tsp-add-btn" id="addTextBtn"><span class="msi">add</span>Add Text</button>
+          </div>
+          <div class="toolbar-row">
+            <button class="tool-btn" id="toolPhoto" title="Add photo"><span class="msi">photo_camera</span></button>
+            <button class="tool-btn" id="toolSticker" title="Sticker"><span class="msi">mood</span></button>
+            <button class="tool-btn" id="toolDraw" title="Draw"><span class="msi">edit</span></button>
+            <button class="tool-btn" id="toolText" title="Text" style="font-weight:800; font-size:15px;">Tt</button>
+          </div>
+        </div>
+
+        <div class="sheet-backdrop" id="zoneSheetBackdrop"></div>
+        <div class="sheet" id="sheetZoneSettings">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Zone settings</h3><div class="x" data-close-zone-sheet><span class="msi">close</span></div></div>
+          <div class="settings-row">
+            <div><div class="sr-title">Hide my notes from others</div><div class="sr-sub">Only you can see notes you add here</div></div>
+            <div class="toggle" id="toggleHideMyNotes"></div>
+          </div>
+          <button class="zone-settings-row danger" id="leaveZoneBtn">
+            <span class="msi">logout</span>
+            <span>Leave this zone</span>
+          </button>
+        </div>
+
+        <div class="modal-backdrop" id="leaveZoneBackdrop">
+          <div class="modal-card" style="max-width:320px;">
+            <h3>Leave this zone?</h3>
+            <p>This deletes all your own notes here and removes you from the zone. You can always rejoin later.</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <button class="btn btn-primary" style="width:100%; background:#E23; color:#fff;" id="leaveZoneConfirmBtn">Leave zone</button>
+              <button class="btn btn-ghost" style="width:100%;" data-close-modal>Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet" id="sheetReaction">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3 id="reactionSheetTitle">Reaction</h3><div class="x" data-close-zone-sheet><span class="msi">close</span></div></div>
+          <button class="zone-settings-row" id="viewReactorNotesBtn">
+            <span class="msi">visibility</span>
+            <span>View user notes</span>
+          </button>
+          <button class="zone-settings-row" id="reportReactionBtn">
+            <span class="msi">flag</span>
+            <span>Report &amp; remove</span>
+          </button>
+          <button class="zone-settings-row" id="removeReactionBtn">
+            <span class="msi">delete</span>
+            <span>Remove</span>
+          </button>
+        </div>
+
+        <div class="modal-backdrop" id="reportUserBackdrop">
+          <div class="modal-card" style="max-width:320px;">
+            <h3>Report <span id="reportUserName"></span>?</h3>
+            <p>This removes their reaction and blocks them from interacting with you. You won't see each other's activity anymore.</p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <button class="btn btn-primary" style="width:100%; background:#E23; color:#fff;" id="reportUserConfirmBtn">Report &amp; block</button>
+              <button class="btn btn-ghost" style="width:100%;" data-close-modal>Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet" id="sheetDrawSettings">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Drawing</h3><div class="x" data-close-zone-sheet><span class="msi">close</span></div></div>
+          <div class="color-picker" id="drawColorPicker">
+            <div class="cp-sv" id="drawSV"><div class="cp-sv-cursor" id="drawSVCursor"></div></div>
+            <div class="cp-hue" id="drawHue"><div class="cp-hue-cursor" id="drawHueCursor"></div></div>
+          </div>
+          <span class="field-label">Preset Color</span>
+          <div class="cp-presets" id="drawPresets">
+            <div class="cp-preset on" style="background:#FF24BD" data-color="#FF24BD"></div>
+            <div class="cp-preset" style="background:#2F8CFF" data-color="#2F8CFF"></div>
+            <div class="cp-preset" style="background:#FFC93C" data-color="#FFC93C"></div>
+            <div class="cp-preset" style="background:#3FBF5F" data-color="#3FBF5F"></div>
+            <div class="cp-preset" style="background:#212121" data-color="#212121"></div>
+          </div>
+          <span class="field-label" style="margin-top:18px;">Stroke</span>
+          <div class="stroke-opts" id="drawStrokeOpts">
+            <div class="size-opt on" data-w="3">Thin</div>
+            <div class="size-opt" data-w="7">Medium</div>
+            <div class="size-opt" data-w="13">Bold</div>
+          </div>
+        </div>
+
+        <div class="sheet" id="sheetTypographySettings">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Typography</h3><div class="x" data-close-zone-sheet><span class="msi">close</span></div></div>
+          <div class="color-picker" id="textColorPicker">
+            <div class="cp-sv" id="textSV"><div class="cp-sv-cursor" id="textSVCursor"></div></div>
+            <div class="cp-hue" id="textHue"><div class="cp-hue-cursor" id="textHueCursor"></div></div>
+          </div>
+          <span class="field-label">Preset Color</span>
+          <div class="cp-presets" id="textPresets">
+            <div class="cp-preset on" style="background:#212121" data-color="#212121"></div>
+            <div class="cp-preset" style="background:#FF24BD" data-color="#FF24BD"></div>
+            <div class="cp-preset" style="background:#2F8CFF" data-color="#2F8CFF"></div>
+            <div class="cp-preset" style="background:#FFC93C" data-color="#FFC93C"></div>
+            <div class="cp-preset" style="background:#FFFFFF; box-shadow:0 0 0 1.5px var(--line);" data-color="#FFFFFF"></div>
+          </div>
+          <span class="field-label" style="margin-top:18px;">Font Style</span>
+          <select class="text-input" id="fontSelect" style="margin-bottom:4px; font-weight:600;">
+            <option value="Inter, sans-serif">Inter</option>
+            <option value="'Caacupe One', sans-serif">Playful (Caacupe)</option>
+            <option value="Georgia, serif">Serif</option>
+            <option value="'Courier New', monospace">Mono</option>
+          </select>
+        </div>
+
+        <div class="sheet" id="sheetStickerEmoji">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Sticker &amp; Emoji</h3><div class="x" data-close-zone-sheet><span class="msi">close</span></div></div>
+          <div class="se-tabs">
+            <button class="se-tab on" id="seTabStickers" data-tab="stickers">Stickers</button>
+            <button class="se-tab" id="seTabEmoji" data-tab="emoji">Emoji</button>
+          </div>
+          <div class="se-grid" id="stickerGrid"></div>
+          <div class="se-grid" id="emojiGrid" style="display:none;"></div>
+        </div>
+
+        <div class="sheet" id="sheetCamera">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Camera</h3><div class="x" data-close-zone-sheet><span class="msi">close</span></div></div>
+          <div class="camera-opt" id="cameraOptCamera">
+            <span class="msi">videocam</span>
+            <div><div class="co-title">Camera</div><div class="co-sub">Using camera</div></div>
+          </div>
+          <div class="camera-opt" id="cameraOptUpload">
+            <span class="msi">upload</span>
+            <div><div class="co-title">Upload Media</div><div class="co-sub">Upload a media from your library</div></div>
+          </div>
+        </div>
+
+        <div class="sheet" id="sheetNameHistory">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><h3>Name change history</h3><div class="x" data-close-zone-sheet><span class="msi">close</span></div></div>
+          <p class="nh-intro">Names can change twice a month. First request in line gets the next turn.</p>
+          <div id="nameHistoryList"></div>
+          <div class="nh-divider"></div>
+          <div id="nameRequestArea"></div>
+        </div>
+
+      </div>
+
+      <div class="toast" id="appToast"></div>
+    </div>
+  </div>
+
+</div>
+
+<aside class="zv-panel" aria-label="View options">
+  <!-- App viewer standard (_system/rules/demo.md D2b): the demo bar on top, these settings always open on the right -->
+  <div class="zv-head"><span class="zv-kicker">App prototype</span><h2>Zone</h2></div>
+  <section class="zv-sec"><h3>Device</h3>
+    <label class="zv-row"><span>iPhone frame</span><input type="checkbox" data-zv="frame" checked></label>
+    <div class="zv-opts"><button type="button" class="zv-opt" data-zv-device="se"><span>iPhone SE</span><small>375 × 667</small></button><button type="button" class="zv-opt" data-zv-device="16e"><span>iPhone 16e</span><small>390 × 844 · prototype</small></button><button type="button" class="zv-opt" data-zv-device="17pro"><span>iPhone 17 Pro</span><small>402 × 874</small></button><button type="button" class="zv-opt" data-zv-device="promax"><span>iPhone 17 Pro Max</span><small>440 × 956</small></button></div>
+    <div class="zv-chips"><button type="button" class="zv-chip" data-zv-zoom="fit">Fit to window</button><button type="button" class="zv-chip" data-zv-zoom="100">100%</button></div>
+  </section>
+  <section class="zv-sec"><h3>Screen</h3>
+    <div class="dev-nav" id="devNav">
+    <button data-screen="map" data-force-onboarding="1">Welcome dialog</button>
+    <button data-screen="map" class="active">Map</button>
+    <button data-screen="zone">Zone Detail</button>
+  </div>
+  </section>
+  <section class="zv-sec"><h3>Location (simulated GPS)</h3>
+    <div class="dev-nav" id="devLocationNav" title="Simulates GPS — zones only surface within 6km of wherever this says you are">
+    <button data-loc="10.7768,106.6998" class="active">📍 District 1 (home)</button>
+    <button data-loc="10.8200,106.7550">📍 Thảo Điền</button>
+    <button data-loc="10.6000,106.9200">📍 Cần Giờ</button>
+  </div>
+  </section>
+  <section class="zv-sec"><button class="dev-reset" id="resetBtn">↺ Reset demo</button></section>
+  <section class="zv-sec"><h3>Design notes</h3>
+    <ul>
+      <li>Map uses Leaflet + CARTO Voyager tiles (free, no key needed), real Ho Chi Minh City coordinates.</li>
+      <li>Tap empty space on the map to try the create-zone flow. It includes a home-address warning and real reverse-geocoding via Nominatim.</li>
+      <li>Inside a zone, each contributor has their own board. Zoom into one board until it's the only one on screen and it focuses (pink border); zoom out to see several and none focus.</li>
+      <li>Try the 4 tools at the bottom: 📷 photo, 🏷️ sticker, ✏️ draw, Tt text. All draggable and resizable.</li>
+      <li>Notes inside your own board can be dragged anywhere, freely.</li>
+    </ul>
+    <p class="zv-note">This is a simulation for reviewing UX/UI. Data only persists in the browser; placeholder images come from Picsum (free).</p>
+  </section>
+</aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script>
+/* =========================================================================
+   ZONE — interactive design prototype
+   Vanilla JS, single file. Data is in-memory only (resets on reload).
+   ========================================================================= */
+
+/* ---------------- constants & seed data ---------------- */
+
+const STICKER_SET = ['🎉','🌈','✨','🔥','🏖️','☕','🌊','🍜','🎊','🌅','🦋','🌸','🍀','🎈','🧋','📸'];
+const EMOJI_SET = ['😂','😍','🥹','👀','💯','😭','🙌','👍','🥺','😎','🤔','💀','😅','🫶','🔥','✌️'];
+
+function photoUrl(seed, w, h){ return `https://picsum.photos/seed/${seed}/${w}/${h}`; }
+
+// Each zone owns a list of "boards" — one per person who has posted in that zone.
+// Every board is a square when zoomed out; owner label (avatar+name) sits OUTSIDE the
+// square, above it. A board's content is a flat list of "items" (photo / sticker / text /
+// draw) that are all peers — none of them "contain" the others — so any tool can be used
+// in any order once a board is focused.
+const ZONES = [
+  {
+    id:'z1', name:'Block Buzz', lat:10.7758, lng:106.7020,
+    address:'118 Nguyễn Huệ, Bến Nghé, Quận 1', favorite:true, joined:true,
+    cover: photoUrl('hood-cover', 200, 200),
+    nameHistory: [
+      {name:'118 Nguyễn Huệ Hangout', from: Date.now() - 150*24*3600*1000},
+      {name:'The Corner Spot', from: Date.now() - 62*24*3600*1000},
+      {name:'Block Buzz', from: Date.now() - 19*24*3600*1000}
+    ],
+    nameQueue: [
+      {name:'Cối Xay Gió Cafe', byMe:false, requestedBy:'lananh_98', requestedAt: Date.now() - 4*24*3600*1000}
+    ],
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:20, y:20, items:[
+        {id:'y1', type:'photo', x:4, y:4, w:150, h:190, scale:1, src:photoUrl('your-1',300,380), addedAt:10},
+        {id:'o1', type:'sticker', x:18, y:37, scale:1, emoji:'🥹', addedAt:10.5},
+        {id:'y2', type:'photo', x:193, y:25, w:130, h:170, scale:1, src:photoUrl('your-2',300,380), addedAt:11},
+        {id:'react1', type:'sticker', x:100, y:220, scale:1, emoji:'😍', addedAt:21,
+          isReaction:true, reactedByMe:false, reactorName:'lananh_98', reactorAvatar:photoUrl('avatar-lananh',100,100)}
+      ]},
+      { id:'b_rocking', ownerName:'Rocking', avatarSrc:photoUrl('avatar-rocking',100,100), x:340, y:170, items:[
+        {id:'n7', type:'text', x:26, y:5, scale:1, content:'Best sunset\nspot fr', color:'#212121', addedAt:5}
+      ]},
+      { id:'b_lananh', ownerName:'lananh_98', avatarSrc:photoUrl('avatar-lananh',100,100), x:80, y:460, items:[
+        {id:'n1', type:'photo', x:28, y:25, w:150, h:190, scale:1, src:photoUrl('note-coffee',300,380), addedAt:20},
+        {id:'o2', type:'sticker', x:25, y:18, scale:1, emoji:'😂', addedAt:20.3},
+        {id:'o3', type:'text', x:20, y:90, scale:1, content:'This coffee is\nunderrated', color:'#FF24BD', addedAt:20.6},
+        {id:'n2', type:'photo', x:184, y:33, w:130, h:170, scale:1, src:photoUrl('note-bff',300,380), addedAt:22},
+        {id:'o4', type:'text', x:173, y:62, scale:1, content:'OMG,\nBFF!', color:'#2F8CFF', addedAt:22.3}
+      ]},
+      { id:'b_minh', ownerName:'minh.tran', avatarSrc:photoUrl('avatar-minh',100,100), x:700, y:900, items:[
+        {id:'n3', type:'photo', x:34, y:4, w:160, h:150, scale:1, src:photoUrl('note-street',320,300), addedAt:30},
+        {id:'o5', type:'sticker', x:112, y:24, scale:1, emoji:'✨', addedAt:30.4}
+      ]}
+    ]
+  },
+  {
+    id:'z2', name:'Market Munchies', lat:10.7725, lng:106.6980,
+    address:'Chợ Bến Thành, Quận 1', favorite:false, joined:true,
+    cover: photoUrl('benthanh-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:20, y:20, items:[] },
+      { id:'b_an', ownerName:'an.pham', avatarSrc:photoUrl('avatar-an',100,100), x:330, y:150, items:[
+        {id:'n4', type:'photo', x:9, y:19, w:150, h:170, scale:1, src:photoUrl('note-market',300,340), addedAt:15},
+        {id:'o6', type:'sticker', x:33, y:5, scale:1, emoji:'🧋', addedAt:15.3}
+      ]},
+      { id:'b_tuan', ownerName:'tuan.ng', avatarSrc:photoUrl('avatar-tuan',100,100), x:70, y:430, items:[
+        {id:'n8', type:'text', x:4, y:27, scale:1, content:'Try the che\nhere!', color:'#3FBF5F', addedAt:8}
+      ]}
+    ]
+  },
+  {
+    id:'z3', name:'Chill Street Crew', lat:10.7745, lng:106.7038,
+    address:'Phố đi bộ Nguyễn Huệ, Quận 1', favorite:true, joined:false,
+    cover: photoUrl('pho-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:20, y:60, items:[] },
+      { id:'b_quang', ownerName:'quang.le', avatarSrc:photoUrl('avatar-quang',100,100), x:330, y:280, items:[
+        {id:'n5', type:'photo', x:4, y:13, w:140, h:180, scale:1, src:photoUrl('note-walk1',280,360), addedAt:40},
+        {id:'o7', type:'sticker', x:76, y:4, scale:1, emoji:'🔥', addedAt:40.3},
+        {id:'n6', type:'photo', x:175, y:47, w:150, h:150, scale:1, src:photoUrl('note-walk2',300,300), addedAt:42},
+        {id:'o8', type:'text', x:201, y:38, scale:1, content:'Chill\ntối thứ 6', color:'#FF24BD', addedAt:42.3}
+      ]}
+    ]
+  },
+  {
+    id:'z4', name:'Cloud Nine Views', lat:10.7949, lng:106.7218,
+    address:'720A Điện Biên Phủ, Bình Thạnh', favorite:false, joined:false,
+    cover: photoUrl('lm81-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:26, y:40, items:[] }
+    ]
+  },
+  {
+    id:'z5', name:'Café Hopping Club', lat:10.7799, lng:106.6942,
+    address:'Đường Sách Nguyễn Văn Bình, Quận 1', favorite:false, joined:true,
+    cover: photoUrl('cafehop-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:300, y:20, items:[
+        {id:'y3', type:'photo', x:4, y:4, w:150, h:180, scale:1, src:photoUrl('your-cafe1',300,360), addedAt:18},
+        {id:'o9', type:'text', x:42, y:193, scale:1, content:'3rd cup\ntoday lol', color:'#2F8CFF', addedAt:18.4}
+      ]},
+      { id:'b_hana', ownerName:'hana.vu', avatarSrc:photoUrl('avatar-hana',100,100), x:20, y:180, items:[
+        {id:'n9', type:'photo', x:4, y:30, w:150, h:170, scale:1, src:photoUrl('note-latteart',300,340), addedAt:33},
+        {id:'o10', type:'sticker', x:108, y:32, scale:1, emoji:'☕', addedAt:33.2},
+        {id:'n10', type:'text', x:39, y:177, scale:1, content:'Latte art\non point', color:'#FF24BD', addedAt:33.5}
+      ]},
+      { id:'b_dat', ownerName:'dat.nguyen', avatarSrc:photoUrl('avatar-dat',100,100), x:320, y:420, items:[
+        {id:'n11', type:'text', x:23, y:31, scale:1, content:'Quietest\nspot to work', color:'#3FBF5F', addedAt:12}
+      ]}
+    ]
+  },
+  {
+    id:'z6', name:'Rooftop Rebels', lat:10.7717, lng:106.7042,
+    address:'Bitexco Financial Tower, Quận 1', favorite:true, joined:false,
+    cover: photoUrl('rooftop-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:300, y:30, items:[] },
+      { id:'b_kevin', ownerName:'kevin.tran', avatarSrc:photoUrl('avatar-kevin',100,100), x:20, y:300, items:[
+        {id:'n12', type:'photo', x:17, y:4, w:160, h:150, scale:1, src:photoUrl('note-skyline',320,300), addedAt:44},
+        {id:'o11', type:'sticker', x:115, y:30, scale:1, emoji:'🌇', addedAt:44.2},
+        {id:'n13', type:'text', x:34, y:187, scale:1, content:'Best sunset\nin the city', color:'#FF24BD', addedAt:44.5}
+      ]}
+    ]
+  },
+  {
+    id:'z7', name:'Riverside Ramblers', lat:10.7793, lng:106.7069,
+    address:'Bến Bạch Đằng, Quận 1', favorite:false, joined:false,
+    cover: photoUrl('riverside-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:40, y:280, items:[] },
+      { id:'b_mimi', ownerName:'mimi.le', avatarSrc:photoUrl('avatar-mimi',100,100), x:320, y:40, items:[
+        {id:'n14', type:'photo', x:30, y:27, w:150, h:180, scale:1, src:photoUrl('note-river',300,360), addedAt:6},
+        {id:'o12', type:'sticker', x:97, y:11, scale:1, emoji:'🌊', addedAt:6.3}
+      ]}
+    ]
+  },
+  {
+    id:'z8', name:'Night Market Ninjas', lat:10.7679, lng:106.6917,
+    address:'Phố Bùi Viện, Quận 1', favorite:true, joined:true,
+    cover: photoUrl('nightmarket-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:30, y:30, items:[
+        {id:'y4', type:'sticker', x:39, y:18, scale:1, emoji:'🎉', addedAt:26}
+      ]},
+      { id:'b_jay', ownerName:'jay_saigon', avatarSrc:photoUrl('avatar-jay',100,100), x:340, y:180, items:[
+        {id:'n15', type:'photo', x:4, y:4, w:150, h:170, scale:1, src:photoUrl('note-neon',300,340), addedAt:38},
+        {id:'o13', type:'sticker', x:109, y:9, scale:1, emoji:'🍜', addedAt:38.2},
+        {id:'n16', type:'text', x:12, y:200, scale:1, content:'Street food\ncrawl time', color:'#2F8CFF', addedAt:38.5}
+      ]},
+      { id:'b_thao', ownerName:'thao_chill', avatarSrc:photoUrl('avatar-thao',100,100), x:150, y:460, items:[
+        {id:'n17', type:'text', x:13, y:4, scale:1, content:'Live music\nat 9pm!', color:'#3FBF5F', addedAt:48}
+      ]}
+    ]
+  },
+  {
+    // ~7.7km out — a short trip, not a full expedition. First zone you'd stumble onto once
+    // you wander past your usual radius.
+    id:'z9', name:'Thảo Điền Treehouse', lat:10.8200, lng:106.7550,
+    address:'Đường Xuân Thủy, Thảo Điền, Thủ Đức', favorite:false, joined:false,
+    cover: photoUrl('thaodien-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:10, y:10, items:[] },
+      { id:'b_linh', ownerName:'linh.pham', avatarSrc:photoUrl('avatar-linh',100,100), x:400, y:380, items:[
+        {id:'n18', type:'photo', x:8, y:12, w:150, h:170, scale:1, src:photoUrl('note-treehouse',300,340), addedAt:24},
+        {id:'o14', type:'sticker', x:114, y:28, scale:1, emoji:'🌳', addedAt:24.2},
+        {id:'n19', type:'text', x:18, y:192, scale:1, content:'Hidden gem,\ndon\'t tell anyone', color:'#3FBF5F', addedAt:24.5}
+      ]}
+    ]
+  },
+  {
+    // ~31km out — this one you have to actually go looking for. It's already joined with
+    // notes waiting in it: the whole point is that it's invisible day-to-day and only turns
+    // up again when you happen to travel back out that way, like flipping through old photos.
+    id:'z10', name:'Cần Giờ Getaway', lat:10.6000, lng:106.9200,
+    address:'Bãi biển 30/4, Cần Giờ', favorite:true, joined:true,
+    cover: photoUrl('cangio-cover', 200, 200),
+    boards: [
+      { id:'b_you', ownerName:'My Notes', isYou:true, x:30, y:180, items:[
+        {id:'y5', type:'photo', x:6, y:8, w:150, h:180, scale:1, src:photoUrl('your-cangio1',300,360), addedAt:2},
+        {id:'o15', type:'sticker', x:112, y:30, scale:1, emoji:'🏖️', addedAt:2.2},
+        {id:'y6', type:'text', x:22, y:196, scale:1, content:'Beach day\nwith the crew', color:'#2F8CFF', addedAt:2.4}
+      ]},
+      { id:'b_bao', ownerName:'bao.trinh', avatarSrc:photoUrl('avatar-bao',100,100), x:310, y:400, items:[
+        {id:'n20', type:'photo', x:14, y:6, w:140, h:170, scale:1, src:photoUrl('note-mangrove',280,340), addedAt:1},
+        {id:'o16', type:'sticker', x:104, y:24, scale:1, emoji:'🦀', addedAt:1.2}
+      ]}
+    ]
+  }
+];
+
+(function normalizeSeedTimestamps(){
+  let maxAddedAt = -Infinity;
+  ZONES.forEach(z=> z.boards.forEach(b=> b.items.forEach(i=>{ if((i.addedAt||0)>maxAddedAt) maxAddedAt=i.addedAt||0; })));
+  if(maxAddedAt===-Infinity) return;
+  const now = Date.now();
+  const MS_PER_UNIT = 60*1000; // 1 synthetic unit ≈ 1 minute apart
+  ZONES.forEach(z=> z.boards.forEach(b=> b.items.forEach(i=>{
+    i.addedAt = now - (maxAddedAt - (i.addedAt||0))*MS_PER_UNIT;
+  })));
+})();
+
+(function normalizeNameHistory(){
+  ZONES.forEach(z=>{
+    if(!z.nameHistory) z.nameHistory = [{name:z.name, from: Date.now() - 90*24*3600*1000}];
+    if(!z.nameQueue) z.nameQueue = [];
+  });
+})();
+
+/* ---------------- global state ---------------- */
+
+const BOARD_SIZE = 240;      // fixed square side length for a board when zoomed out
+const LABEL_GAP = 4;         // gap between the owner label and the board square
+const MIN_GAP = 16;          // minimum gap enforced between boards
+const LONG_PRESS_MS = 350;   // hold duration before drag mode kicks in
+
+const state = {
+  screen:'map',
+  onboarded:false,
+  user:{ avatarSrc:null, username:'' },
+  currentZoneId:null,
+  boards:[],          // reference to the current zone's boards array
+  canvas:{ x:60, y:0, scale:1, dragging:false, lastX:0, lastY:0, pinchDist:0 },
+  activeTool:null,   // 'sticker'|'draw'|'text'
+  drawColor:'#FF24BD', drawWidth:3,
+  textColor:'#212121', textFont:"Inter, sans-serif",
+  focusedBoardEl:null,   // the board currently "entered" by zooming in — controls pink border + hides nav pills (zoomed-out proximity focus)
+  focusMode:null,        // the board object currently taking over the full screen (Zoom-in state), or null
+  focusPan:{x:0, y:0, scale:1},
+  selectedItemEl:null,   // the individual item (photo/sticker/text/draw) currently selected for drag/resize/delete
+  menuNoteEl:null,
+  pendingZoneLatLng:null,
+  pendingJoinZoneId:null,
+  jumpToNewestOnOpen:false,
+  userLocation:[10.7768, 106.6998] // simulated GPS — zones only surface once you're actually within DISCOVERY_RADIUS_KM of them
+};
+
+let map, clusterGroup, youAreHereMarker;
+let directionLine = null, directionDot = null;
+// A simple line from "you are here" to a zone — purely visual (no real routing), just
+// enough to answer "which way is that place" at a glance. Only one active at a time;
+// starting a new one replaces whatever line was already showing. The destination gets
+// its own small dedicated dot marker (outside the cluster group, so it never disappears
+// into a cluster bubble when zoomed out, and anchored with simple fixed math so it lands
+// exactly on the line's real endpoint instead of depending on the pill's own variable height).
+function drawDirectionTo(zone){
+  if(!map) return;
+  clearDirectionLayers();
+  // A real road-following route needs a routing service (Google/Mapbox/OSRM-style) working
+  // from actual street-network data, which this offline prototype has no access to — so
+  // this draws a gentle "as the crow flies" arc instead of one blunt straight line, the same
+  // way most ride-hailing apps show a quick preview before the real route loads.
+  const curvePts = curvedLatLngs(state.userLocation, [zone.lat, zone.lng]);
+  directionLine = L.polyline(curvePts, {
+    color:'#FF24BD', weight: 4, opacity: 0.9, lineCap:'round', smoothFactor:1
+  }).addTo(map);
+  const dotIcon = L.divIcon({
+    html:`<div class="direction-dest-dot"><div class="ddd-ring"></div><div class="ddd-dot"></div></div>`,
+    className:'', iconSize:[30,30], iconAnchor:[15,15]
+  });
+  directionDot = L.marker([zone.lat, zone.lng], {icon:dotIcon, interactive:false, zIndexOffset:900}).addTo(map);
+  $('#removeDirectionBtn').style.display = 'flex';
+  const bounds = L.latLngBounds([state.userLocation, [zone.lat, zone.lng]]);
+  map.fitBounds(bounds, {padding:[70,70]});
+}
+// Quadratic-bezier arc between two points, bent perpendicular to the straight line by a
+// fraction of its length — purely decorative curvature, not a routed path.
+function curvedLatLngs(from, to, segments=32, bendFactor=0.15){
+  const [lat1,lng1] = from, [lat2,lng2] = to;
+  const midLat = (lat1+lat2)/2, midLng = (lng1+lng2)/2;
+  const dLat = lat2-lat1, dLng = lng2-lng1;
+  const dist = Math.sqrt(dLat*dLat + dLng*dLng) || 1;
+  const perpLat = -dLng/dist, perpLng = dLat/dist;
+  const controlLat = midLat + perpLat*dist*bendFactor;
+  const controlLng = midLng + perpLng*dist*bendFactor;
+  const pts = [];
+  for(let i=0;i<=segments;i++){
+    const t = i/segments;
+    const lat = (1-t)*(1-t)*lat1 + 2*(1-t)*t*controlLat + t*t*lat2;
+    const lng = (1-t)*(1-t)*lng1 + 2*(1-t)*t*controlLng + t*t*lng2;
+    pts.push([lat,lng]);
+  }
+  return pts;
+}
+function clearDirectionLayers(){
+  if(directionLine){ map.removeLayer(directionLine); directionLine = null; }
+  if(directionDot){ map.removeLayer(directionDot); directionDot = null; }
+}
+function clearDirectionLine(){
+  clearDirectionLayers();
+  $('#removeDirectionBtn').style.display = 'none';
+}
+let noteIdSeq = 100;
+let overlayIdSeq = 100;
+
+/* ---------------- helpers ---------------- */
+
+function $(sel, root){ return (root||document).querySelector(sel); }
+function $all(sel, root){ return Array.from((root||document).querySelectorAll(sel)); }
+function toast(msg){
+  const t = $('#appToast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._h);
+  toast._h = setTimeout(()=>t.classList.remove('show'), 1900);
+}
+
+/* ================= SCREEN NAV ================= */
+
+function showScreen(name){
+  state.screen = name;
+  $all('.screen').forEach(s=>s.classList.remove('active'));
+  $('#screen-'+name).classList.add('active');
+  if(name==='map'){ setTimeout(()=>{ if(map){ map.invalidateSize(); renderZoneMarkers(); } }, 60); }
+  else{
+    // leaving the map screen — cancel any pending "show create-zone card" timer and remove the card
+    // itself, so it can never pop up on its own after navigating back later
+    if(pendingCreateTimeout){ clearTimeout(pendingCreateTimeout); pendingCreateTimeout = null; }
+    if(typeof removeCreateCard === 'function') removeCreateCard();
+  }
+}
+
+$('#devNav').addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-screen]');
+  if(!btn) return;
+  $all('#devNav button').forEach(b=>b.classList.toggle('active', b===btn));
+  if(btn.dataset.screen==='zone' && !state.currentZoneId){ openZone('z1'); showScreen('zone'); return; }
+  showScreen(btn.dataset.screen);
+  if(btn.dataset.screen==='map'){
+    if(btn.dataset.forceOnboarding) $('#onboardingBackdrop').classList.add('show');
+    else if(location.search.indexOf('skipOnboarding=1')!==-1){state.onboarded=true;} if(!state.onboarded) $('#onboardingBackdrop').classList.add('show');
+  }
+});
+
+// Dev-only "teleport" control — stands in for real GPS moving, so the discovery-radius
+// feature (zones only surface within 6km of state.userLocation) is actually testable here.
+$('#devLocationNav').addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-loc]');
+  if(!btn) return;
+  $all('#devLocationNav button').forEach(b=>b.classList.toggle('active', b===btn));
+  const [lat,lng] = btn.dataset.loc.split(',').map(Number);
+  state.userLocation = [lat,lng];
+  if(youAreHereMarker) youAreHereMarker.setLatLng(state.userLocation);
+  if(map) map.setView(state.userLocation, 15, {animate:true});
+  renderZoneMarkers();
+  if($('#sheetFav').classList.contains('show') || $('#sheetJoined').classList.contains('show')) renderLists();
+  toast(`📍 Now near ${btn.textContent.replace('📍 ','')}`);
+});
+
+$('#resetBtn').addEventListener('click', ()=>location.reload());
+
+/* ================= AVATAR + USERNAME EDITOR (shared by onboarding and Settings) ================= */
+
+// Preset avatar options (DiceBear "notionists" style — free, no key, no attribution required)
+const AVATAR_PRESETS = Array.from({length:15}, (_,i)=>
+  `https://api.dicebear.com/9.x/notionists/svg?seed=zone-avatar-${i}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`
+);
+const USERNAME_INPUT_SELECTORS = ['#usernameInput', '#settingsUsernameInput'];
+
+// Onboarding and Settings both edit the exact same state.user, through two separate
+// instances of the same picker+grid widget — every instance registers itself here so a
+// change made in either place (pick from grid, upload, remove) shows up in both immediately.
+const avatarPickerInstances = [];
+
+function setupAvatarUsernameEditor(ids){
+  avatarPickerInstances.push(ids);
+  $(ids.picker).addEventListener('click', ()=> showAvatarGridStep(ids));
+
+  $(ids.removeBtn).addEventListener('click', e=>{
+    e.stopPropagation();
+    clearAvatarPhoto();
+  });
+  $(ids.backBtn).addEventListener('click', ()=> showMainStep(ids));
+  $(ids.galleryBtn).addEventListener('click', ()=>{
+    const input = document.createElement('input');
+    input.type='file'; input.accept='image/*';
+    input.addEventListener('change', ()=>{
+      const src = (input.files && input.files[0]) ? URL.createObjectURL(input.files[0]) : photoUrl('avatar-'+Date.now(),200,200);
+      setAvatarPhoto(src);
+      showMainStep(ids);
+    });
+    input.click();
+  });
+
+  const grid = $(ids.grid);
+  grid.innerHTML = AVATAR_PRESETS.map((url,i)=>`<div class="avatar-opt" data-i="${i}"><img src="${url}"></div>`).join('');
+  grid.addEventListener('click', e=>{
+    const opt = e.target.closest('.avatar-opt');
+    if(!opt) return;
+    setAvatarPhoto(AVATAR_PRESETS[+opt.dataset.i]);
+    showMainStep(ids);
+  });
+
+  if(ids.usernameInput){
+    $(ids.usernameInput).addEventListener('input', e=>{
+      state.user.username = e.target.value.trim();
+      syncUsernameInputs();
+      if(ids.onUsernameChange) ids.onUsernameChange();
+    });
+  }
+}
+function showMainStep(ids){
+  $(ids.gridStep).style.display='none';
+  $(ids.mainStep).style.display='block';
+  if(ids.hideWhenGrid) ids.hideWhenGrid.forEach(sel=> document.querySelectorAll(sel).forEach(el=> el.style.display=''));
+}
+function showAvatarGridStep(ids){
+  $(ids.mainStep).style.display='none';
+  $(ids.gridStep).style.display='block';
+  if(ids.hideWhenGrid) ids.hideWhenGrid.forEach(sel=> document.querySelectorAll(sel).forEach(el=> el.style.display='none'));
+}
+
+function setAvatarPhoto(src){
+  state.user.avatarSrc = src;
+  avatarPickerInstances.forEach(ids=>{
+    const picker = $(ids.picker);
+    picker.classList.add('filled');
+    picker.innerHTML = `<img src="${src}">`;
+    $(ids.removeBtn).style.display = 'flex';
+  });
+  applyAvatarChips();
+  checkOnboardingReady();
+}
+function clearAvatarPhoto(){
+  state.user.avatarSrc = null;
+  avatarPickerInstances.forEach(ids=>{
+    const picker = $(ids.picker);
+    picker.classList.remove('filled');
+    picker.innerHTML = `<span class="msi ap-icon">image</span><span class="ap-label">Add photo</span>`;
+    $(ids.removeBtn).style.display = 'none';
+  });
+  applyAvatarChips();
+  checkOnboardingReady();
+}
+// Keeps every username input showing the same value — skips whichever one the person is
+// actively typing in so it doesn't fight their cursor/selection.
+function syncUsernameInputs(){
+  const val = state.user.username || '';
+  USERNAME_INPUT_SELECTORS.forEach(sel=>{
+    const el = $(sel);
+    if(el && document.activeElement!==el) el.value = val;
+  });
+}
+function checkOnboardingReady(){
+  $('#continueBtn').disabled = !(state.user.avatarSrc && state.user.username.length>0);
+}
+
+function initOnboarding(){
+  setupAvatarUsernameEditor({
+    picker:'#avatarPicker', removeBtn:'#avatarRemoveBtn', backBtn:'#avatarPickerBackBtn',
+    galleryBtn:'#chooseFromGalleryBtn', grid:'#avatarGrid',
+    mainStep:'#onbStepWelcome', gridStep:'#onbStepAvatarPicker',
+    usernameInput:'#usernameInput', onUsernameChange:checkOnboardingReady
+  });
+  $('#continueBtn').addEventListener('click', ()=>{
+    if(!state.user.avatarSrc || !state.user.username) return;
+    state.onboarded = true;
+    $('#onboardingBackdrop').classList.remove('show');
+  });
+}
+
+function initSettingsProfileEditor(){
+  setupAvatarUsernameEditor({
+    picker:'#settingsAvatarPicker', removeBtn:'#settingsAvatarRemoveBtn', backBtn:'#settingsAvatarPickerBackBtn',
+    galleryBtn:'#settingsChooseFromGalleryBtn', grid:'#settingsAvatarGrid',
+    mainStep:'#settingsStepMain', gridStep:'#settingsStepAvatarPicker',
+    usernameInput:'#settingsUsernameInput',
+    hideWhenGrid:['#sheetSettings .sheet-head', '#sheetSettings .settings-row']
+  });
+}
+function applyAvatarChips(){
+  const el = $('#mapAvatarChip');
+  if(state.user.avatarSrc){
+    el.style.background = '#fff';
+    el.innerHTML = `<img src="${state.user.avatarSrc}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+  } else {
+    // no real photo chosen yet — a neutral placeholder, not a random stock photo that
+    // could be mistaken for an already-picked avatar (most visible peeking out from
+    // behind the Welcome dialog before onboarding is even done)
+    el.style.background = 'var(--paper-2)';
+    el.innerHTML = `<span class="msi" style="font-size:19px; color:#B0B0B0;">person</span>`;
+  }
+}
+// fallback avatar shown only when the dev-nav jumps straight to another screen without
+// completing the Welcome dialog first — must NOT count as a real user selection.
+const FALLBACK_AVATAR = photoUrl('default-avatar',200,200);
+function currentAvatarSrc(){ return state.user.avatarSrc || FALLBACK_AVATAR; }
+
+/* ================= MAP SCREEN ================= */
+
+// simulated live location, reused by the "you are here" dot, the recenter button, and
+// the discovery-radius filter below
+const DISCOVERY_RADIUS_KM = 6; // zones only surface once you're actually this close — the
+                                 // whole point is that arriving somewhere new should feel
+                                 // like discovering it, not scrolling a map that already
+                                 // shows everything everywhere
+function distanceKm(a, b){
+  const R = 6371;
+  const dLat = (b[0]-a[0]) * Math.PI/180, dLng = (b[1]-a[1]) * Math.PI/180;
+  const s = Math.sin(dLat/2)**2 + Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s));
+}
+// Every screen that LISTS zones (map pins, search, Favorite/Joined sheets) reads from this
+// instead of the raw ZONES array — a zone you've already joined and left notes in still
+// disappears from every one of those lists the moment you're out of range, and reappears
+// on its own once you're back nearby. Opening a specific zone you already have the id for
+// (a marker you can see, a row already on screen) is unaffected — the gate is on discovery,
+// not on access.
+function visibleZones(){
+  return ZONES.filter(z=> distanceKm(state.userLocation, [z.lat, z.lng]) <= DISCOVERY_RADIUS_KM);
+}
+
+function initMap(){
+  map = L.map('leafmap', {zoomControl:false, attributionControl:false}).setView([10.778,106.700], 15);
+  // CARTO Voyager basemap: free, no API key, much cleaner cartography than stock OSM tiles
+  // (true Apple Maps needs a paid Apple Developer account + server-signed JWT, which isn't
+  // available in this static prototype — see chat note)
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom:20, subdomains:'abcd'
+  }).addTo(map);
+  L.control.attribution({position:'bottomleft', prefix:false}).addAttribution('© OpenStreetMap © CARTO').addTo(map);
+
+  clusterGroup = L.markerClusterGroup({
+    maxClusterRadius:320, // pills are near full screen-width now, so keep close-together zones grouped into
+                          // one cluster bubble until they're far enough apart on screen that pills won't overlap
+    showCoverageOnHover:false, // library default draws a hull polygon on hover — not something we want
+    iconCreateFunction: cluster => {
+      // The circle under the pill used to be a fixed 74px decoration with no relation to
+      // where the clustered zones actually sit — sized here instead, from the cluster's
+      // real geographic bounds converted to on-screen pixels at the current zoom, so it
+      // visually matches the real spread of the pins it's summarizing.
+      const bounds = cluster.getBounds();
+      const centerPt = map.latLngToLayerPoint(cluster.getLatLng());
+      const nePt = map.latLngToLayerPoint(bounds.getNorthEast());
+      const swPt = map.latLngToLayerPoint(bounds.getSouthWest());
+      const radius = Math.max(centerPt.distanceTo(nePt), centerPt.distanceTo(swPt));
+      const diameter = Math.max(50, Math.min(260, radius*2 + 24));
+      return L.divIcon({
+        html:`<div style="position:relative; width:${diameter}px; height:${diameter}px;">
+                <div class="cluster-region" style="width:${diameter}px; height:${diameter}px; position:absolute; top:0; left:0;"></div>
+                <div class="cluster-pill" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);">${cluster.getChildCount()} zones in this area</div>
+              </div>`,
+        className:'', iconSize:[diameter,diameter], iconAnchor:[diameter/2, diameter/2]
+      });
+    }
+  });
+  renderZoneMarkers();
+  map.addLayer(clusterGroup);
+
+  // "you are here" — a simulated live location dot, using the tertiary accent color
+  const youAreHereIcon = L.divIcon({
+    html:`<div class="you-are-here"><div class="yah-pulse"></div><div class="yah-dot"></div></div>`,
+    className:'', iconSize:[32,32], iconAnchor:[16,16]
+  });
+  youAreHereMarker = L.marker(state.userLocation, {icon:youAreHereIcon, interactive:false, zIndexOffset:-200}).addTo(map);
+
+  $('#removeDirectionBtn').addEventListener('click', clearDirectionLine);
+  $('#btnLocate').addEventListener('click', ()=> map.setView(state.userLocation, 16, {animate:true}));
+
+  map.on('click', e=>{
+    if(e.originalEvent._stopMapCreate) return;
+    const latlng = e.latlng;
+    if(distanceKm(state.userLocation, [latlng.lat, latlng.lng]) > DISCOVERY_RADIUS_KM){
+      $('#outOfRangeBackdrop').classList.add('show');
+      return;
+    }
+    // recenter the map on the tapped point first, so the popover always lands
+    // in the middle of the screen no matter where on the map was tapped
+    map.panTo(latlng, {animate:true, duration:0.3});
+    if(pendingCreateTimeout) clearTimeout(pendingCreateTimeout);
+    pendingCreateTimeout = setTimeout(()=>{
+      pendingCreateTimeout = null;
+      if(state.screen!=='map') return; // user navigated away before the pan finished — don't show it later
+      showCreateZoneCard(latlng, map.latLngToContainerPoint(latlng));
+    }, 320);
+  });
+  map.on('movestart zoomstart', removeCreateCard);
+  map.on('move zoom', updateMapIndicators);
+}
+
+// Same off-screen "radar" idea as the in-zone indicators, one level up: points toward a
+// JOINED zone with an unread reaction that's currently outside the visible map area.
+// Tapping it opens straight into that zone (which itself lands on My Notes, per
+// openZone()'s default). Re-run on every pan/zoom so it tracks in real time, and whenever
+// the zone data itself might have changed (favoriting, joining, creating, viewing a zone).
+function updateMapIndicators(){
+  const layer = $('#mapIndicatorLayer');
+  if(!layer || !map || state.screen!=='map') return;
+  layer.innerHTML = '';
+  const mapEl = $('#leafmap');
+  const vpRect = mapEl.getBoundingClientRect();
+  if(vpRect.width===0) return; // map not actually visible/sized yet
+  const cx = vpRect.width/2, cy = vpRect.height/2;
+  const EDGE = 12;
+  const topBarRect = $('.map-top').getBoundingClientRect();
+  const bottomBarRect = $('.bottom-bar').getBoundingClientRect();
+  const safeTop = (topBarRect.bottom - vpRect.top) + EDGE;
+  const safeBottom = bottomBarRect.height>0 ? (bottomBarRect.top - vpRect.top) - EDGE : vpRect.height - EDGE;
+  const sideMargin = 70; // half a pill's rough width at this larger map size
+
+  const placed = [];
+  ZONES.filter(z=> z.joined && myBoardHasNewReaction(z)).forEach(z=>{
+    const pt = map.latLngToContainerPoint([z.lat, z.lng]);
+    const visible = pt.x>0 && pt.x<vpRect.width && pt.y>safeTop && pt.y<safeBottom;
+    if(visible) return; // already on screen — nothing to point toward
+
+    const dx = pt.x-cx, dy = pt.y-cy;
+    const overX = pt.x<sideMargin ? sideMargin-pt.x : (pt.x>vpRect.width-sideMargin ? pt.x-(vpRect.width-sideMargin) : 0);
+    const overY = pt.y<safeTop ? safeTop-pt.y : (pt.y>safeBottom ? pt.y-safeBottom : 0);
+    let dir;
+    if(overY > overX) dir = dy<0 ? 'up' : 'down';
+    else dir = dx<0 ? 'left' : 'right';
+
+    const arrowIcon = {left:'arrow_back', right:'arrow_forward', up:'arrow_upward', down:'arrow_downward'}[dir];
+    const iconHtml = `<span class="msi">${arrowIcon}</span>`;
+    const textHtml = `<span>New reaction</span>`;
+
+    const pill = document.createElement('div');
+    pill.className = 'map-indicator-pill';
+    pill.innerHTML = (dir==='left'||dir==='up') ? iconHtml+textHtml : textHtml+iconHtml;
+    pill.addEventListener('click', ()=> map.setView([z.lat, z.lng], 18, {animate:true}));
+    layer.appendChild(pill);
+
+    const clampedX = Math.max(sideMargin, Math.min(vpRect.width-sideMargin, pt.x));
+    const clampedY = Math.max(safeTop, Math.min(safeBottom, pt.y));
+    let baseTop;
+    if(dir==='left'){ pill.style.left=EDGE+'px'; baseTop=clampedY; pill.style.transform='translateY(-50%)'; }
+    else if(dir==='right'){ pill.style.left=(vpRect.width-EDGE)+'px'; baseTop=clampedY; pill.style.transform='translate(-100%,-50%)'; }
+    else if(dir==='up'){ pill.style.left=clampedX+'px'; baseTop=safeTop; pill.style.transform='translateX(-50%)'; }
+    else { pill.style.left=clampedX+'px'; baseTop=safeBottom; pill.style.transform='translate(-50%,-100%)'; }
+    pill.style.top = baseTop+'px';
+    placed.push({dir, el:pill, baseTop});
+  });
+  // same simple de-overlap pass the in-zone indicators use: nudge stacked left/right
+  // pills apart vertically so two "New reaction" flags never sit on top of each other
+  ['left','right'].forEach(side=>{
+    const group = placed.filter(p=>p.dir===side).sort((a,b)=>a.baseTop-b.baseTop);
+    for(let i=1;i<group.length;i++){
+      const prev = group[i-1], cur = group[i];
+      const prevBottom = prev.baseTop + prev.el.offsetHeight/2;
+      const curTop = cur.baseTop - cur.el.offsetHeight/2;
+      if(curTop < prevBottom+6){
+        const shift = (prevBottom+6) - curTop;
+        cur.baseTop += shift;
+        cur.el.style.top = cur.baseTop+'px';
+      }
+    }
+  });
+}
+
+// The zone card's thumbnail shows a small collage of whichever board was most recently
+// active — not a single photo — so it reads as "here's what's actually happening" the
+// same way the real board preview does, just built straight from data (no live DOM
+// measurement) so it can drop into a raw HTML string for a Leaflet marker or a list row.
+function zoneThumbnailHTML(z, size){
+  let newestBoard = null, newestAt = -1;
+  z.boards.forEach(b=> b.items.forEach(item=>{
+    if((item.addedAt||0) > newestAt){ newestAt = item.addedAt||0; newestBoard = b; }
+  }));
+  if(!newestBoard || !newestBoard.items.length){
+    return `<div style="width:${size}px;height:${size}px;border-radius:16px;flex-shrink:0;background-color:#FAFAFA;background-image:radial-gradient(circle, #DCDCDC 1.3px, transparent 1.3px); background-size:14px 14px; display:flex; align-items:center; justify-content:center;">
+              <span class="msi" style="font-size:${Math.max(20,size*0.32)}px; color:#C7C7C7;">note_add</span>
+            </div>`;
+  }
+  const items = [...newestBoard.items].sort((a,b)=>(b.addedAt||0)-(a.addedAt||0)).slice(0,3).reverse();
+  const scale = size/BOARD_SIZE;
+  const cells = items.map((item,i)=>{
+    const tilt = itemTiltDeg(item.id);
+    const w = Math.max(28, (item.w||70)*scale), h = Math.max(28, (item.h||70)*scale);
+    const x = Math.max(-4, Math.min(size-w+4, (item.x||0)*scale));
+    const y = Math.max(-4, Math.min(size-h+4, (item.y||0)*scale));
+    let inner;
+    if(item.type==='photo') inner = `<img src="${item.src}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.background='#ccc';this.src='';">`;
+    else if(item.type==='draw' && item.dataUrl) inner = `<img src="${item.dataUrl}" style="width:100%;height:100%;object-fit:contain;display:block;">`;
+    else if(item.type==='sticker') inner = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:${Math.max(16,h*0.55)}px;background:#fff;">${item.emoji}</div>`;
+    else inner = `<div style="width:100%;height:100%;padding:4px;box-sizing:border-box;display:flex;align-items:center;background:#fff;font-weight:800;font-size:${Math.max(8,h*0.2)}px;line-height:1.15;color:${item.color||'#212121'};overflow:hidden;">${escapeHtml((item.content||'').slice(0,50))}</div>`;
+    return `<div style="position:absolute; left:${x}px; top:${y}px; width:${w}px; height:${h}px; transform:rotate(${tilt}deg); z-index:${i}; border-radius:7px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.18);">${inner}</div>`;
+  }).join('');
+  return `<div style="position:relative; width:${size}px; height:${size}px; border-radius:16px; overflow:hidden; background:var(--paper-2); flex-shrink:0;">${cells}</div>`;
+}
+
+// Does the user's own board in this zone have a reaction that arrived since they last
+// looked at it? Same "lastSeenAt" freshness check the Newest Notes system uses, just
+// pointed at your own board's reaction items instead of other people's boards.
+function myBoardHasNewReaction(zone){
+  const myBoard = zone.boards.find(b=>b.isYou);
+  if(!myBoard) return false;
+  const lastSeen = myBoard.lastSeenAt||0;
+  return myBoard.items.some(item=> item.isReaction && !item.reactedByMe && (item.addedAt||0) > lastSeen);
+}
+
+function renderZoneMarkers(){
+  clusterGroup.clearLayers();
+  const pillWidth = Math.max(220, $('#leafmap').clientWidth - 32); // full phone width minus 16px margins
+  visibleZones().forEach(z=>{
+    const noteCount = findNewestTargetsIn(z.boards, NEWEST_NOTES_LIMIT).length;
+    const hasReaction = z.joined && myBoardHasNewReaction(z);
+    const labelH = hasReaction ? 28 : 0;
+    const icon = L.divIcon({
+      html:`
+        <div style="display:flex; flex-direction:column; width:${pillWidth}px;">
+          ${hasReaction ? `<div class="map-reaction-flag">New reaction</div>` : ''}
+          <div style="display:flex; flex-direction:column; align-items:center;">
+            <div class="marker-pill ${hasReaction?'has-new-reaction':''}" data-zone="${z.id}">
+              <div class="mp-row">
+                <div class="mp-left">
+                  ${zoneThumbnailHTML(z, 84)}
+                  <div class="mp-textblock">
+                    <div class="mp-name">${escapeHtml(z.name)}</div>
+                    <div class="mp-addr">${escapeHtml(z.address)}</div>
+                    <div class="mp-footer">
+                      ${z.joined
+                        ? (noteCount>0
+                            ? `<span class="mp-notes-count">+ ${noteCount} newest Notes</span>`
+                            : `<span class="mp-notes-count mp-no-notes">No New Notes</span>`)
+                        : `<span class="mp-not-joined">Join to see notes</span>`}
+                    </div>
+                  </div>
+                </div>
+                <div class="mp-actions">
+                  <button class="mp-fav-zone"><span class="mp-heart msi ${z.favorite?'is-fav':''}">favorite</span></button>
+                  <button class="mp-direction-zone"><span class="msi">arrow_top_right</span></button>
+                </div>
+              </div>
+            </div>
+            <div class="marker-tail"><span class="msi">location_on</span></div>
+          </div>
+        </div>`,
+      className:'', iconSize:[pillWidth, 168+labelH], iconAnchor:[pillWidth/2, 162+labelH]
+    });
+    const marker = L.marker([z.lat,z.lng], {icon});
+    marker.on('add', function(){
+      const el = marker.getElement();
+      if(!el) return;
+      // Single delegated handler on the whole pill instead of only on the name/notes text —
+      // previously only .mp-name and .mp-notes-count were clickable, so tapping the thumbnail,
+      // address, divider, or the "Joined" tag itself did nothing. Delegating to the whole pill
+      // fixes that, and re-reading the zone from ZONES (instead of relying on the closured `z`)
+      // makes sure the open-vs-join decision always reflects the zone's CURRENT joined state.
+      el.addEventListener('click', domEv=>{
+        domEv.stopPropagation(); // clicking anywhere on the pill must never fall through to the map's own "create a zone here" click handler
+        if(domEv.target.closest('.mp-fav-zone')){ toggleFavorite(z.id); return; }
+        if(domEv.target.closest('.mp-direction-zone')){ drawDirectionTo(z); return; }
+        if(!domEv.target.closest('.marker-pill')) return; // ignore taps on the tail/gap area outside the pill itself
+        const current = ZONES.find(zz=>zz.id===z.id) || z;
+        if(current.joined){
+          const noteHit = domEv.target.closest('.mp-notes-count');
+          if(noteHit && !noteHit.classList.contains('mp-no-notes')) state.jumpToNewestOnOpen = true;
+          openZone(current.id);
+          return;
+        }
+        state.pendingJoinZoneId = current.id;
+        $('#joinZoneBackdrop').classList.add('show');
+      });
+    });
+    clusterGroup.addLayer(marker);
+  });
+  updateMapIndicators();
+}
+
+function toggleFavorite(zoneId){
+  const z = ZONES.find(zz=>zz.id===zoneId);
+  if(!z) return;
+  z.favorite = !z.favorite;
+  renderZoneMarkers();
+  renderLists();
+}
+
+let createCardEl = null;
+let pendingCreateTimeout = null;
+function removeCreateCard(){
+  if(createCardEl){ createCardEl.remove(); createCardEl=null; }
+}
+function showCreateZoneCard(latlng, point){
+  removeCreateCard();
+  const pillWidth = Math.max(220, $('#leafmap').clientWidth - 32); // same width as other map items
+  createCardEl = document.createElement('div');
+  createCardEl.className = 'create-zone-wrap';
+  createCardEl.style.left = point.x+'px';
+  createCardEl.style.top = point.y+'px';
+  createCardEl.style.width = pillWidth+'px';
+  createCardEl.innerHTML = `
+    <div class="create-zone-card">
+      <div class="czc-addr">Looking up address...</div>
+      <button class="btn btn-primary czc-btn" id="czcCreateBtn" disabled><span class="msi" style="font-size:17px;">add</span>Create Zone</button>
+    </div>
+    <div class="marker-tail"><span class="msi">location_on</span></div>
+  `;
+  $('#leafmap').appendChild(createCardEl);
+
+  lookupAddress(latlng).then(({label})=>{
+    if(!createCardEl) return; // user already panned/zoomed away, card was dismissed
+    createCardEl.querySelector('.czc-addr').textContent = label;
+    const btn = createCardEl.querySelector('#czcCreateBtn');
+    btn.disabled = false;
+    btn.addEventListener('click', ()=>{
+      state.pendingZoneLatLng = latlng;
+      removeCreateCard();
+      $('#createZoneBackdrop').classList.add('show');
+      renderCreateZoneStepName(label);
+    });
+  });
+}
+
+$('#zoneSearchInput').addEventListener('input', e=>{
+  const q = e.target.value.trim().toLowerCase();
+  if(!q) return;
+  const hit = visibleZones().find(z=>z.name.toLowerCase().includes(q));
+  if(hit) map.setView([hit.lat,hit.lng], 17, {animate:true});
+});
+
+/* --- bottom bar / sheets --- */
+function openSheet(id){
+  $('#mapSheetBackdrop').classList.add('show');
+  $('#'+id).classList.add('show');
+}
+function closeSheets(){
+  $('#mapSheetBackdrop').classList.remove('show');
+  $all('.sheet').forEach(s=>s.classList.remove('show'));
+}
+$('#mapSheetBackdrop').addEventListener('click', closeSheets);
+$all('[data-close-sheet]').forEach(b=>b.addEventListener('click', closeSheets));
+
+function zoneListRow(z){
+  const noteCount = findNewestTargetsIn(z.boards, NEWEST_NOTES_LIMIT).length;
+  const hasReaction = z.joined && myBoardHasNewReaction(z);
+  return `<div class="zone-row ${hasReaction?'has-new-reaction':''}" data-zone="${z.id}">
+    ${hasReaction ? `<div class="zr-reaction-flag">New reaction</div>` : ''}
+    <div class="zr-row">
+      <div class="zr-left" data-zone="${z.id}">
+        ${zoneThumbnailHTML(z, 84)}
+        <div>
+          <div class="zr-name">${escapeHtml(z.name)}</div>
+          <div class="zr-addr">${escapeHtml(z.address)}</div>
+          <div class="zr-footer">
+            ${z.joined
+              ? (noteCount>0
+                  ? `<span class="mp-notes-count">+ ${noteCount} newest Notes</span>`
+                  : `<span class="mp-notes-count mp-no-notes">No New Notes</span>`)
+              : `<span class="mp-not-joined">Join to see notes</span>`}
+          </div>
+        </div>
+      </div>
+      <div class="zr-actions">
+        <button class="zr-fav-zone" data-fav-toggle="${z.id}"><span class="zr-heart msi ${z.favorite?'is-fav':''}">favorite</span></button>
+        <button class="zr-direction-zone" data-direction-toggle="${z.id}"><span class="msi">arrow_top_right</span></button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderLists(){
+  const nearby = visibleZones();
+  const favs = nearby.filter(z=>z.favorite);
+  $('#favList').innerHTML = favs.length
+    ? favs.map(z=>zoneListRow(z)).join('')
+    : ZONES.some(z=>z.favorite)
+      ? `<div class="empty-hint">None of your favorite zones are nearby right now.<br>Wander back their way and they'll turn up again.</div>`
+      : `<div class="empty-hint">No favorite zones yet.<br>Tap the heart icon on a zone you like!</div>`;
+  const joined = nearby.filter(z=>z.joined);
+  $('#joinedList').innerHTML = joined.length
+    ? joined.map(z=>zoneListRow(z)).join('')
+    : ZONES.some(z=>z.joined)
+      ? `<div class="empty-hint">None of your joined zones are nearby right now.<br>They're out there waiting — go find them again.</div>`
+      : `<div class="empty-hint">You haven't joined any zones yet.<br>Explore the map to find one nearby!</div>`;
+}
+function onZoneListRowClick(e){
+  const favBtn = e.target.closest('[data-fav-toggle]');
+  if(favBtn){
+    const z = ZONES.find(zz=>zz.id===favBtn.dataset.favToggle);
+    if(z){
+      z.favorite = !z.favorite;
+      favBtn.querySelector('.zr-heart').classList.toggle('is-fav', z.favorite);
+      renderZoneMarkers(); // keep the map pins in sync; this row itself stays put until the sheet is closed and reopened
+    }
+    return;
+  }
+  const dirBtn = e.target.closest('[data-direction-toggle]');
+  if(dirBtn){
+    const z = ZONES.find(zz=>zz.id===dirBtn.dataset.directionToggle);
+    if(z){ closeSheets(); drawDirectionTo(z); }
+    return;
+  }
+  const left = e.target.closest('.zr-left');
+  if(!left) return;
+  const z = ZONES.find(zz=>zz.id===left.dataset.zone);
+  if(!z) return;
+  closeSheets();
+  if(z.joined){
+    const noteHit = e.target.closest('.mp-notes-count');
+    if(noteHit && !noteHit.classList.contains('mp-no-notes')) state.jumpToNewestOnOpen = true;
+    openZone(z.id);
+    return;
+  }
+  // not joined yet — match the map pill's behavior: ask for confirmation instead of dropping the user straight into the zone
+  state.pendingJoinZoneId = z.id;
+  $('#joinZoneBackdrop').classList.add('show');
+}
+$('#favList').addEventListener('click', onZoneListRowClick);
+$('#joinedList').addEventListener('click', onZoneListRowClick);
+$('#btnFav').addEventListener('click', ()=>{ renderLists(); openSheet('sheetFav'); });
+$('#btnJoined').addEventListener('click', ()=>{ renderLists(); openSheet('sheetJoined'); });
+$('#mapAvatarChip').addEventListener('click', ()=>{ syncUsernameInputs(); openSheet('sheetSettings'); });
+$('#toggleNotif').addEventListener('click', function(){ this.classList.toggle('on'); });
+
+/* --- join zone confirmation (shown the first time you tap a zone you haven't joined) --- */
+$('#joinZoneBackdrop').addEventListener('click', e=>{
+  if(e.target===e.currentTarget || e.target.closest('[data-close-modal]')) $('#joinZoneBackdrop').classList.remove('show');
+});
+$('#outOfRangeBackdrop').addEventListener('click', e=>{
+  if(e.target===e.currentTarget || e.target.closest('[data-close-modal]')) $('#outOfRangeBackdrop').classList.remove('show');
+});
+$('#joinZoneConfirmBtn').addEventListener('click', ()=>{
+  $('#joinZoneBackdrop').classList.remove('show');
+  const zone = ZONES.find(z=>z.id===state.pendingJoinZoneId);
+  if(!zone) return;
+  zone.joined = true;
+  if(!zone.boards.some(b=>b.isYou)){
+    zone.boards.unshift({ id:'b_you', ownerName:'My Notes', isYou:true, x:26, y:40, items:[] });
+  }
+  renderZoneMarkers();
+  openZone(zone.id);
+});
+
+/* --- create zone flow --- */
+async function lookupAddress(latlng){
+  let result = null;
+  try{
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.lat}&lon=${latlng.lng}&addressdetails=1&zoom=18`, {headers:{'Accept':'application/json'}});
+    if(res.ok) result = await res.json();
+  }catch(err){ /* offline / blocked — fall back below */ }
+
+  let isBusiness=false, label='';
+  if(result && result.address){
+    const a = result.address;
+    if(a.shop || a.amenity || a.brand || (result.type && ['fast_food','cafe','restaurant','bar','supermarket'].includes(result.type))){
+      isBusiness = true;
+      label = a.shop || a.amenity || result.name || result.display_name.split(',')[0];
+    } else {
+      // deliberately no house number here — just street + ward/district + city, for privacy
+      label = [a.road, a.quarter || a.suburb, a.city_district || a.city || a.town].filter(Boolean).join(', ') || (result.display_name||'').split(',').slice(0,2).join(',');
+    }
+  } else {
+    // fallback simulation when fetch is blocked/offline
+    const r = Math.random();
+    if(r < 0.4){ isBusiness=true; label = ['KFC','McDonald\'s','Highlands Coffee','The Coffee House'][Math.floor(Math.random()*4)]; }
+    else { label = `Street ${Math.floor(Math.random()*20)+1}, Khu phố ${Math.floor(Math.random()*20)+1}`; }
+  }
+  return {label, isBusiness};
+}
+
+function renderCreateZoneStepName(addressLabel){
+  const modal = $('#createZoneModal');
+  modal.innerHTML = `
+    <h3>Name this Zone</h3>
+    <p>You're the first one here. Give this zone a name. Changing it later just takes a rename request, see Name Change History once you're in.</p>
+    <input type="text" class="text-input" id="newZoneNameInput" placeholder="e.g. My chill corner" maxlength="30" style="margin-bottom:18px;">
+    <button class="btn btn-primary" style="width:100%;" id="confirmZoneBtn" disabled>Set name!</button>
+  `;
+  const input = $('#newZoneNameInput');
+  const btn = $('#confirmZoneBtn');
+  input.focus();
+  input.addEventListener('input', ()=>{ btn.disabled = input.value.trim().length===0; });
+  btn.addEventListener('click', ()=>{
+    if(btn.disabled) return;
+    const name = input.value.trim();
+    createZone(name, addressLabel);
+  });
+}
+
+function createZone(name, addressLabel){
+  const id = 'z'+(ZONES.length+1)+'_'+Date.now();
+  const z = {
+    id, name, lat:state.pendingZoneLatLng.lat, lng:state.pendingZoneLatLng.lng,
+    address: addressLabel || 'Address not identified', favorite:false, joined:true,
+    cover: photoUrl('new-'+id, 200,200),
+    boards: [ { id:'b_you', ownerName:'My Notes', isYou:true, x:26, y:40, items:[] } ],
+    nameHistory: [{name, from: Date.now()}], nameQueue: []
+  };
+  ZONES.push(z);
+  renderZoneMarkers();
+  $('#createZoneBackdrop').classList.remove('show');
+  toast(`Zone "${name}" created 🎉`);
+  setTimeout(()=>openZone(id), 350);
+}
+
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+$('#createZoneBackdrop').addEventListener('click', e=>{
+  if(e.target===e.currentTarget || e.target.closest('[data-close-modal]')){ $('#createZoneBackdrop').classList.remove('show'); }
+});
+
+/* ================= ZONE DETAIL CANVAS ================= */
+
+function openZone(zoneId){
+  const z = ZONES.find(zz=>zz.id===zoneId) || ZONES[0];
+  state.currentZoneId = z.id;
+  state.boards = z.boards;
+
+  // reset canvas + focus so each zone opens at a clean, predictable state
+  if(state.focusMode) exitFocusMode();
+  state.canvas.x = 60; state.canvas.y = 0; state.canvas.scale = 1;
+  state.selectedItemEl = null;
+
+  $('#zoneTitle').textContent = z.name;
+  $('#zoneAddress').textContent = z.address;
+  // "Name change history" is a persistent link in the header (not conditional on anything pending)
+
+  if(!zoneCanvasInitialized){ initZoneCanvasOnce(); zoneCanvasInitialized = true; }
+  // show the zone screen BEFORE measuring anything inside it — renderBoards() (via
+  // updateIndicators()) reads real getBoundingClientRect() values, and while the screen
+  // is still the inactive display:none one, every one of those rects comes back 0x0,
+  // which used to make every board look "off screen" and wrongly pop up its indicator
+  // the instant a zone opened.
+  showScreen('zone');
+  renderBoards();
+  applyCanvasTransform();
+  updateToolbarAvailability();
+
+  if(state.jumpToNewestOnOpen){
+    state.jumpToNewestOnOpen = false;
+    const top = findNewestTargets(1);
+    if(top.length) jumpToTarget(top[0].board);
+  } else {
+    // Tapping the zone card itself (not the "Newest Notes" text) — or just having joined —
+    // always opens straight onto your own board, centered, rather than some generic
+    // fixed canvas offset.
+    const mine = findMyBoardTarget();
+    if(mine) jumpToTarget(mine.board);
+  }
+}
+
+let zoneCanvasInitialized = false;
+
+// one-time wiring of event listeners; content rendering happens on every openZone() call
+function initZoneCanvasOnce(){
+  setupCanvasPanZoom();
+  $('#zoneBackBtn').addEventListener('click', ()=> showScreen('map'));
+  setupToolbar();
+  setupZoneSettings();
+  setupReactionSheet();
+  updateToolbarAvailability();
+}
+
+// The board owner viewing a reaction that isn't theirs gets this instead of edit handles.
+let reactionSheetContext = null;
+function openReactionSheet(item, board){
+  reactionSheetContext = {item, board};
+  $('#reactionSheetTitle').textContent = item.reactorName;
+  openZoneSheet('sheetReaction');
+}
+function removeReactionItem(item, board){
+  const idx = board.items.findIndex(i=>i.id===item.id);
+  if(idx>-1) board.items.splice(idx,1);
+  if(state.focusMode===board) refreshFocusedBoard();
+}
+function setupReactionSheet(){
+  $('#viewReactorNotesBtn').addEventListener('click', ()=>{
+    if(!reactionSheetContext) return;
+    const {item} = reactionSheetContext;
+    closeZoneSheet();
+    const reactorBoard = state.boards.find(b=> !b.isYou && b.ownerName===item.reactorName);
+    if(reactorBoard){ exitFocusMode(); enterFocusMode(reactorBoard); }
+    else { toast(`${item.reactorName} hasn't posted their own notes here yet.`); }
+  });
+  $('#reportReactionBtn').addEventListener('click', ()=>{
+    if(!reactionSheetContext) return;
+    closeZoneSheet();
+    $('#reportUserName').textContent = reactionSheetContext.item.reactorName;
+    $('#reportUserBackdrop').classList.add('show');
+  });
+  $('#removeReactionBtn').addEventListener('click', ()=>{
+    if(!reactionSheetContext) return;
+    const {item, board} = reactionSheetContext;
+    removeReactionItem(item, board);
+    closeZoneSheet();
+    toast('Reaction removed');
+  });
+  $('#reportUserBackdrop').addEventListener('click', e=>{
+    if(e.target===e.currentTarget || e.target.closest('[data-close-modal]')) $('#reportUserBackdrop').classList.remove('show');
+  });
+  $('#reportUserConfirmBtn').addEventListener('click', ()=>{
+    if(!reactionSheetContext) return;
+    const {item, board} = reactionSheetContext;
+    if(!state.blockedUsers) state.blockedUsers = [];
+    if(!state.blockedUsers.includes(item.reactorName)) state.blockedUsers.push(item.reactorName);
+    removeReactionItem(item, board);
+    $('#reportUserBackdrop').classList.remove('show');
+    toast(`${item.reactorName} was reported and blocked`);
+  });
+}
+
+/* ================= BOARDS — zoomed-out state ================= */
+// Every board is a fixed-size square; the owner label (avatar 20px + name) lives
+// OUTSIDE the square, just above it, and is counter-scaled so it never grows or
+// shrinks as the canvas zooms.
+
+function renderBoards(){
+  // Make sure the canvas track's real CSS transform is in sync with state.canvas
+  // BEFORE anything below measures rendered positions (updateIndicators reads real
+  // getBoundingClientRect() values) — otherwise a stale transform from whatever was
+  // on screen a moment ago makes those measurements lie.
+  applyCanvasTransform();
+  const layer = $('#boardsLayer');
+  layer.innerHTML = '';
+  // Which board currently holds the newest note is derived fresh every render (not a
+  // one-off flag set by tapping the indicator) — so the pink "newest" treatment always
+  // reflects real data: it moves on as soon as a newer note lands elsewhere, and would
+  // similarly expire on its own once a real backend enforces a time/rank window for it.
+  const newestRankByBoardId = {};
+  findNewestTargets(NEWEST_NOTES_LIMIT).forEach(t=>{ newestRankByBoardId[t.board.id] = t.rank; });
+  const currentZone = ZONES.find(z=>z.id===state.currentZoneId);
+  const hasReaction = currentZone && myBoardHasNewReaction(currentZone);
+  state.boards.forEach(board=>{
+    board.newestRank = newestRankByBoardId[board.id] || null;
+    const el = document.createElement('div');
+    el.className = 'board';
+    el.dataset.boardId = board.id;
+    const avatarSrc = board.isYou ? currentAvatarSrc() : board.avatarSrc;
+    const ownerName = board.isYou ? 'My Notes' : escapeHtml(board.ownerName);
+
+    // The Notes Area itself is always the plain BOARD_SIZE square at board.x/board.y —
+    // "highlight-newest" only swaps in a tertiary border + glow via CSS, it never resizes
+    // or shifts the box. Anything else (dragging, collisions, the off-screen indicator)
+    // reads this same box, so keeping its real geometry identical to every other board
+    // is what keeps all of that correct.
+    if(board.newestRank) el.classList.add('highlight-newest');
+    if(board.isYou && hasReaction) el.classList.add('has-new-reaction');
+    el.style.cssText = `width:${BOARD_SIZE}px; height:${BOARD_SIZE}px; left:${board.x}px; top:${board.y}px;`;
+    el.innerHTML = `<div class="board-inner"></div>`;
+    layer.appendChild(el);
+    const inner = el.querySelector('.board-inner');
+    renderBoardPreview(board, inner);
+    makeBoardInteractive(el, board);
+
+    // Every board keeps the same plain floating avatar+name label above it — "newest"
+    // boards no longer change that label at all, they just get an extra small caption
+    // below the frame instead (added after this loop, once the board's real bottom
+    // edge is known).
+    const label = document.createElement('div');
+    label.className = 'board-label' + (board.isYou ? ' is-you' : '');
+    label.dataset.boardId = board.id;
+    label.innerHTML = `<img class="board-avatar" src="${avatarSrc}"><span class="board-title">${ownerName}</span>`;
+    layer.appendChild(label);
+
+    if(board.newestRank){
+      const sub = document.createElement('div');
+      sub.className = 'board-subcaption';
+      sub.dataset.boardId = board.id;
+      sub.innerHTML = `<span class="newest-flag">Newest Notes ${board.newestRank}</span>`;
+      layer.appendChild(sub);
+    } else if(board.isYou && hasReaction){
+      const sub = document.createElement('div');
+      sub.className = 'board-subcaption';
+      sub.dataset.boardId = board.id;
+      sub.innerHTML = `<span class="reaction-flag">New reaction</span>`;
+      layer.appendChild(sub);
+    }
+  });
+  layoutAllLabels();
+  updateIndicators();
+}
+
+function layoutAllLabels(){
+  const scale = state.canvas.scale;
+  $all('.board-label').forEach(label=>{
+    const board = state.boards.find(b=>b.id===label.dataset.boardId);
+    if(!board) return;
+    label.style.left = board.x+'px';
+    label.style.top = (board.y - LABEL_GAP)+'px';
+    label.style.transform = `translateY(-100%) scale(${1/scale})`;
+  });
+  $all('.board-subcaption').forEach(sub=>{
+    const board = state.boards.find(b=>b.id===sub.dataset.boardId);
+    if(!board) return;
+    sub.style.left = board.x+'px';
+    sub.style.top = (board.y + BOARD_SIZE + LABEL_GAP)+'px';
+    sub.style.transform = `scale(${1/scale})`;
+  });
+}
+
+/* ---- edge auto-scroll: while dragging a board or an item near the edge of its
+   viewport, keep panning that viewport toward the edge being pushed against, so the
+   drag can continue past whatever was originally on screen. One generic engine shared
+   by board-drag (zoomed-out canvas) and item-drag (Focus Mode) — each just supplies its
+   own viewport element, pan state, transform-apply function, and a callback to refresh
+   the dragged thing's position every tick (since the pan itself is what needs to keep
+   dragging it along, not the pointer, which may be sitting still right at the edge). ---- */
+let edgeScroll = null;
+function updateEdgeAutoScroll(e, cfg){
+  const rect = cfg.viewportEl.getBoundingClientRect();
+  const EDGE = 50, MAXSPEED = 14;
+  const x = e.clientX-rect.left, y = e.clientY-rect.top;
+  let dirX = 0, dirY = 0;
+  if(x<EDGE) dirX = -(1-x/EDGE);
+  else if(x>rect.width-EDGE) dirX = (1-(rect.width-x)/EDGE);
+  if(y<EDGE) dirY = -(1-y/EDGE);
+  else if(y>rect.height-EDGE) dirY = (1-(rect.height-y)/EDGE);
+
+  if(dirX===0 && dirY===0){ stopEdgeAutoScroll(); return; }
+  if(!edgeScroll) edgeScroll = {};
+  edgeScroll.dirX = dirX; edgeScroll.dirY = dirY; edgeScroll.lastEvent = e; edgeScroll.cfg = cfg;
+  if(!edgeScroll.raf){
+    const loop = ()=>{
+      if(!edgeScroll) return;
+      const st = edgeScroll.cfg.getPan();
+      st.x -= edgeScroll.dirX*MAXSPEED;
+      st.y -= edgeScroll.dirY*MAXSPEED;
+      edgeScroll.cfg.applyTransform();
+      edgeScroll.cfg.onTick(edgeScroll.lastEvent);
+      edgeScroll.raf = requestAnimationFrame(loop);
+    };
+    edgeScroll.raf = requestAnimationFrame(loop);
+  }
+}
+function stopEdgeAutoScroll(){
+  if(edgeScroll && edgeScroll.raf) cancelAnimationFrame(edgeScroll.raf);
+  edgeScroll = null;
+}
+
+/* ---- generic press handling: tap / double-tap / hold-then-drag, reused by
+   boards (zoomed out) and items (inside focus mode) ---- */
+function attachPressInteractions(el, h){
+  const holdMs = h.holdMs != null ? h.holdMs : LONG_PRESS_MS;
+  let pressTimer=null, dragActive=false, moved=false, sx=0, sy=0, lastTap=0, pressing=false;
+  el.addEventListener('pointerdown', e=>{
+    if(e.target.closest('.bi-resize') || e.target.closest('.bi-del') || e.target.closest('.bi-front') || e.target.closest('.draw-canvas')) return;
+    sx=e.clientX; sy=e.clientY; moved=false; dragActive=false; pressing=true;
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+    if(h.onDown) h.onDown(e);
+    // holdMs>0: classic long-press gate — used where a drag on this same element could
+    // also mean "pan the view underneath" (dragging a board on the zoomed-out canvas),
+    // so holding still is what commits to a drag instead of a tap/pan.
+    // holdMs===0: the element itself is already an unambiguous target (an item inside
+    // Focus Mode — the overlay's own pan handler ignores presses that start on an item),
+    // so there's nothing to disambiguate and no timer is scheduled here at all.
+    if(holdMs>0){
+      pressTimer = setTimeout(()=>{ dragActive=true; h.onDragStart && h.onDragStart(e); }, holdMs);
+    }
+  });
+  el.addEventListener('pointermove', e=>{
+    if(!pressing) return; // a pointer merely hovering/passing over the element (no pointerdown on it yet) isn't a gesture in progress
+    const dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)>6 || Math.abs(dy)>6){
+      if(!dragActive){
+        if(holdMs>0) clearTimeout(pressTimer); // early movement before the hold completes just cancels it — becomes a tap/pan, not a drag
+        else { dragActive=true; h.onDragStart && h.onDragStart(e); } // no hold to wait for — this first real movement IS the drag start
+      }
+      moved=true;
+    }
+    if(dragActive) h.onDragMove && h.onDragMove(e, dx, dy);
+  });
+  function finish(e){
+    pressing=false;
+    clearTimeout(pressTimer);
+    if(dragActive){ h.onDragEnd && h.onDragEnd(e, moved); }
+    else if(!moved){
+      const now = performance.now();
+      if(h.onDoubleTap && now-lastTap<350){ h.onDoubleTap(e); lastTap=0; }
+      else { h.onTap && h.onTap(e); lastTap=now; }
+    }
+    dragActive=false;
+  }
+  el.addEventListener('pointerup', finish);
+  el.addEventListener('pointercancel', ()=>{ pressing=false; clearTimeout(pressTimer); dragActive=false; });
+}
+
+// Computes a collision-free, canvas-bounded position near (x,y) for `board` — pushes
+// apart from any other board it would otherwise overlap, same push-apart heuristic as
+// before, just as a pure function so it can run on every drag frame (live collision
+// avoidance while dragging) instead of only once after release.
+function resolveCollisionPosition(board, x, y){
+  const others = state.boards.filter(b=>b!==board);
+  let changed=true, iterations=0;
+  while(changed && iterations<8){
+    changed=false; iterations++;
+    others.forEach(other=>{
+      const dx = (x+BOARD_SIZE/2) - (other.x+BOARD_SIZE/2);
+      const dy = (y+BOARD_SIZE/2) - (other.y+BOARD_SIZE/2);
+      const overlapX = BOARD_SIZE+MIN_GAP - Math.abs(dx);
+      const overlapY = BOARD_SIZE+MIN_GAP - Math.abs(dy);
+      if(overlapX>0 && overlapY>0){
+        if(overlapX < overlapY) x += dx<0 ? -overlapX : overlapX;
+        else y += dy<0 ? -overlapY : overlapY;
+        changed=true;
+      }
+    });
+  }
+  return { x, y };
+}
+
+function makeBoardInteractive(el, board){
+  attachPressInteractions(el, {
+    onDown(e){
+      const rect = $('#canvasViewport').getBoundingClientRect();
+      // fixed screen-space offset between the pointer and the board's own top-left corner —
+      // recomputing position from this each frame (instead of a simple start-delta) is what
+      // lets the board keep tracking correctly even while the canvas pans underneath it.
+      board._grabDX = e.clientX - (rect.left + state.canvas.x + board.x*state.canvas.scale);
+      board._grabDY = e.clientY - (rect.top + state.canvas.y + board.y*state.canvas.scale);
+    },
+    onDragStart(){ if(!board.isYou) return; el.classList.add('dragging'); },
+    onDragMove(e){
+      if(!board.isYou) return;
+      const rect = $('#canvasViewport').getBoundingClientRect();
+      const scale = state.canvas.scale;
+      const rawX = (e.clientX - board._grabDX - rect.left - state.canvas.x) / scale;
+      const rawY = (e.clientY - board._grabDY - rect.top - state.canvas.y) / scale;
+      const pos = resolveCollisionPosition(board, rawX, rawY);
+      board.x = pos.x; board.y = pos.y;
+      el.style.left = board.x+'px'; el.style.top = board.y+'px';
+      layoutAllLabels();
+      updateEdgeAutoScroll(e, {
+        viewportEl: $('#canvasViewport'),
+        getPan: ()=> state.canvas,
+        applyTransform: applyCanvasTransform,
+        onTick: (lastEvent)=>{
+          // canvas.x/y just shifted from the auto-scroll tick — recompute the board's
+          // content position against the new offset (and re-apply the same live collision
+          // constraint) so it keeps following the same screen point instead of drifting
+          // or sliding through another board while the view pans underneath it.
+          const r = $('#canvasViewport').getBoundingClientRect();
+          const rx = (lastEvent.clientX - board._grabDX - r.left - state.canvas.x) / state.canvas.scale;
+          const ry = (lastEvent.clientY - board._grabDY - r.top - state.canvas.y) / state.canvas.scale;
+          const p = resolveCollisionPosition(board, rx, ry);
+          board.x = p.x; board.y = p.y;
+          el.style.left = board.x+'px'; el.style.top = board.y+'px';
+          layoutAllLabels();
+        }
+      });
+    },
+    onDragEnd(){
+      if(!board.isYou) return;
+      stopEdgeAutoScroll();
+      el.classList.remove('dragging');
+      // position is already collision-free and bounded from the live constraint above —
+      // this is just a defensive re-check, not what actually keeps boards apart anymore.
+      resolveBoardCollisions(board);
+      renderBoards();
+    },
+    onDoubleTap(){ enterFocusMode(board); }
+  });
+}
+
+// simple iterative push-apart so boards never overlap and always keep >= MIN_GAP
+function resolveBoardCollisions(moved){
+  const pos = resolveCollisionPosition(moved, moved.x, moved.y);
+  moved.x = pos.x; moved.y = pos.y;
+}
+
+/* ================= ITEMS — photo / sticker / text / draw, all peers ================= */
+
+// The zoomed-out canvas thumbnail always shows the WHOLE board at once, scaled to fit —
+// notes can be spread far apart (see Focus Mode), so rendering them at raw 1:1 positions
+// would just clip to whatever happens to sit in the small square's top-left corner.
+function renderBoardPreview(board, inner){
+  if(!board.items.length){
+    const msg = board.isYou ? 'Double-tap to add your first one!' : 'Nothing here yet.';
+    const icon = board.isYou ? `<span class="msi" style="font-size:16px; color:var(--ink-soft);">touch_app</span>` : '';
+    inner.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:6px; padding:20px 8px; box-sizing:border-box; text-align:center;">${icon}<div style="font-size:14px; font-weight:500; color:var(--ink-soft); line-height:1.3;">${msg}</div></div>`;
+    return;
+  }
+  const content = document.createElement('div');
+  content.className = 'board-inner-content';
+  inner.appendChild(content);
+  board.items.forEach(item=> renderBoardItem(item, board, content, false));
+
+  // Measure the real rendered bounding box of every item (rather than trusting item.x/y/w/h
+  // math) so this stays correct regardless of item type, per-item scale, or font metrics.
+  const innerRect = inner.getBoundingClientRect();
+  let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+  Array.from(content.children).forEach(el=>{
+    const r = el.getBoundingClientRect();
+    minX = Math.min(minX, r.left-innerRect.left);
+    minY = Math.min(minY, r.top-innerRect.top);
+    maxX = Math.max(maxX, r.right-innerRect.left);
+    maxY = Math.max(maxY, r.bottom-innerRect.top);
+  });
+  const contentW = Math.max(1, maxX-minX), contentH = Math.max(1, maxY-minY);
+  const PAD = 10; // small breathing room inside the thumbnail
+  // availW/H must come from innerRect (real on-screen pixels, same units contentW/H were
+  // just measured in) rather than the fixed local BOARD_SIZE constant — those two only
+  // happen to match when canvas.scale is exactly 1, which is why this only broke once the
+  // canvas was actually zoomed in or out.
+  const availW = innerRect.width - PAD*2, availH = innerRect.height - PAD*2;
+  const scale = Math.min(availW/contentW, availH/contentH);
+  // content sits inside the canvas-scaled tree, so its own translate() gets multiplied by
+  // canvas.scale too when rendered — pre-dividing by it here is what makes the content
+  // actually land at the intended on-screen offset instead of one scaled further by it.
+  const canvasScale = state.canvas.scale || 1;
+  const offsetX = (PAD - minX*scale + Math.max(0, availW - contentW*scale)/2) / canvasScale;
+  const offsetY = (PAD - minY*scale + Math.max(0, availH - contentH*scale)/2) / canvasScale;
+  content.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+  content.style.transformOrigin = 'top left';
+}
+
+// Deterministic -10..+10deg tilt from an item's id — same item always gets the same angle.
+function itemTiltDeg(itemId){
+  let h = 0;
+  for(let i=0;i<itemId.length;i++) h = (h*31 + itemId.charCodeAt(i)) | 0;
+  return (Math.abs(h) % 21) - 10;
+}
+
+function renderBoardItem(item, board, container, insideFocus){
+  const el = document.createElement('div');
+  el.className = 'board-item';
+  el.dataset.itemId = item.id;
+  el.dataset.boardId = board.id;
+  el.style.left = item.x+'px';
+  el.style.top = item.y+'px';
+
+  // Whether THIS item is editable by the person looking at it right now: your own board's
+  // own content, OR a reaction you personally left on someone else's board. Everything
+  // else on someone else's board — their own posts, other people's reactions — is strictly
+  // view-only, per "hoàn toàn ko edit được cái gì của họ".
+  const canEdit = board.isYou ? !item.isReaction || item.reactedByMe : !!item.reactedByMe;
+  // The board owner viewing a reaction that ISN'T theirs gets a moderation sheet instead
+  // of edit handles (View user notes / Report & remove / Remove).
+  const ownerViewingOthersReaction = board.isYou && item.isReaction && !item.reactedByMe;
+
+  if(item.isReaction) el.classList.add('item-reaction');
+
+  if(item.type==='photo'){
+    el.style.width = item.w+'px'; el.style.height = item.h+'px';
+    const photo = document.createElement('div');
+    photo.className='item-photo'; photo.style.cssText='width:100%; height:100%;';
+    photo.innerHTML = `<img src="${item.src}" onerror="this.style.background='linear-gradient(135deg,#FFE0F2,#E4E9FF)'; this.src='';">`;
+    el.appendChild(photo);
+  } else if(item.type==='sticker'){
+    el.innerHTML = `<div class="item-sticker">${item.emoji}</div>`;
+  } else if(item.type==='text'){
+    el.innerHTML = `<div class="item-text" contenteditable="false" style="color:${item.color||'#212121'}; font-family:${item.fontFamily||'inherit'};">${escapeHtml(item.content||'')}</div>`;
+  } else if(item.type==='draw'){
+    el.style.width=(item.w||160)+'px'; el.style.height=(item.h||160)+'px';
+  }
+
+  if(item.isReaction){
+    const avatar = document.createElement('img');
+    avatar.className = 'reactor-avatar';
+    avatar.src = item.reactorAvatar;
+    avatar.onerror = function(){ this.style.background = '#B0B0B0'; this.src=''; };
+    el.appendChild(avatar);
+  }
+
+  // A small deterministic tilt (hashed from the item's own id, so it's stable across
+  // re-renders rather than reshuffling every time) makes the zoomed-out preview read as a
+  // scattered, hand-placed mood board instead of a tidy grid — used only as a fallback for
+  // items nobody has manually rotated yet. Once rotated (either view), the real item.rotate
+  // value always wins, in both Focus Mode and the preview, since that's genuine user intent.
+  const rotateDeg = insideFocus ? (item.rotate || 0) : (item.rotate != null ? item.rotate : itemTiltDeg(item.id));
+  const scalePart = (item.scale && item.scale!==1) ? `scale(${item.scale})` : '';
+  const rotatePart = rotateDeg ? `rotate(${rotateDeg}deg)` : '';
+  if(scalePart || rotatePart){
+    el.dataset.scale = item.scale || 1;
+    el.style.transform = `${rotatePart} ${scalePart}`.trim();
+    el.style.transformOrigin = 'center center';
+  }
+
+  container.appendChild(el);
+  restoreItemDrawing(el, item);
+
+  if(insideFocus){
+    if(ownerViewingOthersReaction){
+      el.style.cursor = 'pointer';
+      el.addEventListener('pointerdown', e=> e.stopPropagation());
+      el.addEventListener('click', ()=> openReactionSheet(item, board));
+    } else if(canEdit){
+      makeItemInteractive(el, item, board);
+      if(item.zIndex) el.style.zIndex = item.zIndex; // "bring to front" persists across re-renders
+      const showFront = !item.isReaction; // emoji/text reactions are always on top already — no need for this handle
+      let front;
+      if(showFront){
+        front = document.createElement('div'); front.className='bi-action bi-front'; front.innerHTML=`<span class="msi">vertical_align_top</span>`;
+        el.appendChild(front);
+        front.addEventListener('pointerdown', e=>{
+          e.stopPropagation();
+          item.zIndex = ++topItemZ; // always strictly higher than every earlier "bring to front", so it actually lands on top of everything
+          el.style.zIndex = item.zIndex;
+        });
+      }
+      const del = document.createElement('div'); del.className='bi-action bi-del'; del.innerHTML=`<span class="msi">close</span>`;
+      const rs = document.createElement('div'); rs.className='bi-action bi-resize'; rs.innerHTML=`<span class="msi">crop_rotate</span>`;
+      el.appendChild(del); el.appendChild(rs);
+      updateItemActionIconTransforms(el, item);
+
+      del.addEventListener('pointerdown', e=>{
+        e.stopPropagation();
+        const idx = board.items.findIndex(i=>i.id===item.id);
+        if(idx>-1) board.items.splice(idx,1);
+        el.remove();
+        if(state.selectedItemEl===el) state.selectedItemEl=null;
+      });
+
+      // Resize & Rotation: one combined gesture from this corner — how far the pointer is
+      // from the item's own center drives scale, the angle around that center drives
+      // rotation, both updating together as you drag.
+      let transforming=false, rsCenter={x:0,y:0}, rsStartAngle=0, rsStartDist=0, rsStartScale=1, rsStartRotate=0;
+      rs.addEventListener('pointerdown', e=>{
+        e.stopPropagation(); transforming=true; try{ rs.setPointerCapture(e.pointerId); }catch(err){}
+        const rect = el.getBoundingClientRect();
+        rsCenter = {x: rect.left+rect.width/2, y: rect.top+rect.height/2};
+        rsStartAngle = Math.atan2(e.clientY-rsCenter.y, e.clientX-rsCenter.x);
+        rsStartDist = Math.max(1, Math.hypot(e.clientX-rsCenter.x, e.clientY-rsCenter.y));
+        rsStartScale = item.scale||1; rsStartRotate = item.rotate||0;
+        selectItem(el);
+      });
+      rs.addEventListener('pointermove', e=>{
+        if(!transforming) return;
+        const curAngle = Math.atan2(e.clientY-rsCenter.y, e.clientX-rsCenter.x);
+        const curDist = Math.hypot(e.clientX-rsCenter.x, e.clientY-rsCenter.y);
+        const rawScale = rsStartScale * (curDist/rsStartDist);
+        const limits = computeResizeLimits(item);
+        const clampedScale = Math.max(limits.min, Math.min(limits.max, rawScale));
+        item.scale = clampedScale;
+        item.rotate = rsStartRotate + (curAngle-rsStartAngle)*180/Math.PI;
+        el.dataset.scale = item.scale;
+        el.style.transform = `rotate(${item.rotate}deg) scale(${item.scale})`;
+        el.style.transformOrigin = 'center center';
+        updateItemActionIconTransforms(el, item);
+        // hit the resize ceiling/floor — a red outline says "that's as big/small as this
+        // note can go" instead of just silently refusing to move further
+        el.classList.toggle('resize-limit', Math.abs(rawScale-clampedScale) > 0.01);
+      });
+      rs.addEventListener('pointerup', ()=>{ transforming=false; el.classList.remove('resize-limit'); });
+
+      if(item.type==='text'){
+        const textEl = el.querySelector('.item-text');
+        textEl.addEventListener('pointerdown', e=>{ if(item._editing) e.stopPropagation(); });
+        textEl.addEventListener('input', e=>{ item.content = e.target.textContent; });
+        textEl.addEventListener('blur', ()=> endTextEdit(el, item));
+      }
+    }
+  }
+  return el;
+}
+
+// Keeps the 3 action icons a constant on-screen size and upright, regardless of the
+// item's own scale/rotation or how zoomed-in Focus Mode currently is — same idea as the
+// board-label counter-scale trick, just countering two nested transforms (item + focus
+// pan) instead of one. Repositions each icon's own offset by the same inverse factor so
+// it lands back at its normal corner instead of drifting outward with the item's scale.
+let topItemZ = 100;
+function updateItemActionIconTransforms(el, item){
+  const mult = (item.scale||1) * (state.focusPan.scale||1);
+  const inv = mult>0 ? 1/mult : 1;
+  const BASE = 12; // matches the corner offset defined in CSS at 1x
+  const off = BASE*inv;
+  const counterRotate = -(item.rotate||0);
+  const front = el.querySelector('.bi-front'), del = el.querySelector('.bi-del'), rs = el.querySelector('.bi-resize');
+  if(front){ front.style.top=(-off)+'px'; front.style.left=(-off)+'px'; front.style.transformOrigin='top left'; front.style.transform=`scale(${inv}) rotate(${counterRotate}deg)`; }
+  if(del){ del.style.top=(-off)+'px'; del.style.right=(-off)+'px'; del.style.transformOrigin='top right'; del.style.transform=`scale(${inv}) rotate(${counterRotate}deg)`; }
+  if(rs){ rs.style.bottom=(-off)+'px'; rs.style.right=(-off)+'px'; rs.style.transformOrigin='bottom right'; rs.style.transform=`scale(${inv}) rotate(${counterRotate}deg)`; }
+}
+
+// Board-relative resize ceiling so an item can't be scaled up to dominate the whole notes
+// area, and a floor so it can't shrink into illegibility. Photos/drawings have a real base
+// w/h to measure against BOARD_SIZE; stickers/text don't, so they get a flat sensible range.
+function computeResizeLimits(item){
+  if(item.w && item.h){
+    const maxDim = Math.max(item.w, item.h);
+    return { min:0.35, max: Math.max(0.6, Math.min(3, (BOARD_SIZE*0.9)/maxDim)) };
+  }
+  return { min:0.4, max:2.6 };
+}
+
+function beginTextEdit(el, item){
+  const textEl = el.querySelector('.item-text');
+  if(!textEl) return;
+  item._editing = true;
+  textEl.contentEditable = 'true';
+  textEl.focus();
+  const range=document.createRange(); range.selectNodeContents(textEl);
+  const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+}
+function endTextEdit(el, item){
+  const textEl = el.querySelector('.item-text');
+  if(!textEl || !item._editing) return;
+  item._editing = false;
+  textEl.contentEditable = 'false';
+}
+
+function restoreItemDrawing(el, item){
+  // "draw" items are finished freeform strokes now — cropped to the ink's own bounding box
+  // and baked into item.dataUrl the moment the stroke ends (see endFreeStroke). This just
+  // paints that image back in; there's no live drawing surface here anymore.
+  if(item.type!=='draw') return;
+  const w = item.w||160, hgt = item.h||160;
+  const canvas = document.createElement('canvas');
+  canvas.className='draw-canvas';
+  canvas.width=w; canvas.height=hgt;
+  canvas.style.cssText='position:absolute; inset:0; pointer-events:none;';
+  el.insertBefore(canvas, el.firstChild);
+  if(item.dataUrl){
+    const ctx=canvas.getContext('2d');
+    const img=new Image();
+    img.onload=()=> ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    img.src=item.dataUrl;
+  }
+}
+
+const ITEM_HOLD_MS = 20; // press-and-hold before an item starts dragging — almost instant
+function makeItemInteractive(el, item, board){
+  attachPressInteractions(el, {
+    holdMs: ITEM_HOLD_MS,
+    onDown(e){
+      const rect = $('#focusOverlay').getBoundingClientRect();
+      item._grabDX = e.clientX - (rect.left + state.focusPan.x + item.x*state.focusPan.scale);
+      item._grabDY = e.clientY - (rect.top + state.focusPan.y + item.y*state.focusPan.scale);
+    },
+    onDragStart(){ el.classList.add('item-dragging'); selectItem(el); },
+    onDragMove(e){
+      const rect = $('#focusOverlay').getBoundingClientRect();
+      const scale = state.focusPan.scale;
+      item.x = (e.clientX - item._grabDX - rect.left - state.focusPan.x) / scale;
+      item.y = (e.clientY - item._grabDY - rect.top - state.focusPan.y) / scale;
+      el.style.left=item.x+'px'; el.style.top=item.y+'px';
+      updateEdgeAutoScroll(e, {
+        viewportEl: $('#focusOverlay'),
+        getPan: ()=> state.focusPan,
+        applyTransform: applyFocusTransform,
+        onTick: (lastEvent)=>{
+          const r = $('#focusOverlay').getBoundingClientRect();
+          item.x = (lastEvent.clientX - item._grabDX - r.left - state.focusPan.x) / state.focusPan.scale;
+          item.y = (lastEvent.clientY - item._grabDY - r.top - state.focusPan.y) / state.focusPan.scale;
+          el.style.left=item.x+'px'; el.style.top=item.y+'px';
+        }
+      });
+    },
+    onDragEnd(){ stopEdgeAutoScroll(); el.classList.remove('item-dragging'); },
+    onTap(){ selectItem(el); },
+    onDoubleTap(){ if(item.type==='text'){ selectItem(el); beginTextEdit(el, item); } }
+  });
+}
+function selectItem(el){
+  if(state.selectedItemEl && state.selectedItemEl!==el){
+    const prevItem = findItemData(state.selectedItemEl);
+    if(prevItem) endTextEdit(state.selectedItemEl, prevItem);
+    state.selectedItemEl.classList.remove('selected');
+  }
+  state.selectedItemEl = el;
+  el.classList.add('selected');
+  const item = findItemData(el);
+  if(item) updateItemActionIconTransforms(el, item);
+}
+document.addEventListener('pointerdown', e=>{
+  if(e.target.closest('.board-item') || e.target.closest('.tool-status-pill') || e.target.closest('.tool-status-row') || e.target.closest('.sheet')) return;
+  if(state.selectedItemEl){
+    const item = findItemData(state.selectedItemEl);
+    if(item) endTextEdit(state.selectedItemEl, item);
+    state.selectedItemEl.classList.remove('selected');
+    state.selectedItemEl = null;
+  }
+});
+function findItemData(el){
+  const board = state.boards.find(b=>b.id===el.dataset.boardId);
+  return board ? board.items.find(i=>i.id===el.dataset.itemId) : null;
+}
+
+/* ---- pan & zoom (zoomed-out canvas) ---- */
+function setupCanvasPanZoom(){
+  const vp = $('#canvasViewport');
+  vp.addEventListener('pointerdown', e=>{
+    if(e.target.closest('.board')) return;
+    state.canvas.dragging = true; vp.classList.add('grabbing');
+    state.canvas.lastX = e.clientX; state.canvas.lastY = e.clientY;
+    vp.setPointerCapture(e.pointerId);
+  });
+  vp.addEventListener('pointermove', e=>{
+    if(!state.canvas.dragging) return;
+    state.canvas.x += e.clientX-state.canvas.lastX;
+    state.canvas.y += e.clientY-state.canvas.lastY;
+    state.canvas.lastX=e.clientX; state.canvas.lastY=e.clientY;
+    applyCanvasTransform();
+    layoutAllLabels();
+    updateIndicators();
+  });
+  vp.addEventListener('pointerup', ()=>{ state.canvas.dragging=false; vp.classList.remove('grabbing'); });
+  vp.addEventListener('pointercancel', ()=>{ state.canvas.dragging=false; vp.classList.remove('grabbing'); });
+
+  vp.addEventListener('wheel', e=>{
+    e.preventDefault();
+    const delta = -e.deltaY*0.0016;
+    setZoom(state.canvas.scale + delta, e.clientX, e.clientY);
+  }, {passive:false});
+
+  let pts = {};
+  vp.addEventListener('pointerdown', e=>{ pts[e.pointerId]={x:e.clientX,y:e.clientY}; });
+  vp.addEventListener('pointermove', e=>{
+    if(!(e.pointerId in pts)) return;
+    pts[e.pointerId] = {x:e.clientX,y:e.clientY};
+    const ids = Object.keys(pts);
+    if(ids.length===2){
+      const [a,b] = ids.map(id=>pts[id]);
+      const dist = Math.hypot(a.x-b.x, a.y-b.y);
+      if(state.canvas.pinchDist){
+        const delta = (dist-state.canvas.pinchDist)*0.004;
+        setZoom(state.canvas.scale+delta, (a.x+b.x)/2, (a.y+b.y)/2);
+      }
+      state.canvas.pinchDist = dist;
+    }
+  });
+  vp.addEventListener('pointerup', e=>{ delete pts[e.pointerId]; state.canvas.pinchDist=0; });
+}
+
+function setZoom(newScale, cx, cy){
+  newScale = Math.max(0.5, Math.min(2.6, newScale));
+  const vp = $('#canvasViewport');
+  const rect = vp.getBoundingClientRect();
+  cx = cx!==undefined ? cx-rect.left : rect.width/2;
+  cy = cy!==undefined ? cy-rect.top : rect.height/2;
+  const ratio = newScale/state.canvas.scale;
+  state.canvas.x = cx - (cx-state.canvas.x)*ratio;
+  state.canvas.y = cy - (cy-state.canvas.y)*ratio;
+  state.canvas.scale = newScale;
+  applyCanvasTransform();
+  layoutAllLabels();
+  updateIndicators();
+}
+
+function applyCanvasTransform(){
+  $('#canvasTrack').style.transform = `translate(${state.canvas.x}px,${state.canvas.y}px) scale(${state.canvas.scale})`;
+}
+
+function animatePanTo(targetContentX, targetContentY, targetScale, onDone){
+  const vp = $('#canvasViewport');
+  const rect = vp.getBoundingClientRect();
+  state.canvas.scale = targetScale;
+  state.canvas.x = rect.width/2 - targetContentX*targetScale;
+  state.canvas.y = rect.height/2 - targetContentY*targetScale;
+  const track = $('#canvasTrack');
+  track.style.transition = 'transform .45s cubic-bezier(.22,.8,.36,1)';
+  applyCanvasTransform();
+  setTimeout(()=>{
+    track.style.transition='';
+    layoutAllLabels();
+    updateIndicators();
+    if(onDone) onDone();
+  }, 460);
+}
+
+function updateToolbarAvailability(){
+  const inFocus = !!state.focusMode;
+  const isOwn = inFocus && state.focusMode.isYou;
+  // Camera and Draw only ever make sense on your own board — hidden entirely (not just
+  // disabled) on someone else's, since there's nothing you could do with them there anyway.
+  $('#toolPhoto').style.display = isOwn ? 'flex' : 'none';
+  $('#toolDraw').style.display = isOwn ? 'flex' : 'none';
+  $('#toolSticker').disabled = !inFocus;
+  $('#toolText').disabled = !inFocus;
+  // Sticker/Emoji and Text stay available on someone else's board too — reacting to their
+  // notes is the one thing View Point 2 lets you add.
+  $('.note-toolbar').style.display = inFocus ? 'flex' : 'none';
+}
+
+/* ================= FOCUS MODE — one board takes over the whole screen ================= */
+
+function enterFocusMode(board){
+  if(state.focusMode) return;
+  board.newestRank = null;
+  state.focusMode = board;
+  state.selectedItemEl = null;
+  state.activeTool = null;
+  $('#zoneHeader').classList.add('hidden');
+  $('#canvasViewport').style.display = 'none';
+  $('#indicatorLayer').innerHTML = '';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'focus-overlay';
+  overlay.id = 'focusOverlay';
+  overlay.innerHTML = `
+    <div class="focus-track" id="focusTrack">
+      <svg id="freeDrawPreview" style="position:absolute; top:0; left:0; overflow:visible; pointer-events:none; display:none;">
+        <path id="freeDrawPath" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="focus-topbar">
+      <button class="focus-back" id="focusBackBtn"><span class="msi">chevron_left</span></button>
+      <div class="focus-label">
+        <img src="${board.isYou ? currentAvatarSrc() : board.avatarSrc}">
+        <span>${board.isYou ? 'My Notes' : escapeHtml(board.ownerName)}</span>
+      </div>
+    </div>
+  `;
+  $('#screen-zone').appendChild(overlay);
+
+  const track = overlay.querySelector('#focusTrack');
+  track.style.transform = 'translate(0px,0px) scale(1)'; // neutral, so the fit-to-view measurement below reads true 1:1 positions
+  board.items.forEach(item=> renderBoardItem(item, board, track, true));
+
+  // Open already zoomed out enough to see every note in the board at once, rather than
+  // a fixed pan/zoom that could crop off notes placed further from the top-left corner.
+  state.focusPan = computeFitAllItemsPan(overlay, track);
+  applyFocusTransform();
+
+  overlay.querySelector('#focusBackBtn').addEventListener('click', exitFocusMode);
+  setupFocusPanZoom(overlay);
+  updateToolbarAvailability();
+}
+
+// Frames state.focusPan so every rendered .board-item in `track` fits on screen at once,
+// centered, with some breathing room — falls back to the old fixed view for an empty board.
+function computeFitAllItemsPan(overlay, track){
+  const items = track.querySelectorAll('.board-item');
+  if(!items.length) return {x:60, y:60, scale:1};
+  const trackRect = track.getBoundingClientRect();
+  let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+  items.forEach(el=>{
+    const r = el.getBoundingClientRect();
+    minX = Math.min(minX, r.left-trackRect.left);
+    minY = Math.min(minY, r.top-trackRect.top);
+    maxX = Math.max(maxX, r.right-trackRect.left);
+    maxY = Math.max(maxY, r.bottom-trackRect.top);
+  });
+  const contentW = Math.max(1, maxX-minX), contentH = Math.max(1, maxY-minY);
+  const vpRect = overlay.getBoundingClientRect();
+  const PAD = 48; // breathing room around the notes so nothing touches the screen edge
+  const availW = Math.max(1, vpRect.width - PAD*2), availH = Math.max(1, vpRect.height - PAD*2);
+  // clamped to the same 0.5–3 range manual pinch-zoom allows, so the first pinch afterward
+  // doesn't immediately snap the view somewhere else
+  const scale = Math.max(0.5, Math.min(3, Math.min(availW/contentW, availH/contentH)));
+  const contentCenterX = (minX+maxX)/2, contentCenterY = (minY+maxY)/2;
+  return {
+    x: vpRect.width/2 - contentCenterX*scale,
+    y: vpRect.height/2 - contentCenterY*scale,
+    scale
+  };
+}
+
+function exitFocusMode(){
+  const overlay = $('#focusOverlay');
+  if(overlay) overlay.remove();
+  $('#canvasViewport').style.display = '';
+  $('#zoneHeader').classList.remove('hidden');
+  if(state.focusMode) state.focusMode.lastSeenAt = Date.now(); // you just looked at this board — its notes aren't "new to you" anymore
+  state.focusMode = null;
+  state.selectedItemEl = null;
+  state.activeTool = null;
+  freeDrawActive = false; freeDrawStroke = null;
+  updateToolbarAvailability();
+  renderBoards();
+  applyCanvasTransform();
+}
+
+function applyFocusTransform(){
+  const t = $('#focusTrack');
+  if(t) t.style.transform = `translate(${state.focusPan.x}px,${state.focusPan.y}px) scale(${state.focusPan.scale})`;
+  if(state.selectedItemEl){
+    const item = findItemData(state.selectedItemEl);
+    if(item) updateItemActionIconTransforms(state.selectedItemEl, item);
+  }
+}
+
+function setupFocusPanZoom(overlay){
+  let dragging=false, lastX=0, lastY=0;
+  overlay.addEventListener('pointerdown', e=>{
+    if(e.target.closest('.board-item') || e.target.closest('.focus-topbar')) return;
+    if(state.activeTool==='draw' && state.focusMode && state.focusMode.isYou){
+      startFreeStroke(e, overlay);
+      try{ overlay.setPointerCapture(e.pointerId); }catch(err){}
+      return;
+    }
+    if(state.selectedItemEl){ state.selectedItemEl.classList.remove('selected'); state.selectedItemEl=null; }
+    dragging=true; lastX=e.clientX; lastY=e.clientY;
+    overlay.setPointerCapture(e.pointerId);
+  });
+  overlay.addEventListener('pointermove', e=>{
+    if(freeDrawStroke){ continueFreeStroke(e, overlay); return; }
+    if(!dragging) return;
+    state.focusPan.x += e.clientX-lastX; state.focusPan.y += e.clientY-lastY;
+    lastX=e.clientX; lastY=e.clientY;
+    applyFocusTransform();
+  });
+  overlay.addEventListener('pointerup', ()=>{
+    if(freeDrawStroke){ endFreeStroke(); return; }
+    dragging=false;
+  });
+  overlay.addEventListener('pointercancel', ()=> dragging=false);
+  overlay.addEventListener('wheel', e=>{
+    e.preventDefault();
+    const delta = -e.deltaY*0.0016;
+    state.focusPan.scale = Math.max(0.5, Math.min(3, state.focusPan.scale+delta));
+    applyFocusTransform();
+  }, {passive:false});
+}
+
+/* ---- freeform drawing: draw anywhere on the note, same as text — each individual
+   stroke (pointerdown to pointerup) becomes its own item, cropped to fit just that ink,
+   not a fixed pre-drawn canvas area ---- */
+let freeDrawActive = false, freeDrawStroke = null;
+function enableFreeDraw(){ freeDrawActive = true; }
+function disableFreeDraw(){
+  freeDrawActive = false;
+  if(freeDrawStroke){ freeDrawStroke=null; const svg=$('#freeDrawPreview'); if(svg) svg.style.display='none'; }
+}
+function overlayToLocal(e, overlay){
+  const rect = overlay.getBoundingClientRect();
+  return {
+    x: (e.clientX-rect.left-state.focusPan.x)/state.focusPan.scale,
+    y: (e.clientY-rect.top-state.focusPan.y)/state.focusPan.scale
+  };
+}
+function startFreeStroke(e, overlay){
+  freeDrawStroke = { points:[overlayToLocal(e, overlay)] };
+  const svg = $('#freeDrawPreview');
+  svg.style.display = 'block';
+  renderFreeStrokePreview();
+}
+function continueFreeStroke(e, overlay){
+  if(!freeDrawStroke) return;
+  freeDrawStroke.points.push(overlayToLocal(e, overlay));
+  renderFreeStrokePreview();
+}
+function renderFreeStrokePreview(){
+  const path = $('#freeDrawPath');
+  const pts = freeDrawStroke.points;
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for(let i=1;i<pts.length;i++) d += ` L ${pts[i].x} ${pts[i].y}`;
+  path.setAttribute('d', d);
+  path.setAttribute('stroke', state.drawColor);
+  path.setAttribute('stroke-width', state.drawWidth);
+}
+function endFreeStroke(){
+  if(!freeDrawStroke) return;
+  const pts = freeDrawStroke.points;
+  freeDrawStroke = null;
+  const svg = $('#freeDrawPreview');
+  svg.style.display = 'none';
+  $('#freeDrawPath').setAttribute('d','');
+  if(pts.length<2) return; // just a tap with no real movement — nothing to keep
+
+  const PAD = Math.max(10, state.drawWidth*1.5);
+  let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+  pts.forEach(p=>{ minX=Math.min(minX,p.x); minY=Math.min(minY,p.y); maxX=Math.max(maxX,p.x); maxY=Math.max(maxY,p.y); });
+  const w = Math.max(20, (maxX-minX)+PAD*2), h = Math.max(20, (maxY-minY)+PAD*2);
+  const x = minX-PAD, y = minY-PAD;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.strokeStyle = state.drawColor; ctx.lineWidth = state.drawWidth;
+  ctx.beginPath();
+  pts.forEach((p,i)=>{ const px=p.x-x, py=p.y-y; if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); });
+  ctx.stroke();
+
+  const board = state.focusMode;
+  if(!board) return;
+  const reactionTag = board.isYou ? {} : {
+    isReaction:true, reactedByMe:true, reactorName: state.user.username || 'You', reactorAvatar: currentAvatarSrc()
+  };
+  const item = Object.assign({ id:'i'+(overlayIdSeq++), type:'draw', x, y, w, h, scale:1, addedAt:Date.now(), dataUrl:canvas.toDataURL() }, reactionTag);
+  board.items.push(item);
+  const el = renderBoardItem(item, board, $('#focusTrack'), true);
+  selectItem(el);
+}
+
+function refreshFocusedBoard(){
+  if(!state.focusMode) return;
+  const track = $('#focusTrack');
+  if(!track) return;
+  state.selectedItemEl = null;
+  track.innerHTML='';
+  state.focusMode.items.forEach(item=> renderBoardItem(item, state.focusMode, track, true));
+}
+
+/* ================= off-screen "radar" indicators ================= */
+/* Same idea as a 2-player split-screen game: if the thing you care about (the
+   newest note / the busiest board / your own board) is off screen, a small
+   pointer shows roughly where it is; it disappears once that board is in view. */
+
+const NEWEST_NOTES_LIMIT = 3; // how many "Newest Notes" boards get a pointer/border at once
+const NEWEST_NOTES_MAX_AGE_MS = 30*60*1000; // a note stops counting as "newest" 30 minutes after it was added
+
+// Ranks OTHER users' boards in `boards` by their own most-recent qualifying item and
+// returns the top `limit`, each tagged with its rank (1 = newest). A board's items stop
+// qualifying once you've viewed that board (board.lastSeenAt) or once they're older than
+// the 30-minute window — either way, they're not "new" to you anymore. Zone-agnostic so
+// it can rank a zone you currently have open (state.boards) or any other zone's boards
+// (for the map card / list row, which need the exact same "newest" definition — not a
+// raw item count — so the number shown outside a zone always matches what you'd actually
+// see once you open it).
+function findNewestTargetsIn(boards, limit){
+  const now = Date.now();
+  const cutoff = now - NEWEST_NOTES_MAX_AGE_MS;
+  return boards
+    .filter(b=>!b.isYou)
+    .map(board=>{
+      let bestAt = -Infinity;
+      board.items.forEach(item=>{
+        const at = item.addedAt||0;
+        if(item.hidden) return;
+        if(at <= (board.lastSeenAt||0)) return; // already viewed this board since this note landed
+        if(at < cutoff) return; // older than the 30-minute window
+        if(at>bestAt) bestAt = at;
+      });
+      return {board, bestAt};
+    })
+    .filter(x=>x.bestAt>-Infinity)
+    .sort((a,b)=> b.bestAt-a.bestAt)
+    .slice(0, limit)
+    .map((x,i)=>({board:x.board, rank:i+1}));
+}
+function findNewestTargets(limit){
+  return findNewestTargetsIn(state.boards, limit);
+}
+function findMyBoardTarget(){
+  const board = state.boards.find(b=>b.isYou);
+  return board ? {board} : null;
+}
+
+// Built fresh on every call instead of a static list, since how many "newest" pointers
+// exist (0–NEWEST_NOTES_LIMIT) depends on how many other boards currently have notes.
+function buildIndicatorConfigs(){
+  const configs = findNewestTargets(NEWEST_NOTES_LIMIT).map(t=>(
+    {key:'newest-'+t.board.id, label:`Newest Notes ${t.rank}`, cls:'ind-newest', board:t.board}
+  ));
+  const you = findMyBoardTarget();
+  if(you) configs.push({key:'you', label:'My notes', cls:'ind-you', board:you.board});
+  return configs;
+}
+
+function updateIndicators(){
+  const layer = $('#indicatorLayer');
+  if(!layer) return;
+  if(state.focusMode){ layer.innerHTML=''; return; }
+  const vp = $('#canvasViewport');
+  const vpRect = vp.getBoundingClientRect();
+  const cx = vpRect.width/2, cy = vpRect.height/2;
+  const EDGE = 8;
+  const headerEl = $('#zoneHeader'), toolbarEl = $('.note-toolbar');
+  const headerRect = headerEl.getBoundingClientRect();
+  const toolbarRect = toolbarEl.getBoundingClientRect();
+  const safeTop = (headerRect.bottom - vpRect.top) + EDGE;
+  // .note-toolbar is display:none outside Focus Mode (it has nothing to do while zoomed
+  // out), which collapses its rect to 0x0 — falling back to that would make safeBottom
+  // negative and wrongly count every board as "off screen". When it's not actually
+  // rendered, the real bottom edge of the safe area is just the viewport's own bottom.
+  const safeBottom = toolbarRect.height>0
+    ? (toolbarRect.top - vpRect.top) - EDGE
+    : vpRect.height - EDGE;
+  const sideMargin = 46; // half a pill's rough width, so left/right pills never get judged "in view" while still clipped
+
+  layer.innerHTML='';
+  const placed = [];
+
+  buildIndicatorConfigs().forEach(cfg=>{
+    const board = cfg.board;
+    const boardCenterX = board.x + BOARD_SIZE/2, boardCenterY = board.y + BOARD_SIZE/2;
+    const screenX = state.canvas.x + boardCenterX*state.canvas.scale;
+    const screenY = state.canvas.y + boardCenterY*state.canvas.scale;
+
+    // A pointer should only appear when the board is COMPLETELY off screen — if any
+    // sliver of the board square or its owner label is already visible, there's nothing
+    // to point toward. Read the real rendered boxes instead of trusting the center-point
+    // math above, so this stays correct regardless of zoom/pan rounding.
+    const boardEl = document.querySelector(`.board[data-board-id="${board.id}"]`);
+    const labelEl = document.querySelector(`.board-label[data-board-id="${board.id}"]`);
+    if(boardEl){
+      const bRect = boardEl.getBoundingClientRect();
+      const lRect = labelEl ? labelEl.getBoundingClientRect() : bRect;
+      const left = Math.min(bRect.left, lRect.left) - vpRect.left;
+      const right = Math.max(bRect.right, lRect.right) - vpRect.left;
+      const top = Math.min(bRect.top, lRect.top) - vpRect.top;
+      const bottom = Math.max(bRect.bottom, lRect.bottom) - vpRect.top;
+      // Visibility itself is checked against the true viewport edges (0 and vpRect.width) —
+      // any real overlap, even a single pixel, counts as "on screen" and suppresses the
+      // pointer per the product ask (only show it once the board is 100% gone). sideMargin
+      // below is a separate, smaller concern: once we DO need a pointer, it keeps the pill
+      // itself from rendering half clipped at the very edge.
+      const anyVisible = right>0 && left<vpRect.width && bottom>safeTop && top<safeBottom;
+      if(anyVisible) return;
+    }
+
+    const dx = screenX-cx, dy = screenY-cy;
+    // pick whichever axis is further out of the safe area to decide left/right vs up/down
+    const overX = screenX<sideMargin ? sideMargin-screenX : (screenX>vpRect.width-sideMargin ? screenX-(vpRect.width-sideMargin) : 0);
+    const overY = screenY<safeTop ? safeTop-screenY : (screenY>safeBottom ? screenY-safeBottom : 0);
+    let dir;
+    if(overY > overX) dir = dy<0 ? 'up' : 'down';
+    else dir = dx<0 ? 'left' : 'right';
+
+    const arrowIcon = {left:'arrow_back', right:'arrow_forward', up:'arrow_upward', down:'arrow_downward'}[dir];
+    const iconHtml = `<span class="msi">${arrowIcon}</span>`;
+    const textHtml = `<span>${escapeHtml(cfg.label)}</span>`;
+
+    const pill = document.createElement('div');
+    pill.className = `indicator-pill ${cfg.cls}`;
+    pill.innerHTML = (dir==='left'||dir==='up') ? iconHtml+textHtml : textHtml+iconHtml;
+    pill.addEventListener('click', ()=> jumpToTarget(board));
+    layer.appendChild(pill); // append now so its real size can be measured below
+
+    const clampedX = Math.max(sideMargin, Math.min(vpRect.width-sideMargin, screenX));
+    const clampedY = Math.max(safeTop, Math.min(safeBottom, screenY));
+    let baseTop;
+    if(dir==='left'){ pill.style.left=EDGE+'px'; baseTop=clampedY; pill.style.transform='translateY(-50%)'; }
+    else if(dir==='right'){ pill.style.left=(vpRect.width-EDGE)+'px'; baseTop=clampedY; pill.style.transform='translate(-100%,-50%)'; }
+    else if(dir==='up'){ pill.style.left=clampedX+'px'; baseTop=safeTop; pill.style.transform='translateX(-50%)'; }
+    else { pill.style.left=clampedX+'px'; baseTop=safeBottom; pill.style.transform='translate(-50%,-100%)'; }
+    pill.style.top = baseTop+'px';
+
+    placed.push({dir, el:pill, baseTop});
+  });
+
+  // two indicators that land in the same direction get stacked vertically, 8px apart,
+  // instead of sitting on top of each other
+  ['left','right','up','down'].forEach(dir=>{
+    const group = placed.filter(p=>p.dir===dir).sort((a,b)=> a.baseTop-b.baseTop);
+    for(let i=1;i<group.length;i++){
+      const prevRect = group[i-1].el.getBoundingClientRect();
+      const prevBottom = prevRect.bottom - vpRect.top;
+      const curRect = group[i].el.getBoundingClientRect();
+      const curTop = curRect.top - vpRect.top;
+      if(curTop < prevBottom + 8){
+        const shift = (prevBottom + 8) - curTop;
+        const newTop = parseFloat(group[i].el.style.top) + shift;
+        group[i].el.style.top = newTop+'px';
+        group[i].baseTop = newTop;
+      }
+    }
+  });
+}
+
+function jumpToTarget(board){
+  // newestRank is derived automatically in renderBoards() now, so tapping an
+  // indicator only needs to pan the camera there — no state to toggle by hand.
+  animatePanTo(board.x+BOARD_SIZE/2, board.y+BOARD_SIZE/2, 1.15, renderBoards);
+}
+
+function openZoneSheet(id){
+  $('#zoneSheetBackdrop').classList.add('show');
+  $('#'+id).classList.add('show');
+}
+function closeZoneSheet(){
+  $('#zoneSheetBackdrop').classList.remove('show');
+  $all('#screen-zone .sheet').forEach(s=>s.classList.remove('show'));
+}
+
+function setupZoneSettings(){
+  $('#toggleHideMyNotes').addEventListener('click', function(){ this.classList.toggle('on'); });
+  $('#toolZoneSettings').addEventListener('click', ()=> openZoneSheet('sheetZoneSettings'));
+  $('#zoneNameHistoryHint').addEventListener('click', openNameHistorySheet);
+  $('#zoneSheetBackdrop').addEventListener('click', closeZoneSheet);
+  $all('[data-close-zone-sheet]').forEach(b=> b.addEventListener('click', closeZoneSheet));
+
+  $('#leaveZoneBtn').addEventListener('click', ()=>{
+    closeZoneSheet();
+    $('#leaveZoneBackdrop').classList.add('show');
+  });
+  $('#leaveZoneBackdrop').addEventListener('click', e=>{
+    if(e.target===e.currentTarget || e.target.closest('[data-close-modal]')) $('#leaveZoneBackdrop').classList.remove('show');
+  });
+  $('#leaveZoneConfirmBtn').addEventListener('click', ()=>{
+    $('#leaveZoneBackdrop').classList.remove('show');
+    leaveCurrentZone();
+  });
+}
+
+function leaveCurrentZone(){
+  const zone = ZONES.find(z=>z.id===state.currentZoneId);
+  if(!zone) return;
+  zone.boards = zone.boards.filter(b=>!b.isYou);
+  zone.joined = false;
+  let zoneWasDeleted = false;
+  if(zone.boards.length===0){
+    // the last person just left — nothing left behind, so the zone itself is gone
+    const idx = ZONES.findIndex(z=>z.id===zone.id);
+    if(idx>-1) ZONES.splice(idx,1);
+    zoneWasDeleted = true;
+  }
+  renderZoneMarkers();
+  showScreen('map');
+  toast(zoneWasDeleted ? `"${zone.name}" is gone — you were the last one there` : `You left "${zone.name}"`);
+}
+
+function setupToolbar(){
+  $('#toolPhoto').addEventListener('click', ()=>{ if(!state.focusMode || !state.focusMode.isYou) return; setActiveTool(null); openZoneSheet('sheetCamera'); });
+  $('#toolSticker').addEventListener('click', ()=>{ if(!state.focusMode) return; setActiveTool(null); openZoneSheet('sheetStickerEmoji'); });
+  $('#toolDraw').addEventListener('click', ()=>{ if(!state.focusMode || !state.focusMode.isYou) return; toggleDrawMode(); });
+  $('#toolText').addEventListener('click', ()=>{ if(!state.focusMode) return; toggleTypographyMode(); });
+
+  $('#stickerGrid').innerHTML = STICKER_SET.map(s=>`<div class="sticker-opt" data-emoji="${s}">${s}</div>`).join('');
+  $('#emojiGrid').innerHTML = EMOJI_SET.map(s=>`<div class="sticker-opt" data-emoji="${s}">${s}</div>`).join('');
+  $('#sheetStickerEmoji').addEventListener('click', e=>{
+    const tab = e.target.closest('.se-tab');
+    if(tab){
+      $all('.se-tab').forEach(t=>t.classList.remove('on'));
+      tab.classList.add('on');
+      $('#stickerGrid').style.display = tab.dataset.tab==='stickers' ? 'grid' : 'none';
+      $('#emojiGrid').style.display = tab.dataset.tab==='emoji' ? 'grid' : 'none';
+      return;
+    }
+    const opt = e.target.closest('.sticker-opt');
+    if(!opt || !state.focusMode) return;
+    addItemToFocusedBoard('sticker', {emoji:opt.dataset.emoji});
+    toast('Sticker added. Hold the drag handle to move it.');
+  });
+
+  // Camera sheet: "Camera" hints the mobile browser to open the device camera directly;
+  // "Upload Media" opens the regular photo/video library picker.
+  function pickMedia(useCamera){
+    const input = document.createElement('input');
+    input.type='file'; input.accept='image/*,video/*';
+    if(useCamera) input.setAttribute('capture','environment');
+    input.addEventListener('change', ()=>{
+      let src;
+      if(input.files && input.files[0]) src = URL.createObjectURL(input.files[0]);
+      else src = photoUrl('upload-'+Date.now(), 300, 380);
+      addItemToFocusedBoard('photo', {src, w:150, h:190});
+      toast('Photo added. Hold the drag handle to move it.');
+    });
+    input.click();
+  }
+  $('#cameraOptCamera').addEventListener('click', ()=>{ closeZoneSheet(); pickMedia(true); });
+  $('#cameraOptUpload').addEventListener('click', ()=>{ closeZoneSheet(); pickMedia(false); });
+
+  // Status pills open their settings sheet — tapping outside just closes the sheet and
+  // applies whatever was last picked, no separate "Done" button needed.
+  $('#drawStatusPill').addEventListener('click', ()=> openZoneSheet('sheetDrawSettings'));
+  $('#textStatusPill').addEventListener('click', ()=> openZoneSheet('sheetTypographySettings'));
+  $('#addTextBtn').addEventListener('click', ()=>{
+    if(!state.focusMode) return;
+    addItemToFocusedBoard('text', {content:'Tap to edit', color:state.textColor, fontFamily:state.textFont});
+  });
+
+  setupColorPicker({
+    svId:'#drawSV', svCursorId:'#drawSVCursor', hueId:'#drawHue', hueCursorId:'#drawHueCursor',
+    presetsSelector:'#drawPresets', initialColor: state.drawColor,
+    onChange(hex){ state.drawColor = hex; updateDrawStatusPill(); }
+  });
+  $all('#drawStrokeOpts .size-opt').forEach(so=> so.addEventListener('click', ()=>{
+    $all('#drawStrokeOpts .size-opt').forEach(s=>s.classList.remove('on')); so.classList.add('on');
+    state.drawWidth = +so.dataset.w;
+    updateDrawStatusPill();
+  }));
+
+  setupColorPicker({
+    svId:'#textSV', svCursorId:'#textSVCursor', hueId:'#textHue', hueCursorId:'#textHueCursor',
+    presetsSelector:'#textPresets', initialColor: state.textColor,
+    onChange(hex){
+      state.textColor = hex;
+      updateTextStatusPill();
+      if(state.selectedItemEl){
+        const t = state.selectedItemEl.querySelector('.item-text');
+        const item = findItemData(state.selectedItemEl);
+        if(t && item){ t.style.color = hex; item.color = hex; }
+      }
+    }
+  });
+  $('#fontSelect').innerHTML = FONT_OPTIONS.map(f=>`<option value="${f.value}">${f.label}</option>`).join('');
+  $('#fontSelect').value = state.textFont;
+  $('#fontSelect').addEventListener('change', e=>{
+    state.textFont = e.target.value;
+    updateTextStatusPill();
+    if(state.selectedItemEl){
+      const t = state.selectedItemEl.querySelector('.item-text');
+      const item = findItemData(state.selectedItemEl);
+      if(t && item){ t.style.fontFamily = state.textFont; item.fontFamily = state.textFont; }
+    }
+  });
+
+  updateDrawStatusPill();
+  updateTextStatusPill();
+}
+
+const FONT_OPTIONS = [
+  {value:"Inter, sans-serif", label:"Inter"},
+  {value:"'Caacupe One', sans-serif", label:"Playful"},
+  {value:"Georgia, serif", label:"Serif"},
+  {value:"'Courier New', monospace", label:"Mono"}
+];
+function updateDrawStatusPill(){
+  $('#drawStatusDot').style.background = state.drawColor;
+  const label = state.drawWidth<=3 ? 'Thin' : state.drawWidth<=7 ? 'Medium' : 'Bold';
+  $('#drawStatusLabel').textContent = 'Stroke: '+label;
+}
+function updateTextStatusPill(){
+  $('#textStatusDot').style.background = state.textColor;
+  const opt = FONT_OPTIONS.find(f=>f.value===state.textFont);
+  $('#textStatusLabel').textContent = 'Style: '+(opt ? opt.label : 'Inter');
+}
+
+// Custom color tool: an SV square + hue strip, kept in sync with the preset dots below it.
+// Picking a preset dims the custom picker (it's not "the active source" anymore); touching
+// the SV/hue areas directly clears whichever preset was picked, per the two-way sync rule.
+function setupColorPicker(cfg){
+  let hsv = hexToHsv(cfg.initialColor);
+  const svEl=$(cfg.svId), svCursor=$(cfg.svCursorId), hueEl=$(cfg.hueId), hueCursor=$(cfg.hueCursorId);
+  const pickerEl = svEl.closest('.color-picker');
+  function render(){
+    svEl.style.background = `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, hsl(${hsv.h},100%,50%))`;
+    svCursor.style.left = hsv.s+'%';
+    svCursor.style.top = (100-hsv.v)+'%';
+    hueCursor.style.left = (hsv.h/360*100)+'%';
+    hueCursor.style.background = hsvToHex(hsv.h,100,100);
+  }
+  function clearPresets(){
+    $all(cfg.presetsSelector+' .cp-preset').forEach(p=>p.classList.remove('on'));
+    pickerEl.classList.remove('cp-dimmed');
+  }
+  function pickFromSV(clientX, clientY){
+    const r=svEl.getBoundingClientRect();
+    hsv.s = Math.max(0,Math.min(1,(clientX-r.left)/r.width))*100;
+    hsv.v = (1-Math.max(0,Math.min(1,(clientY-r.top)/r.height)))*100;
+    render(); cfg.onChange(hsvToHex(hsv.h,hsv.s,hsv.v));
+  }
+  function pickFromHue(clientX){
+    const r=hueEl.getBoundingClientRect();
+    hsv.h = Math.max(0,Math.min(1,(clientX-r.left)/r.width))*360;
+    render(); cfg.onChange(hsvToHex(hsv.h,hsv.s,hsv.v));
+  }
+  let draggingSV=false, draggingHue=false;
+  svEl.addEventListener('pointerdown', e=>{ draggingSV=true; try{svEl.setPointerCapture(e.pointerId);}catch(err){} clearPresets(); pickFromSV(e.clientX,e.clientY); });
+  svEl.addEventListener('pointermove', e=>{ if(draggingSV) pickFromSV(e.clientX,e.clientY); });
+  svEl.addEventListener('pointerup', ()=> draggingSV=false);
+  hueEl.addEventListener('pointerdown', e=>{ draggingHue=true; try{hueEl.setPointerCapture(e.pointerId);}catch(err){} clearPresets(); pickFromHue(e.clientX); });
+  hueEl.addEventListener('pointermove', e=>{ if(draggingHue) pickFromHue(e.clientX); });
+  hueEl.addEventListener('pointerup', ()=> draggingHue=false);
+
+  $all(cfg.presetsSelector+' .cp-preset').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      $all(cfg.presetsSelector+' .cp-preset').forEach(o=>o.classList.remove('on'));
+      p.classList.add('on');
+      hsv = hexToHsv(p.dataset.color);
+      render();
+      pickerEl.classList.add('cp-dimmed');
+      cfg.onChange(p.dataset.color);
+    });
+  });
+  render();
+}
+function hsvToHex(h, s, v){
+  s/=100; v/=100;
+  const c=v*s, x=c*(1-Math.abs((h/60)%2-1)), m=v-c;
+  let r=0,g=0,b=0;
+  if(h<60){r=c;g=x;b=0;} else if(h<120){r=x;g=c;b=0;} else if(h<180){r=0;g=c;b=x;}
+  else if(h<240){r=0;g=x;b=c;} else if(h<300){r=x;g=0;b=c;} else {r=c;g=0;b=x;}
+  const toHex=n=>Math.round((n+m)*255).toString(16).padStart(2,'0');
+  return '#'+toHex(r)+toHex(g)+toHex(b);
+}
+function hexToHsv(hex){
+  hex = (hex||'#000000').replace('#','');
+  if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+  const r=parseInt(hex.slice(0,2),16)/255, g=parseInt(hex.slice(2,4),16)/255, b=parseInt(hex.slice(4,6),16)/255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b), d=max-min;
+  let h=0;
+  if(d!==0){
+    if(max===r) h=60*(((g-b)/d)%6);
+    else if(max===g) h=60*((b-r)/d+2);
+    else h=60*((r-g)/d+4);
+  }
+  if(h<0) h+=360;
+  return { h, s: max===0?0:(d/max)*100, v: max*100 };
+}
+
+// new items are dropped near the middle of whatever part of the board you're
+// currently looking at inside focus mode
+function addItemToFocusedBoard(type, extra){
+  const board = state.focusMode;
+  if(!board) return;
+  const track = $('#focusTrack');
+  const overlay = $('#focusOverlay');
+  const vpRect = overlay.getBoundingClientRect();
+  const cx = (vpRect.width/2 - state.focusPan.x)/state.focusPan.scale;
+  const cy = (vpRect.height/2 - state.focusPan.y)/state.focusPan.scale;
+  const jitter = ()=> Math.random()*24-12;
+  // Anything you add on someone else's board is a reaction, not a post — tagged with your
+  // own identity so it renders (and can be moderated) differently once the board owner
+  // sees it, and stays editable by you specifically even though the rest of that board isn't.
+  const reactionTag = board.isYou ? {} : {
+    isReaction:true, reactedByMe:true, reactorName: state.user.username || 'You', reactorAvatar: currentAvatarSrc()
+  };
+  const item = Object.assign({ id:'i'+(overlayIdSeq++), type, x:cx-40+jitter(), y:cy-40+jitter(), scale:1, addedAt:Date.now() }, reactionTag, extra);
+  board.items.push(item);
+  const el = renderBoardItem(item, board, track, true);
+  selectItem(el);
+  if(type==='draw'){ drawItemRef=item; setupDrawModeForSelected(el); }
+  if(type==='text'){ beginTextEdit(el, item); }
+}
+
+// Draw and Typography are toggles now: tapping the toolbar icon turns that mode on (which
+// immediately starts a new item to work with) or off (which finalizes it) — "mỗi lần Draw"
+// is exactly one toggle-on-to-toggle-off session, never reusing a previous canvas.
+function toggleDrawMode(){
+  setActiveTool(state.activeTool==='draw' ? null : 'draw');
+}
+function toggleTypographyMode(){
+  setActiveTool(state.activeTool==='text' ? null : 'text');
+}
+function setActiveTool(tool){
+  if(state.activeTool==='text' && state.selectedItemEl){
+    const item = findItemData(state.selectedItemEl);
+    if(item) endTextEdit(state.selectedItemEl, item);
+  }
+  if(state.activeTool==='draw') disableFreeDraw();
+  state.activeTool = tool;
+  $('#toolDraw').classList.toggle('active', tool==='draw');
+  $('#toolText').classList.toggle('active', tool==='text');
+  $('#drawStatusPill').style.display = tool==='draw' ? 'flex' : 'none';
+  $('#textStatusRow').style.display = tool==='text' ? 'flex' : 'none';
+  if(tool==='draw'){ updateDrawStatusPill(); enableFreeDraw(); }
+  if(tool==='text'){ updateTextStatusPill(); addItemToFocusedBoard('text', {content:'Tap to edit', color:state.textColor, fontFamily:state.textFont}); }
+}
+
+/* ---- name change history + rename queue ---- */
+const NAME_CHANGE_DAYS = [1, 15]; // zone names can change on these two days each month
+
+// Returns the next `n` upcoming change dates in chronological order, crossing month
+// boundaries as needed.
+function nextNameChangeDates(n){
+  const dates = [];
+  const now = new Date();
+  let year = now.getFullYear(), month = now.getMonth();
+  while(dates.length < n){
+    for(const day of NAME_CHANGE_DAYS){
+      const candidate = new Date(year, month, day, 0, 0, 0, 0);
+      if(candidate > now) dates.push(candidate);
+      if(dates.length >= n) break;
+    }
+    month++;
+  }
+  return dates;
+}
+function formatChangeDate(d){
+  return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+}
+
+function openNameHistorySheet(){
+  renderNameHistorySheet();
+  openZoneSheet('sheetNameHistory');
+}
+
+function renderNameHistorySheet(){
+  const zone = ZONES.find(z=>z.id===state.currentZoneId);
+  if(!zone) return;
+
+  const sorted = [...zone.nameHistory].sort((a,b)=> b.from-a.from);
+  $('#nameHistoryList').innerHTML = sorted.map((h,i)=>{
+    const isCurrent = i===0;
+    return `<div class="nh-row">
+      <div class="nh-name">${escapeHtml(h.name)}${isCurrent ? '<span class="nh-current-tag">Current</span>' : ''}</div>
+      <div class="nh-date">${isCurrent ? 'since ' : ''}${formatChangeDate(new Date(h.from))}</div>
+    </div>`;
+  }).join('');
+
+  const queue = zone.nameQueue;
+  const upcoming = nextNameChangeDates(queue.length + 1);
+  const myIndex = queue.findIndex(q=>q.byMe);
+
+  if(myIndex>-1){
+    const req = queue[myIndex];
+    $('#nameRequestArea').innerHTML = `
+      <div class="nh-pending">
+        <div class="nh-pending-title"><span class="msi">check_circle</span>Request sent</div>
+        <div class="nh-pending-sub">“${escapeHtml(req.name)}” takes effect ${formatChangeDate(upcoming[myIndex])}.</div>
+        <button class="btn btn-ghost" style="width:100%;" id="cancelNamingBtn">Cancel naming</button>
+      </div>`;
+    $('#cancelNamingBtn').addEventListener('click', ()=>{
+      zone.nameQueue.splice(myIndex,1);
+      renderNameHistorySheet();
+      toast('Rename request canceled');
+    });
+  } else {
+    const aheadCount = queue.length;
+    const myDate = upcoming[aheadCount];
+    $('#nameRequestArea').innerHTML = `
+      ${aheadCount>0 ? `<p class="nh-queue-note">${aheadCount} request${aheadCount>1?'s':''} already queued ahead of you — yours would take effect ${formatChangeDate(myDate)}.</p>` : ''}
+      <span class="field-label">Next zone name</span>
+      <input type="text" class="text-input" id="nextZoneNameInput" placeholder="e.g. Sunset Alley" maxlength="30" style="margin-bottom:12px;">
+      <button class="btn btn-primary" style="width:100%;" id="queueNameBtn" disabled>Queue this name</button>
+    `;
+    $('#nextZoneNameInput').addEventListener('input', e=>{
+      $('#queueNameBtn').disabled = !e.target.value.trim();
+    });
+    $('#queueNameBtn').addEventListener('click', ()=>{
+      const name = $('#nextZoneNameInput').value.trim();
+      if(!name) return;
+      zone.nameQueue.push({name, byMe:true, requestedAt:Date.now()});
+      renderNameHistorySheet();
+      toast('Rename request sent 🎉');
+    });
+  }
+}
+
+/* ================= INIT ================= */
+document.addEventListener('DOMContentLoaded', ()=>{
+  initOnboarding();
+  initSettingsProfileEditor();
+  applyAvatarChips();
+  initMap();
+  renderLists();
+  if(location.search.indexOf('skipOnboarding=1')!==-1){state.onboarded=true;} if(!state.onboarded) $('#onboardingBackdrop').classList.add('show');
+});
+
+</script>
+<script>
+/* App viewer (demo.md D2b): device size, frame and zoom; kept per browser. Below 860px wide the page shows as before, the panel under the phone. */
+(function(){
+  var H=document.documentElement, KEY='zonie-viewer', S={};
+  try{ S=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ S={}; }
+  var DEV={se:[375,667],'16e':[390,844],'17pro':[402,874],promax:[440,956]};
+  var phone=document.querySelector('.phone'), stage=document.querySelector('.stage');
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+  function fit(){
+    phone.style.transform=''; phone.style.marginBottom='';
+    if(!H.classList.contains('zv-on') || S.z==='100') return;
+    var cs=getComputedStyle(stage), ah=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom), aw=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    var k=Math.min(1, ah/phone.offsetHeight, aw/phone.offsetWidth);
+    if(k<1){ phone.style.transform='scale('+k+')'; phone.style.marginBottom=(phone.offsetHeight*(k-1))+'px'; }
+  }
+  function apply(){
+    H.classList.toggle('zv-on', window.self===window.top && innerWidth>=860);
+    var id=DEV[S.d]?S.d:'16e', d=DEV[id], frame=S.f!=='0';
+    H.setAttribute('data-frame', frame?'on':'off');
+    phone.style.setProperty('--zv-w', (d[0]+(frame?28:0))+'px');
+    phone.style.setProperty('--zv-h', (d[1]+(frame?28:0))+'px');
+    document.querySelectorAll('[data-zv-device]').forEach(function(b){ var on=b.getAttribute('data-zv-device')===id; b.classList.toggle('is-on',on); b.setAttribute('aria-pressed',String(on)); });
+    document.querySelectorAll('[data-zv-zoom]').forEach(function(b){ var on=b.getAttribute('data-zv-zoom')===(S.z||'fit'); b.classList.toggle('is-on',on); b.setAttribute('aria-pressed',String(on)); });
+    var cb=document.querySelector('[data-zv="frame"]'); if(cb) cb.checked=frame;
+    fit();
+    try{ if(typeof map!=='undefined' && map) setTimeout(function(){ map.invalidateSize(); },60); }catch(e){}
+  }
+  document.addEventListener('click', function(e){
+    var t=e.target.closest('[data-zv-device],[data-zv-zoom]'); if(!t) return;
+    if(t.hasAttribute('data-zv-device')) S.d=t.getAttribute('data-zv-device'); else S.z=t.getAttribute('data-zv-zoom');
+    save(); apply();
+  });
+  document.addEventListener('change', function(e){ if(e.target.matches('[data-zv="frame"]')){ S.f=e.target.checked?'1':'0'; save(); apply(); } });
+  addEventListener('resize', apply);
+  addEventListener('load', apply);   /* again once the demo bar is in (it loads after this script) */
+  apply();
+})();
+</script>
+</body>
+</html>

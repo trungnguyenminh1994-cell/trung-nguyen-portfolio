@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 840" width="1600" height="840" role="img" aria-label="Zonie core interaction patterns: collision-free drag, two-sided reactions, and off-screen radar indicators">
+  <rect width="1600" height="840" fill="#F7F7F7"/>
+  <rect x="36" y="36" width="1528" height="768" fill="#FFFFFF" stroke="#E3E3E3" stroke-width="1"/>
+  <text x="76" y="88" font-family="Inter, sans-serif" font-size="12" font-weight="600" letter-spacing="0.06em" fill="#666666">INTERACTION CRAFT · GESTURES &amp; SPATIAL NAVIGATION</text>
+  <text x="76" y="126" font-family="Geist, Inter, sans-serif" font-size="30" font-weight="600" letter-spacing="-0.03em" fill="#121212">Three Spatial UI Patterns Engineered Across 163 Rounds</text>
+  <line x1="76" y1="154" x2="1524" y2="154" stroke="#E3E3E3"/>
+
+  <!-- Card 1: Collision-Free Board Drag -->
+  <g transform="translate(76, 196)">
+    <rect width="456" height="560" fill="#FAFAFA" stroke="#E3E3E3"/>
+    <rect x="24" y="24" width="408" height="296" fill="#F3F3F3" stroke="#E3E3E3"/>
+    <!-- Boards sliding around each other -->
+    <rect x="64" y="80" width="128" height="128" rx="16" fill="#FFFFFF" stroke="#E3E3E3" stroke-width="1.5"/>
+    <text x="128" y="148" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#666666">Neighbor Board</text>
+    <rect x="206" y="114" width="136" height="136" rx="16" fill="#FFFFFF" stroke="#FFB400" stroke-width="3"/>
+    <text x="274" y="178" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#121212">Your Board</text>
+    <text x="274" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#666666">Live slide, zero overlap</text>
+    <!-- Curved guide arrow -->
+    <path d="M 218 96 Q 270 52 332 96" fill="none" stroke="#FFB400" stroke-width="2.5" stroke-dasharray="5 4"/>
+    <text x="24" y="360" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#666666">PATTERN 01 · CANVAS PHYSICS</text>
+    <text x="24" y="392" font-family="Geist, Inter, sans-serif" font-size="22" font-weight="600" fill="#121212">Live Collision-Avoidance Drag</text>
+    <text x="24" y="428" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">Dragging your board slides smoothly along neighbor</text>
+    <text x="24" y="448" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">edges instead of passing through or snapping back.</text>
+    <text x="24" y="484" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">Paired with edge auto-scroll, hold-to-lift shadow,</text>
+    <text x="24" y="504" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">and local coastOffset state so SwiftUI never lags.</text>
+  </g>
+
+  <!-- Card 2: Off-Screen Radar Indicators -->
+  <g transform="translate(572, 196)">
+    <rect width="456" height="560" fill="#FAFAFA" stroke="#E3E3E3"/>
+    <rect x="24" y="24" width="408" height="296" fill="#F3F3F3" stroke="#E3E3E3"/>
+    <!-- Viewport frame -->
+    <rect x="76" y="64" width="304" height="216" rx="14" fill="#FFFFFF" stroke="#121212" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="228" y="176" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#666666">Active Viewport</text>
+    <!-- Radar Pin Left (Your Board) -->
+    <g transform="translate(52, 134)">
+      <circle cx="24" cy="24" r="22" fill="#FFFFFF" stroke="#FF24BD" stroke-width="3"/>
+      <text x="24" y="28" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="800" fill="#212121">YOU</text>
+    </g>
+    <!-- Radar Pin Top Right (Newest Note) -->
+    <g transform="translate(356, 86)">
+      <circle cx="24" cy="24" r="22" fill="#212121" stroke="#FFFFFF" stroke-width="2.5"/>
+      <text x="24" y="28" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#FFB400">NEW</text>
+    </g>
+    <text x="24" y="360" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#666666">PATTERN 02 · WAYFINDING</text>
+    <text x="24" y="392" font-family="Geist, Inter, sans-serif" font-size="22" font-weight="600" fill="#121212">Off-Screen Radar Anchor Pins</text>
+    <text x="24" y="428" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">On a 4000×4000 freeform canvas, users easily lose</text>
+    <text x="24" y="448" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">their board or new posts. Directional 50pt radar</text>
+    <text x="24" y="484" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">pins hug the viewport edge with overlap avoidance</text>
+    <text x="24" y="504" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">and trigger a 0.45s cameraFlight pan when tapped.</text>
+  </g>
+
+  <!-- Card 3: Fixed-Size Action Handles & Reactions -->
+  <g transform="translate(1068, 196)">
+    <rect width="456" height="560" fill="#FAFAFA" stroke="#E3E3E3"/>
+    <rect x="24" y="24" width="408" height="296" fill="#F3F3F3" stroke="#E3E3E3"/>
+    <!-- Selected Canvas Item with Fixed Handles -->
+    <g transform="translate(116, 78)">
+      <rect width="224" height="176" rx="14" fill="#FFFFFF" stroke="#FFB400" stroke-width="2.5"/>
+      <rect x="16" y="16" width="192" height="110" rx="8" fill="#212121"/>
+      <text x="112" y="76" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#FFB400">Any Zoom Level (0.4x – 3x)</text>
+      <text x="112" y="154" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#666666">Handles stay fixed 44pt tap target</text>
+      <circle cx="0" cy="0" r="15" fill="#212121"/>
+      <text x="0" y="4" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#FFFFFF">↑</text>
+      <circle cx="224" cy="0" r="15" fill="#EE2233"/>
+      <text x="224" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">×</text>
+      <circle cx="224" cy="176" r="15" fill="#FFB400"/>
+      <text x="224" y="180" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="800" fill="#2B1D00">⤢</text>
+    </g>
+    <text x="24" y="360" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#666666">PATTERN 03 · FOCUS MODE ERGONOMICS</text>
+    <text x="24" y="392" font-family="Geist, Inter, sans-serif" font-size="22" font-weight="600" fill="#121212">Zoom-Invariant Action Handles</text>
+    <text x="24" y="428" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">Remove, Bring to Front, and combined Resize + Rotate</text>
+    <text x="24" y="448" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">handles counter-scale against canvas zoom so targets</text>
+    <text x="24" y="484" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">stay tappable at every scale, clamping cleanly with</text>
+    <text x="24" y="504" font-family="Inter, sans-serif" font-size="13" fill="#4A4A4A">red-outline boundary feedback and floating Delete.</text>
+  </g>
+</svg>

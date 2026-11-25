@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://trungnguyenminh1994-cell.github.io/trung-nguyen-portfolio/sitemap.xml

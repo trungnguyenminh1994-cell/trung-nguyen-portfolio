@@ -1,0 +1,1159 @@
+/* ==========================================================================
+   Trung Nguyen Portfolio Stylesheet
+   Uses tokens.css (--pf-*) exclusively. Prefix: pf-
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--pf-surface-page);
+  color: var(--pf-text-primary);
+  font-family: var(--pf-font-family-base);
+  font-weight: var(--pf-font-weight-regular);
+  font-size: var(--pf-type-body-sm-size);
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  outline: none;
+  box-shadow: var(--pf-focus-ring);
+}
+img { display: block; max-width: 100%; height: auto; }
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+
+.pf-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pf-skip-link {
+  position: fixed;
+  top: -100px;
+  left: var(--pf-space-4);
+  z-index: var(--pf-z-modal);
+  padding: var(--pf-space-2) var(--pf-space-4);
+  background: var(--pf-surface-brand);
+  color: var(--pf-text-inverse);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: var(--pf-type-label-size);
+}
+.pf-skip-link:focus { top: var(--pf-space-3); }
+
+/* Muted text tokens: Maelle #757575 strictly on #FFFFFF; #666666 on #F7F7F7 */
+.pf-muted { color: var(--pf-text-muted-on-white); }
+.pf-muted-surface { color: var(--pf-text-tertiary); }
+
+/* Maelle diamond bullet: rotated square */
+.pf-dot {
+  display: inline-block;
+  flex: none;
+  width: 4px;
+  height: 4px;
+  background: var(--pf-text-muted-on-white);
+  transform: rotate(45deg);
+}
+.pf-dot--ink { background: var(--pf-text-primary); }
+.pf-dot--md { width: 7px; height: 7px; }
+.pf-dot--lg { width: 14px; height: 14px; }
+
+/* Fixed media wrapper (aligns with design system & QA rule) */
+.pf-media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--pf-surface-subtle);
+}
+.pf-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pf-media--contain img {
+  object-fit: contain;
+}
+
+/* ==========================================================================
+   Fixed Top Header (44px, 3 zones aligned to columns)
+   Removed: center nav tabs (Home, Info, Work, Contact) & Book a Call
+   ========================================================================== */
+.pf-nav {
+  position: fixed;
+  z-index: var(--pf-z-header);
+  top: var(--demo-bar-h, 0px);
+  left: 0;
+  right: 0;
+  height: var(--pf-layout-header-h);
+  padding: var(--pf-space-3) var(--pf-space-5);
+  background: var(--pf-header-bg-solid);
+  border-bottom: 1px solid var(--pf-header-border);
+  display: grid;
+  grid-template-columns: 346fr 629fr 346fr;
+  column-gap: var(--pf-space-8);
+  align-items: center;
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: var(--pf-header-link-size);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.pf-nav--case {
+  grid-template-columns: 248fr 860fr 248fr;
+}
+
+.pf-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-space-2);
+  color: var(--pf-text-primary);
+  width: fit-content;
+  transition: opacity var(--pf-duration-base) var(--pf-easing-standard);
+}
+.pf-nav__brand:hover { opacity: 0.6; }
+
+.pf-nav__center {
+  min-width: 0;
+}
+
+.pf-nav__end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.pf-time {
+  font-family: var(--pf-font-family-base);
+  font-weight: var(--pf-font-weight-regular);
+  font-size: 14px;
+  line-height: 14px;
+  letter-spacing: -0.02em;
+  color: var(--pf-text-muted-on-white);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Three-Column Sticky Desk Layout (Home + Case Studies)
+   ========================================================================== */
+.pf-main {
+  display: grid;
+  grid-template-columns: 346fr 629fr 346fr;
+  column-gap: var(--pf-space-8);
+  padding: 0 var(--pf-space-5);
+  align-items: start;
+}
+.pf-main--case {
+  grid-template-columns: 248fr 860fr 248fr;
+}
+
+.pf-left,
+.pf-right {
+  position: sticky;
+  top: var(--demo-bar-h, 0px);
+  height: calc(100svh - var(--demo-bar-h, 0px));
+  padding: var(--pf-space-35) 0 var(--pf-space-3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+/* Home Left Column (No social media icons per brief) */
+.pf-intro {
+  font-size: 56px;
+  line-height: 56px;
+  letter-spacing: -2.8px;
+  font-weight: var(--pf-font-weight-regular);
+  max-width: 300px;
+}
+
+.pf-services {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-1);
+  font-size: 16px;
+  line-height: 22.4px;
+  letter-spacing: -0.48px;
+}
+.pf-services li:not(:last-child) {
+  padding-bottom: var(--pf-space-1);
+  border-bottom: 1px solid var(--pf-border-subtle);
+}
+
+/* Home Right Column */
+.pf-about {
+  display: flex;
+  gap: var(--pf-space-2);
+  align-items: flex-start;
+}
+.pf-avail {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--pf-space-2);
+  min-height: 20px;
+  color: var(--pf-text-primary);
+  font-size: 14px;
+  line-height: 20px;
+}
+.pf-profile {
+  width: 169px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-6);
+}
+.pf-profile__photo {
+  width: 169px;
+  height: 223px;
+}
+.pf-profile__photo img {
+  object-position: 56% 24%;
+}
+.pf-profile p {
+  text-align: right;
+  font-size: 14px;
+  line-height: 19.6px;
+  letter-spacing: -0.42px;
+}
+
+/* Bottom-right Contact block with required "Contact me" caption */
+.pf-contact {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--pf-space-3);
+}
+.pf-contact__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-1);
+  min-width: 0;
+}
+.pf-contact__cap {
+  font-family: var(--pf-font-family-base);
+  font-weight: var(--pf-font-weight-regular);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.24px;
+  color: var(--pf-text-muted-on-white);
+  margin-bottom: 2px;
+}
+.pf-contact__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-1);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+}
+.pf-mail-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.pf-mail {
+  font-size: 15px;
+  line-height: 18px;
+  letter-spacing: -0.42px;
+  padding: 2px 0;
+  word-break: break-word;
+  transition: opacity var(--pf-duration-base) var(--pf-easing-standard);
+}
+.pf-tel {
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: -0.38px;
+  padding: 2px 0;
+  transition: opacity var(--pf-duration-base) var(--pf-easing-standard);
+}
+.pf-contact a:hover { opacity: 0.58; }
+
+.pf-copy-btn {
+  border: 1px solid var(--pf-border-subtle);
+  background: var(--pf-surface-page);
+  color: var(--pf-text-tertiary);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 7px;
+  cursor: pointer;
+  transition: border-color var(--pf-duration-fast), color var(--pf-duration-fast);
+}
+.pf-copy-btn:hover {
+  border-color: var(--pf-text-primary);
+  color: var(--pf-text-primary);
+}
+
+.pf-year {
+  flex: none;
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--pf-text-muted-on-white);
+}
+
+/* ==========================================================================
+   Home Middle Sheet (Sticky statement + Sliding 4:3 work list + Ticker footer)
+   ========================================================================== */
+.pf-mid {
+  position: relative;
+  background: var(--pf-surface-page);
+  border-left: 1px solid var(--pf-border-subtle);
+  border-right: 1px solid var(--pf-border-subtle);
+  padding: var(--pf-space-35) var(--pf-space-4) 0;
+  min-width: 0;
+}
+
+.pf-desc {
+  position: sticky;
+  top: calc(var(--pf-space-35) + var(--demo-bar-h, 0px));
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-2);
+  padding-bottom: var(--pf-space-2);
+}
+.pf-desc__text {
+  font-size: 26px;
+  line-height: 29.5px;
+  letter-spacing: -1.04px;
+  min-height: 332px;
+}
+.pf-desc__title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--pf-space-2);
+}
+.pf-desc__title h2 {
+  font-size: 18px;
+  line-height: 25.2px;
+  letter-spacing: -0.54px;
+  font-weight: var(--pf-font-weight-regular);
+}
+.pf-desc__title span {
+  font-size: 12px;
+  line-height: 16.8px;
+  letter-spacing: -0.36px;
+  color: var(--pf-text-muted-on-white);
+}
+
+/* Work Cards List: slides over sticky statement */
+.pf-projects {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-4);
+  background: var(--pf-surface-page);
+  padding-top: var(--pf-space-2);
+}
+
+.pf-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--pf-surface-page);
+}
+.pf-card__media {
+  position: relative;
+  aspect-ratio: 597 / 447;
+  overflow: hidden;
+  border: 1px solid var(--pf-border-subtle);
+  background: var(--pf-surface-subtle);
+}
+.pf-card__zoom {
+  position: absolute;
+  inset: -7px;
+  filter: brightness(1);
+  transition: inset var(--pf-duration-slow) var(--pf-easing-standard),
+              filter var(--pf-duration-slow) var(--pf-easing-standard);
+}
+.pf-card__zoom img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pf-card:hover .pf-card__zoom,
+.pf-card:focus-visible .pf-card__zoom {
+  inset: 0;
+  filter: brightness(0.92);
+}
+.pf-card__info {
+  display: flex;
+  align-items: center;
+  gap: var(--pf-space-2);
+  font-size: 14px;
+  line-height: 19.6px;
+  letter-spacing: -0.42px;
+  color: var(--pf-text-muted-on-white);
+}
+.pf-card__title {
+  font-weight: var(--pf-font-weight-regular);
+  color: var(--pf-text-primary);
+  margin-right: -2px;
+}
+.pf-card__cat { flex: 1; min-width: 0; }
+.pf-card__year { flex: none; font-variant-numeric: tabular-nums; }
+
+/* ==========================================================================
+   Footer & "Let's Talk" Hairline Ticker (Inside middle column)
+   ========================================================================== */
+.pf-foot {
+  position: relative;
+  z-index: 1;
+  background: var(--pf-surface-page);
+  margin: var(--pf-space-14) calc(var(--pf-space-4) * -1) 0;
+  padding: var(--pf-space-35) 0 var(--pf-space-3);
+  border-top: 1px solid var(--pf-border-subtle);
+}
+.pf-talk {
+  display: block;
+  overflow: hidden;
+  border-top: 1px solid var(--pf-border-subtle);
+  border-bottom: 1px solid var(--pf-border-subtle);
+  padding: var(--pf-space-2) 0;
+}
+.pf-talk__track {
+  display: flex;
+  gap: var(--pf-space-5);
+  width: max-content;
+  animation: pf-ticker 36s linear infinite;
+}
+.pf-talk__track > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-space-5);
+  font-size: 80px;
+  line-height: 80px;
+  letter-spacing: -3.2px;
+  padding: 10px 0;
+  white-space: nowrap;
+}
+.pf-talk:hover .pf-talk__track { animation-play-state: paused; }
+@keyframes pf-ticker { to { transform: translateX(calc(-50% - 10px)); } }
+
+.pf-foot__bar {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--pf-space-2);
+  margin-top: var(--pf-space-35);
+  padding: 0 var(--pf-space-4);
+  font-size: 13px;
+  color: var(--pf-text-muted-on-white);
+  letter-spacing: -0.36px;
+}
+
+/* ==========================================================================
+   Case Study Detail Pages (Maelle UI Style x Terry 9-Section Content Structure)
+   ========================================================================== */
+.pf-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-space-2);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 14px;
+  color: var(--pf-text-primary);
+  padding: 4px 0;
+  width: fit-content;
+  transition: opacity var(--pf-duration-fast);
+}
+.pf-back:hover { opacity: 0.6; }
+
+/* Left Column: Sticky Numbered TOC (01 -> 09) in Maelle hairline list style */
+.pf-toc {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.pf-toc__label {
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--pf-text-muted-on-white);
+  padding-bottom: var(--pf-space-2);
+  border-bottom: 1px solid var(--pf-border-subtle);
+}
+.pf-toc a {
+  display: flex;
+  align-items: center;
+  gap: var(--pf-space-2);
+  padding: 7px 0;
+  border-bottom: 1px solid var(--pf-border-subtle);
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.25px;
+  color: var(--pf-text-muted-on-white);
+  transition: color var(--pf-duration-fast);
+}
+.pf-toc a:hover,
+.pf-toc a.is-active {
+  color: var(--pf-text-primary);
+}
+.pf-toc__num {
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 11px;
+  width: 20px;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.pf-toc a.is-active .pf-toc__num::after {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: var(--pf-text-primary);
+  transform: rotate(45deg);
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* Right Column: Sticky Project Spec Sheet */
+.pf-spec {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.pf-spec__head {
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--pf-text-muted-on-white);
+  padding-bottom: var(--pf-space-2);
+  border-bottom: 1px solid var(--pf-border-subtle);
+}
+.pf-spec__row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--pf-space-2) 0;
+  border-bottom: 1px solid var(--pf-border-subtle);
+}
+.pf-spec__row dt {
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--pf-text-muted-on-white);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+}
+.pf-spec__row dd {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--pf-text-primary);
+  letter-spacing: -0.25px;
+}
+.pf-spec__cta {
+  margin-top: var(--pf-space-4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pf-space-2);
+  padding: 10px 14px;
+  background: var(--pf-btn-primary-bg);
+  color: var(--pf-btn-primary-text);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 13px;
+  line-height: 1;
+  transition: background var(--pf-duration-fast);
+}
+.pf-spec__cta:hover {
+  background: var(--pf-btn-primary-bg-hover);
+}
+
+/* Middle Column: Case Study Reading Sheet */
+.pf-mid--case {
+  padding: var(--pf-space-25) var(--pf-space-8) 0;
+}
+
+.pf-cs-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-5);
+  padding-bottom: var(--pf-space-11);
+  border-bottom: 1px solid var(--pf-border-subtle);
+}
+.pf-cs-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-space-2);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  color: var(--pf-text-muted-on-white);
+}
+.pf-cs-title {
+  font-size: var(--pf-type-h1-size);
+  line-height: var(--pf-type-h1-lh);
+  letter-spacing: var(--pf-type-h1-ls);
+  font-weight: var(--pf-font-weight-regular);
+  max-width: 18ch;
+}
+.pf-cs-lead {
+  font-size: 17px;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+  color: var(--pf-text-secondary);
+  max-width: 64ch;
+}
+
+/* Mobile-only inline metadata grid */
+.pf-mobile-meta {
+  display: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--pf-space-3);
+  padding: var(--pf-space-4) 0;
+  border-top: 1px solid var(--pf-border-subtle);
+  border-bottom: 1px solid var(--pf-border-subtle);
+}
+.pf-mobile-meta dt {
+  font-family: var(--pf-font-family-ui);
+  font-size: 11px;
+  font-weight: var(--pf-font-weight-semibold);
+  color: var(--pf-text-muted-on-white);
+}
+.pf-mobile-meta dd {
+  font-size: 13px;
+  color: var(--pf-text-primary);
+  margin-top: 2px;
+}
+
+/* Key Highlights 3-column stat bar (Terry pattern in Maelle hairlines) */
+.pf-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--pf-border-subtle);
+  border-left: 1px solid var(--pf-border-subtle);
+}
+.pf-stat {
+  padding: var(--pf-space-5);
+  border-right: 1px solid var(--pf-border-subtle);
+  border-bottom: 1px solid var(--pf-border-subtle);
+  background: var(--pf-surface-page);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pf-stat__val {
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: var(--pf-font-weight-regular);
+  color: var(--pf-text-primary);
+}
+.pf-stat__label {
+  font-family: var(--pf-font-family-ui);
+  font-size: 13px;
+  font-weight: var(--pf-font-weight-semibold);
+  color: var(--pf-text-primary);
+}
+.pf-stat__note {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pf-text-muted-on-white);
+}
+
+/* Case Study Numbered Sections (01 -> 09) */
+.pf-sec {
+  padding: var(--pf-space-14) 0;
+  border-bottom: 1px solid var(--pf-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-6);
+  scroll-margin-top: 64px;
+}
+.pf-sec__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-2);
+}
+.pf-sec__num {
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  color: var(--pf-text-muted-on-white);
+}
+.pf-sec__title {
+  font-size: var(--pf-type-h2-size);
+  line-height: var(--pf-type-h2-lh);
+  letter-spacing: var(--pf-type-h2-ls);
+  font-weight: var(--pf-font-weight-regular);
+  max-width: 24ch;
+}
+.pf-prose {
+  font-size: 15px;
+  line-height: 1.65;
+  letter-spacing: -0.015em;
+  color: var(--pf-text-secondary);
+  max-width: 66ch;
+}
+.pf-prose + .pf-prose { margin-top: -10px; }
+
+/* Sub-blocks inside 06 Key Solutions */
+.pf-sub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-4);
+  padding-top: var(--pf-space-4);
+}
+.pf-sub + .pf-sub {
+  margin-top: var(--pf-space-4);
+  padding-top: var(--pf-space-8);
+  border-top: 1px solid var(--pf-border-subtle);
+}
+.pf-sub__title {
+  font-size: var(--pf-type-h3-size);
+  line-height: var(--pf-type-h3-lh);
+  letter-spacing: var(--pf-type-h3-ls);
+  font-weight: var(--pf-font-weight-semibold);
+  color: var(--pf-text-primary);
+}
+
+/* Grids (2, 3, 4 columns in Maelle hairline matrix style) */
+.pf-grid {
+  display: grid;
+  border-top: 1px solid var(--pf-border-subtle);
+  border-left: 1px solid var(--pf-border-subtle);
+}
+.pf-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pf-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pf-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pf-grid--6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.pf-cell {
+  padding: var(--pf-space-5);
+  border-right: 1px solid var(--pf-border-subtle);
+  border-bottom: 1px solid var(--pf-border-subtle);
+  background: var(--pf-surface-page);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-2);
+}
+.pf-cell--subtle { background: var(--pf-surface-subtle); }
+.pf-cell__kicker {
+  font-family: var(--pf-font-family-ui);
+  font-size: 11px;
+  font-weight: var(--pf-font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pf-text-tertiary);
+}
+.pf-cell__title {
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  font-weight: var(--pf-font-weight-semibold);
+  color: var(--pf-text-primary);
+}
+.pf-cell__body {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--pf-text-secondary);
+}
+
+/* Clean Editorial Data Table (Octalysis / Comparison / Visibility Matrix) */
+.pf-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--pf-border-subtle);
+}
+.pf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: left;
+}
+.pf-table th,
+.pf-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--pf-border-subtle);
+  vertical-align: top;
+}
+.pf-table tr:last-child td { border-bottom: 0; }
+.pf-table th {
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pf-text-tertiary);
+  background: var(--pf-surface-subtle);
+}
+.pf-table td:first-child {
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  color: var(--pf-text-primary);
+  white-space: nowrap;
+}
+
+/* Trade-offs List (07) */
+.pf-tradeoffs {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--pf-border-subtle);
+}
+.pf-tradeoff {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--pf-space-5);
+  padding: var(--pf-space-4) 0;
+  border-bottom: 1px solid var(--pf-border-subtle);
+  align-items: baseline;
+}
+.pf-tradeoff__pair {
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 13px;
+  color: var(--pf-text-primary);
+}
+.pf-tradeoff__text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pf-text-secondary);
+}
+
+/* Outcome Checklist (08) */
+.pf-outcomes {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--pf-border-subtle);
+}
+.pf-outcomes li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--pf-space-3);
+  padding: var(--pf-space-3) 0;
+  border-bottom: 1px solid var(--pf-border-subtle);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--pf-text-primary);
+}
+.pf-outcomes li::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  flex: none;
+  background: var(--pf-text-primary);
+  transform: rotate(45deg);
+  position: relative;
+  top: -2px;
+}
+
+/* UI Showcase Figures + Lightbox Zoom */
+.pf-figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-2);
+}
+.pf-figure__frame {
+  border: 1px solid var(--pf-border-subtle);
+  background: var(--pf-surface-subtle);
+  padding: var(--pf-space-3);
+  cursor: zoom-in;
+  transition: border-color var(--pf-duration-fast);
+}
+.pf-figure__frame:hover {
+  border-color: var(--pf-text-primary);
+}
+.pf-figure__frame .pf-media {
+  background: transparent;
+}
+.pf-figure__frame img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.pf-figure figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--pf-space-3);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--pf-text-muted-on-white);
+}
+.pf-figure__hint {
+  flex: none;
+  font-family: var(--pf-font-family-ui);
+  font-size: 11px;
+  color: var(--pf-text-muted-on-white);
+}
+
+/* Interactive Prototype Box (Djaminn Figma + Zonie Live HTML Embed) */
+.pf-proto-box {
+  border: 1px solid var(--pf-border-subtle);
+  background: var(--pf-surface-subtle);
+  padding: var(--pf-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-4);
+}
+.pf-proto-box__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--pf-space-4);
+  flex-wrap: wrap;
+}
+.pf-proto-box__actions {
+  display: flex;
+  gap: var(--pf-space-2);
+  flex-wrap: wrap;
+}
+.pf-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-space-2);
+  padding: 10px 16px;
+  background: var(--pf-btn-primary-bg);
+  color: var(--pf-btn-primary-text);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 13px;
+  line-height: 1;
+  transition: background var(--pf-duration-fast);
+}
+.pf-action-btn:hover { background: var(--pf-btn-primary-bg-hover); }
+
+.pf-action-btn--secondary {
+  background: var(--pf-surface-page);
+  color: var(--pf-text-primary);
+  border: 1px solid var(--pf-border-strong);
+}
+.pf-action-btn--secondary:hover {
+  background: var(--pf-surface-muted);
+}
+
+.pf-proto-embed {
+  width: 100%;
+  height: 760px;
+  border: 1px solid var(--pf-border-subtle);
+  background: var(--pf-surface-subtle);
+  display: block;
+}
+
+/* Read Next Card */
+.pf-next {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--pf-space-5);
+  padding: var(--pf-space-6);
+  margin-top: var(--pf-space-11);
+  border: 1px solid var(--pf-border-subtle);
+  background: var(--pf-surface-page);
+  transition: border-color var(--pf-duration-fast), background var(--pf-duration-fast);
+}
+.pf-next:hover {
+  border-color: var(--pf-text-primary);
+  background: var(--pf-surface-subtle);
+}
+.pf-next__kicker {
+  font-family: var(--pf-font-family-ui);
+  font-size: 12px;
+  font-weight: var(--pf-font-weight-semibold);
+  color: var(--pf-text-tertiary);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-space-2);
+}
+.pf-next__title {
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--pf-text-primary);
+  margin-top: var(--pf-space-2);
+}
+.pf-next__arrow {
+  font-size: 24px;
+  flex: none;
+  color: var(--pf-text-primary);
+}
+
+/* Lightbox Dialog */
+.pf-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--pf-z-modal);
+  background: var(--pf-surface-overlay);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--pf-space-6);
+  gap: var(--pf-space-4);
+}
+.pf-lightbox.is-open { display: flex; }
+.pf-lightbox__bar {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--pf-space-4);
+  color: var(--pf-text-inverse);
+  font-family: var(--pf-font-family-ui);
+  font-size: 13px;
+}
+.pf-lightbox__controls {
+  display: flex;
+  gap: var(--pf-space-2);
+}
+.pf-lightbox__btn {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: var(--pf-text-inverse);
+  font-family: var(--pf-font-family-ui);
+  font-weight: var(--pf-font-weight-semibold);
+  font-size: 12px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.pf-lightbox__btn:hover { background: rgba(255, 255, 255, 0.14); }
+.pf-lightbox__stage {
+  max-width: 1200px;
+  max-height: 78vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pf-lightbox__stage img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  background: var(--pf-surface-page);
+}
+.pf-lightbox__cap {
+  max-width: 78ch;
+  text-align: center;
+  color: var(--pf-text-inverse-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   Load Animations (Maelle word de-blur & staggered fade)
+   ========================================================================== */
+.pf-w {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--pf-easing-reveal) var(--d, 0s),
+              filter 0.5s var(--pf-easing-reveal) var(--d, 0s),
+              transform 0.5s var(--pf-easing-reveal) var(--d, 0s);
+}
+.is-loaded .pf-w {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+}
+.pf-fade {
+  opacity: 0;
+  transition: opacity 0.75s var(--pf-easing-standard) 0.4s;
+}
+.pf-fade-late {
+  opacity: 0;
+  transition: opacity 0.7s var(--pf-easing-standard) 0.85s;
+}
+.is-loaded .pf-fade,
+.is-loaded .pf-fade-late { opacity: 1; }
+
+/* ==========================================================================
+   Responsive: Collapse to Single Column Below 1000px (Maelle breakpoint)
+   ========================================================================== */
+@media (max-width: 999px) {
+  .pf-nav,
+  .pf-nav--case {
+    height: 48px;
+    padding: var(--pf-space-2) var(--pf-space-3);
+    grid-template-columns: 1fr auto;
+    column-gap: var(--pf-space-3);
+  }
+  .pf-nav__center { display: none; }
+
+  .pf-main,
+  .pf-main--case {
+    grid-template-columns: 1fr;
+    padding: 0 var(--pf-space-3);
+  }
+  .pf-left,
+  .pf-right {
+    position: static;
+    height: auto;
+    justify-content: flex-start;
+  }
+
+  /* Home responsive order: left -> right -> middle (exact Maelle) */
+  .pf-main--home .pf-left { padding: 112px 0 0; gap: var(--pf-space-8); }
+  .pf-intro { font-size: 40px; line-height: 40px; letter-spacing: -2px; max-width: 300px; }
+  .pf-services { padding-top: var(--pf-space-4); font-size: 15px; line-height: 21px; }
+  .pf-main--home .pf-right { order: 2; padding: 72px 0 0; gap: var(--pf-space-8); }
+  .pf-profile { width: 220px; gap: var(--pf-space-3); }
+  .pf-profile__photo { width: 220px; height: 290px; }
+  .pf-main--home .pf-mid { order: 3; border: 0; padding: 72px 0 0; }
+  .pf-desc { position: static; }
+  .pf-desc__text { font-size: 20px; line-height: 24px; letter-spacing: -0.7px; min-height: 136px; }
+  .pf-projects { gap: var(--pf-space-5); }
+
+  /* Case study responsive order: back link -> content -> contact */
+  .pf-main--case .pf-left { order: 1; padding: 76px 0 var(--pf-space-4); gap: var(--pf-space-4); }
+  .pf-toc { display: none; }
+  .pf-main--case .pf-mid--case { order: 2; border: 0; padding: var(--pf-space-4) 0 0; }
+  .pf-main--case .pf-right { order: 3; padding: var(--pf-space-8) 0 var(--pf-space-8); gap: var(--pf-space-6); border-top: 1px solid var(--pf-border-subtle); }
+  .pf-main--case .pf-spec { display: none; }
+  .pf-mobile-meta { display: grid; }
+
+  .pf-stats,
+  .pf-grid--2,
+  .pf-grid--3,
+  .pf-grid--4,
+  .pf-grid--6 { grid-template-columns: 1fr; }
+  .pf-tradeoff { grid-template-columns: 1fr; gap: var(--pf-space-2); }
+  .pf-proto-embed { height: 640px; }
+
+  .pf-foot { margin: var(--pf-space-11) 0 0; padding-top: 100px; border-top: 1px solid var(--pf-border-subtle); }
+  .pf-talk__track > span { font-size: 56px; line-height: 56px; letter-spacing: -2.2px; }
+  .pf-foot__bar { flex-direction: column; margin-top: 84px; padding: 0; gap: var(--pf-space-2); }
+}
+
+.pf-404 {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--pf-space-25) var(--pf-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-space-4);
+  align-items: flex-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-w, .pf-fade, .pf-fade-late, .pf-card__zoom { transition: none; opacity: 1; filter: none; transform: none; }
+  .pf-talk__track { animation: none; }
+}

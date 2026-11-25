@@ -1,0 +1,230 @@
+/* ==========================================================================
+   Website — design tokens
+   GENERATED from tokens/tokens.json by scripts/build.py. DO NOT EDIT.
+   Fluid type and spacing: clamp() interpolates linearly from 375px to 1440px viewport.
+   ========================================================================== */
+:root {
+
+  /* ---- PRIMITIVE ---- */
+  --pf-primary-900: #121212; /* Maelle template / Trung approved 2026-11-25 */
+  --pf-primary-700: #2E2E2E; /* Maelle template / Trung approved 2026-11-25 */
+  --pf-primary-500: #404040; /* Maelle template / Trung approved 2026-11-25 */
+  --pf-primary-100: #F2F2F2; /* Maelle template / Trung approved 2026-11-25 */
+  --pf-accent-500: #EAEAEA; /* Maelle template / Trung approved 2026-11-25 */
+  --pf-grey-900: #121212; /* Maelle template */
+  --pf-grey-800: #262626; /* Maelle template */
+  --pf-grey-700: #4A4A4A; /* Maelle template */
+  --pf-grey-600: #666666; /* WCAG AA check */
+  --pf-grey-500: #757575; /* Maelle template */
+  --pf-grey-400: #9A9A9A; /* default */
+  --pf-grey-300: #CFCFCF; /* default */
+  --pf-grey-200: #E3E3E3; /* Maelle template */
+  --pf-grey-100: #F2F2F2; /* Maelle template */
+  --pf-grey-50: #F7F7F7; /* Portfolio UI showcase */
+  --pf-red-700: #C62828; /* default */
+  --pf-red-50: #FDECEC; /* default */
+  --pf-green-700: #1B7A3A; /* default */
+  --pf-green-50: #E9F5EC; /* default */
+  --pf-amber-900: #7A4A00; /* default */
+  --pf-amber-600: #B26B00; /* default */
+  --pf-amber-50: #FFF4E0; /* default */
+  --pf-info-700: #0B5CAD; /* default */
+  --pf-info-50: #E7F0FA; /* default */
+  --pf-white: #FFFFFF; /* Maelle template */
+  --pf-black: #121212; /* Maelle template */
+  --pf-font-family-base: Geist, Inter, system-ui, -apple-system, "Segoe UI", sans-serif; /* Maelle template */
+  --pf-font-family-ui: Inter, system-ui, -apple-system, "Segoe UI", sans-serif; /* Maelle template */
+  --pf-font-weight-light: 400; /* Maelle template */
+  --pf-font-weight-regular: 500; /* Maelle template */
+  --pf-font-weight-semibold: 600; /* Maelle template */
+  --pf-font-weight-bold: 600; /* Maelle template */
+  --pf-space-0: 0px;
+  --pf-space-1: 4px; /* default */
+  --pf-space-2: 8px; /* default */
+  --pf-space-3: 12px; /* default */
+  --pf-space-4: 16px; /* default */
+  --pf-space-5: 20px; /* Maelle template */
+  --pf-space-6: 24px; /* default */
+  --pf-space-8: 32px; /* Maelle template */
+  --pf-space-11: 44px; /* Maelle template */
+  --pf-space-14: 56px; /* default */
+  --pf-space-18: 72px; /* default */
+  --pf-space-25: 100px; /* Maelle template */
+  --pf-space-35: 140px; /* Maelle template */
+  --pf-space-39: 156px; /* default */
+  --pf-space-45: 180px; /* Maelle template */
+  --pf-radius-none: 0px; /* Maelle template */
+  --pf-radius-sm: 4px; /* default */
+  --pf-radius-md: 8px; /* default */
+  --pf-radius-lg: 12px; /* default */
+  --pf-radius-xl: 20px; /* default */
+  --pf-radius-pill: 999px; /* default */
+  --pf-radius-round: 50%; /* default */
+  --pf-bp-sm: 560px; /* default */
+  --pf-bp-md: 1000px; /* Maelle template */
+  --pf-bp-lg: 1280px; /* default */
+  --pf-bp-xl: 1440px; /* Maelle template */
+  --pf-duration-fast: 180ms; /* Maelle template */
+  --pf-duration-base: 300ms; /* Maelle template */
+  --pf-duration-slow: 400ms; /* Maelle template */
+  --pf-easing-standard: cubic-bezier(0.44, 0, 0.56, 1); /* Maelle template */
+  --pf-easing-reveal: cubic-bezier(0.25, 1, 0.5, 1); /* Maelle template */
+  --pf-z-floating: 90;
+  --pf-z-sticky: 95;
+  --pf-z-header: 100;
+  --pf-z-modal: 1000;
+
+  /* ---- SEMANTIC ---- */
+  --pf-text-primary: var(--pf-grey-900);
+  --pf-text-secondary: var(--pf-grey-700);
+  --pf-text-tertiary: var(--pf-grey-600);
+  --pf-text-muted-on-white: var(--pf-grey-500);
+  --pf-text-disabled: var(--pf-grey-400);
+  --pf-text-brand: var(--pf-primary-900);
+  --pf-text-inverse: var(--pf-white);
+  --pf-text-inverse-muted: rgba(255, 255, 255, 0.72);
+  --pf-text-link: var(--pf-grey-900);
+  --pf-text-link-hover: var(--pf-grey-600);
+  --pf-text-error: var(--pf-red-700);
+  --pf-text-success: var(--pf-green-700);
+  --pf-text-warning: var(--pf-amber-900);
+  --pf-text-info: var(--pf-info-700);
+  --pf-surface-page: var(--pf-white);
+  --pf-surface-subtle: var(--pf-grey-50);
+  --pf-surface-muted: var(--pf-grey-100);
+  --pf-surface-card: var(--pf-white);
+  --pf-surface-brand: var(--pf-primary-900);
+  --pf-surface-brand-subtle: var(--pf-primary-100);
+  --pf-surface-inverse: var(--pf-black);
+  --pf-surface-overlay: rgba(18, 18, 18, 0.88);
+  --pf-surface-error: var(--pf-red-50);
+  --pf-surface-success: var(--pf-green-50);
+  --pf-surface-warning: var(--pf-amber-50);
+  --pf-surface-info: var(--pf-info-50);
+  --pf-surface-promo: var(--pf-accent-500);
+  --pf-border-subtle: var(--pf-grey-200);
+  --pf-border-default: var(--pf-grey-300);
+  --pf-border-input: var(--pf-grey-600);
+  --pf-border-strong: var(--pf-grey-800);
+  --pf-border-focus: var(--pf-primary-500);
+  --pf-border-error: var(--pf-red-700);
+  --pf-border-warning: var(--pf-amber-600);
+  --pf-type-display-size: clamp(2.5rem, 2.1479rem + 1.5023vw, 3.5rem); /* Maelle template */
+  --pf-type-display-lh: 1.0;
+  --pf-type-display-ls: -0.05em;
+  --pf-type-display-weight: var(--pf-font-weight-regular);
+  --pf-type-h1-size: clamp(1.875rem, 1.6109rem + 1.1268vw, 2.625rem); /* Maelle editorial scale */
+  --pf-type-h1-lh: 1.08;
+  --pf-type-h1-ls: -0.04em;
+  --pf-type-h1-weight: var(--pf-font-weight-regular);
+  --pf-type-h2-size: clamp(1.375rem, 1.2430rem + 0.5634vw, 1.75rem); /* Maelle editorial scale */
+  --pf-type-h2-lh: 1.18;
+  --pf-type-h2-ls: -0.035em;
+  --pf-type-h2-weight: var(--pf-font-weight-regular);
+  --pf-type-h3-size: clamp(1.0625rem, 1.0185rem + 0.1878vw, 1.1875rem); /* Maelle editorial scale */
+  --pf-type-h3-lh: 1.32;
+  --pf-type-h3-ls: -0.025em;
+  --pf-type-h3-weight: var(--pf-font-weight-semibold);
+  --pf-type-h4-size: clamp(0.9375rem, 0.9155rem + 0.0939vw, 1rem); /* Maelle editorial scale */
+  --pf-type-h4-lh: 1.38;
+  --pf-type-h4-ls: -0.02em;
+  --pf-type-h4-weight: var(--pf-font-weight-semibold);
+  --pf-type-h5-size: 0.875rem; /* default */
+  --pf-type-h5-lh: 1.4;
+  --pf-type-h5-ls: -0.015em;
+  --pf-type-h5-weight: var(--pf-font-weight-semibold);
+  --pf-type-body-lg-size: clamp(1.25rem, 1.1180rem + 0.5634vw, 1.625rem); /* Maelle template */
+  --pf-type-body-lg-lh: 1.15;
+  --pf-type-body-lg-ls: -0.04em;
+  --pf-type-body-lg-weight: var(--pf-font-weight-regular);
+  --pf-type-body-size: clamp(0.9375rem, 0.9155rem + 0.0939vw, 1rem); /* Portfolio reading scale */
+  --pf-type-body-lh: 1.6;
+  --pf-type-body-ls: -0.015em;
+  --pf-type-body-weight: var(--pf-font-weight-light);
+  --pf-type-body-sm-size: clamp(0.8125rem, 0.7905rem + 0.0939vw, 0.875rem); /* Maelle template */
+  --pf-type-body-sm-lh: 1.5;
+  --pf-type-body-sm-ls: -0.025em;
+  --pf-type-body-sm-weight: var(--pf-font-weight-regular);
+  --pf-type-caption-size: 0.75rem; /* Maelle template */
+  --pf-type-caption-lh: 1.45;
+  --pf-type-caption-ls: -0.02em;
+  --pf-type-caption-weight: var(--pf-font-weight-regular);
+  --pf-type-label-size: 0.875rem; /* Maelle template */
+  --pf-type-label-lh: 1.2;
+  --pf-type-label-ls: -0.025em;
+  --pf-type-label-weight: var(--pf-font-weight-semibold);
+  --pf-type-label-sm-size: 0.75rem; /* Maelle template */
+  --pf-type-label-sm-lh: 1.2;
+  --pf-type-label-sm-ls: 0.02em;
+  --pf-type-label-sm-weight: var(--pf-font-weight-semibold);
+  --pf-type-eyebrow-size: 0.75rem; /* Portfolio case study */
+  --pf-type-eyebrow-lh: 1.3;
+  --pf-type-eyebrow-ls: 0.04em;
+  --pf-type-eyebrow-weight: var(--pf-font-weight-semibold);
+  --pf-layout-wide: 1440px; /* Maelle template */
+  --pf-layout-content: 820px; /* Portfolio case study */
+  --pf-layout-gutter: clamp(0.75rem, 0.5739rem + 0.7512vw, 1.25rem); /* Maelle template */
+  --pf-layout-grid-gap: clamp(1rem, 0.6479rem + 1.5023vw, 2rem); /* Maelle template */
+  --pf-layout-section: clamp(3rem, 2.2958rem + 3.0047vw, 5rem); /* Portfolio case study */
+  --pf-layout-section-sm: clamp(1.5rem, 1.1479rem + 1.5023vw, 2.5rem); /* Portfolio case study */
+  --pf-layout-header-h: 2.75rem; /* Maelle template */
+  --pf-layout-subnav-h: 44px; /* default */
+  --pf-layout-tap-min: 44px; /* default */
+  --pf-layout-actionbar-h: 0px; /* No mobile actionbar */
+  --pf-ratio-hero: 4 / 3;
+  --pf-ratio-hero-mobile: 4 / 3;
+  --pf-ratio-product: 16 / 10;
+  --pf-ratio-post: 4 / 3;
+  --pf-ratio-square: 1 / 1;
+  --pf-shadow-sm: 0 1px 2px rgba(18, 18, 18, 0.06); /* default */
+  --pf-shadow-md: 0 8px 24px rgba(18, 18, 18, 0.08); /* default */
+  --pf-shadow-lg: 0 24px 48px rgba(18, 18, 18, 0.16); /* default */
+  --pf-focus-ring: 0 0 0 2px #FFFFFF, 0 0 0 4px #404040;
+
+  /* ---- COMPONENT ---- */
+  --pf-btn-height: 44px; /* default */
+  --pf-btn-height-sm: 36px;
+  --pf-btn-padding-x: 24px; /* default */
+  --pf-btn-padding-x-sm: 16px;
+  --pf-btn-radius: var(--pf-radius-none); /* Maelle editorial sharp radius */
+  --pf-btn-primary-bg: var(--pf-primary-900);
+  --pf-btn-primary-bg-hover: var(--pf-primary-700);
+  --pf-btn-primary-text: var(--pf-white);
+  --pf-btn-secondary-border: var(--pf-grey-800);
+  --pf-btn-secondary-text: var(--pf-grey-900);
+  --pf-btn-secondary-bg-hover: var(--pf-grey-100);
+  --pf-btn-inverse-bg: var(--pf-white);
+  --pf-btn-inverse-bg-hover: var(--pf-grey-100);
+  --pf-btn-inverse-text: var(--pf-grey-900);
+  --pf-btn-disabled-bg: var(--pf-grey-100);
+  --pf-btn-disabled-text: var(--pf-grey-400);
+  --pf-input-height: 44px;
+  --pf-input-radius: var(--pf-radius-none); /* Maelle template */
+  --pf-input-bg: var(--pf-white);
+  --pf-input-border: var(--pf-border-input);
+  --pf-input-border-hover: var(--pf-grey-900);
+  --pf-input-placeholder: var(--pf-grey-600);
+  --pf-card-radius: var(--pf-radius-none); /* Maelle template */
+  --pf-card-padding: var(--pf-space-5);
+  --pf-card-bg: var(--pf-surface-card);
+  --pf-header-bg-solid: var(--pf-white);
+  --pf-header-text-solid: var(--pf-grey-900);
+  --pf-header-logo-solid: var(--pf-primary-900);
+  --pf-header-border: var(--pf-grey-200);
+  --pf-header-text-overlay: var(--pf-white);
+  --pf-header-overlay-gradient: linear-gradient(180deg, rgba(18, 18, 18, 0.6) 0%, rgba(18, 18, 18, 0) 100%);
+  --pf-header-logo-size: 19px;
+  --pf-header-link-size: 14px;
+  --pf-drawer-width: 360px;
+  --pf-drawer-item-h: var(--pf-space-11);
+  --pf-drawer-panel-bg: var(--pf-surface-subtle);
+  --pf-drawer-card-bg: var(--pf-surface-card);
+  --pf-footer-bg: var(--pf-white);
+  --pf-footer-text: var(--pf-grey-700);
+  --pf-footer-title: var(--pf-grey-900);
+  --pf-footer-border: var(--pf-grey-200);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --pf-duration-fast: 0ms; --pf-duration-base: 0ms; --pf-duration-slow: 0ms; }
+}

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<title>Pentana Registration Case Study · Trung Nguyen</title>
+<meta name="description" content="Designing a role-aware 5-step conditional vehicle registration flow and unified Registrations list for Pentana Solutions DistributorPower.">
+<link rel="canonical" href="https://trungnguyenminh1994-cell.github.io/trung-nguyen-portfolio/projects/pentana-registration/">
+<link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Pentana Registration Case Study · Trung Nguyen">
+<meta property="og:description" content="Designing a role-aware 5-step conditional vehicle registration flow and unified Registrations list for Pentana Solutions DistributorPower.">
+<meta property="og:url" content="https://trungnguyenminh1994-cell.github.io/trung-nguyen-portfolio/projects/pentana-registration/">
+<meta property="og:site_name" content="Trung Nguyen · UX/UI Designer">
+<meta property="og:image" content="https://trungnguyenminh1994-cell.github.io/trung-nguyen-portfolio/assets/img/og-default.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pentana Registration Case Study · Trung Nguyen">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@500;600&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/portfolio.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CreativeWork", "name": "Pentana Registration", "headline": "One role-aware flow for corporate and dealer registrations.", "description": "Designing a role-aware 5-step conditional vehicle registration flow and unified Registrations list for Pentana Solutions DistributorPower.", "author": {"@type": "Person", "name": "Trung Nguyen"}, "url": "https://trungnguyenminh1994-cell.github.io/trung-nguyen-portfolio/projects/pentana-registration/"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://trungnguyenminh1994-cell.github.io/trung-nguyen-portfolio/"}, {"@type": "ListItem", "position": 2, "name": "Pentana Registration"}]}</script>
+</head>
+<body>
+<a class="pf-skip-link" href="#main">Skip to main content</a>
+<header class="pf-nav pf-nav--case">
+  <a class="pf-nav__brand" href="../../" aria-label="Trung Nguyen home">
+    <i class="pf-dot pf-dot--md pf-dot--ink" aria-hidden="true"></i>
+    <span>Trung Nguyen</span>
+  </a>
+  <div class="pf-nav__center" aria-hidden="true"></div>
+  <div class="pf-nav__end">
+    <span class="pf-time" data-clock>HCMC · GMT+7</span>
+  </div>
+</header>
+
+<main id="main" class="pf-main pf-main--case">
+  <!-- Left sticky column: back link and numbered section index -->
+  <aside class="pf-left" aria-label="Case study navigation">
+    <a class="pf-back" href="../../">← All work</a>
+    <nav class="pf-toc pf-fade" aria-label="Sections">
+      <p class="pf-toc__label">Contents</p>
+      <a href="#context"><span class="pf-toc__num">01</span><span>Context</span></a><a href="#problem"><span class="pf-toc__num">02</span><span>Problem</span></a><a href="#role"><span class="pf-toc__num">03</span><span>My role</span></a><a href="#approach"><span class="pf-toc__num">04</span><span>Approach</span></a><a href="#deep-dive"><span class="pf-toc__num">05</span><span>Adaptive Flow</span></a><a href="#solutions"><span class="pf-toc__num">06</span><span>Key solutions</span></a><a href="#tradeoffs"><span class="pf-toc__num">07</span><span>Trade-offs</span></a><a href="#outcome"><span class="pf-toc__num">08</span><span>Outcome</span></a><a href="#reflection"><span class="pf-toc__num">09</span><span>Reflection</span></a>
+    </nav>
+  </aside>
+
+  <!-- Middle scrolling column: structured 9-section case study sheet -->
+  <article class="pf-mid pf-mid--case">
+    <header class="pf-cs-hero">
+      <p class="pf-cs-eyebrow"><i class="pf-dot pf-dot--ink" aria-hidden="true"></i>Enterprise SaaS · Adaptive Workflow UI</p>
+      <h1 class="pf-cs-title" data-words>One role-aware flow for corporate and dealer registrations.</h1>
+      <p class="pf-cs-lead pf-fade">DistributorPower Registration connects automotive distributors with external dealer networks to register retail and demonstrator vehicles with accurate warranty dates, ownership, and campaign checks. I translated a dense PRD into a unified five-step adaptive stepper and centralized Registrations table built directly in HTML/Angular.</p>
+      <dl class="pf-mobile-meta"><div><dt>Role</dt><dd>UI Designer &amp; Angular Front-end</dd></div><div><dt>Client</dt><dd>Pentana Solutions</dd></div><div><dt>Team</dt><dd>Trung Nguyen (UI/FE), Matthew (BA)</dd></div><div><dt>Tools</dt><dd>VS Code (Primary), Figma</dd></div></dl>
+      <figure class="pf-figure" data-lightbox-item>
+  <div class="pf-figure__frame">
+    <div class="pf-media pf-media--contain">
+      <img src="../../assets/img/pentana-registration/registration-list.jpg" width="1600" height="917" alt="DistributorPower Registrations list UI with VIN search, Parts and Units toggle, saved column/filter pills, pipeline status tags, and Add New Registration CTA" fetchpriority="high">
+    </div>
+  </div>
+  <figcaption><span>Centralized Registrations workbench giving corporate and dealer staff one scannable hub to filter, inspect, and launch vehicle registrations.</span><span class="pf-figure__hint">Click to zoom</span></figcaption>
+</figure>
+      <div class="pf-stats pf-fade"><div class="pf-stat"><span class="pf-stat__val">3 sale types</span><span class="pf-stat__label">One unified stepper</span><p class="pf-stat__note">Handles Retail, Dealer Demonstrator, and Company Demonstrator without separate screens.</p></div><div class="pf-stat"><span class="pf-stat__val">5 adaptive steps</span><span class="pf-stat__label">Conditional Step 4</span><p class="pf-stat__note">Specifications automatically hide for Demonstrator flows while fields auto-populate.</p></div><div class="pf-stat"><span class="pf-stat__val">2 user contexts</span><span class="pf-stat__label">Corporate &amp; Dealer</span><p class="pf-stat__note">Enforces ownership-based data visibility natively inside shared UI components.</p></div></div>
+    </header>
+
+    <section class="pf-sec" id="context" aria-labelledby="h-context">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">01 · Context</p>
+        <h2 class="pf-sec__title" id="h-context">Connecting internal distributors and external dealers on one screen.</h2>
+      </div>
+      <p class="pf-prose">Vehicle registration sits at a high-stakes operational handoff inside DistributorPower: every recorded sale locks warranty start dates, campaign validations, rebates, and legal ownership records.</p><p class="pf-prose">Pentana needed one shared registration capability serving both internal corporate users (full visibility) and external dealer users (strictly scoped to their own stock) without maintaining duplicate codebases.</p>
+      <div class="pf-grid pf-grid--4"><div class="pf-cell pf-cell--subtle"><span class="pf-cell__kicker">Platform</span><h3 class="pf-cell__title">DistributorPower Web</h3></div><div class="pf-cell pf-cell--subtle"><span class="pf-cell__kicker">Contexts</span><h3 class="pf-cell__title">Corporate &amp; Dealer Connect</h3></div><div class="pf-cell pf-cell--subtle"><span class="pf-cell__kicker">Sale Types</span><h3 class="pf-cell__title">Retail · Dealer Demo · Co. Demo</h3></div><div class="pf-cell pf-cell--subtle"><span class="pf-cell__kicker">Delivery</span><h3 class="pf-cell__title">PRD Audit · UI · Angular HTML</h3></div></div>
+    </section>
+
+    <section class="pf-sec" id="problem" aria-labelledby="h-problem">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">02 · Problem</p>
+        <h2 class="pf-sec__title" id="h-problem">Fragmented workflows, late errors, and repetitive manual entry.</h2>
+      </div>
+      <p class="pf-prose">Registration staff processed high volumes of units under strict warranty and compliance rules, yet legacy processes worked against them.</p>
+      <div class="pf-grid pf-grid--3"><div class="pf-cell"><h3 class="pf-cell__title">Separate workflows per sale type</h3><p class="pf-cell__body">Retail, Dealer Demonstrator, and Company Demonstrator operated across disconnected processes, forcing users to memorize rules per transaction type.</p></div><div class="pf-cell"><h3 class="pf-cell__title">Validation only on final submit</h3><p class="pf-cell__body">Critical checks including VIN eligibility, campaign blocks, and warranty date rules surfaced only after submission, forcing frustrating backtracking.</p></div><div class="pf-cell"><h3 class="pf-cell__title">Excessive manual repetition</h3><p class="pf-cell__body">High-frequency demonstrator entries forced staff to re-enter obvious defaults such as dealer owner entity, purpose code, and warranty start date.</p></div></div>
+    </section>
+
+    <section class="pf-sec" id="role" aria-labelledby="h-role">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">03 · My role</p>
+        <h2 class="pf-sec__title" id="h-role">PRD detective work, stepper architecture, and Angular UI build.</h2>
+      </div>
+      <div class="pf-grid pf-grid--3"><div class="pf-cell"><h3 class="pf-cell__title">PRD Gap Analysis</h3><p class="pf-cell__body">Dissected the Registration PRD to map conditional rules, role restrictions, and missing UI states before drawing high-fidelity screens.</p></div><div class="pf-cell"><h3 class="pf-cell__title">Adaptive Stepper Design</h3><p class="pf-cell__body">Iterated with Pentana from a dense 3-step accordion concept to a crisp, low-cognitive-load 5-step wizard with persistent unit context.</p></div><div class="pf-cell"><h3 class="pf-cell__title">List &amp; Component Build</h3><p class="pf-cell__body">Crafted the Registrations table and stepper screens directly in HTML/Angular, maintaining visual parity across the DistributorPower suite.</p></div></div>
+    </section>
+
+    <section class="pf-sec" id="approach" aria-labelledby="h-approach">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">04 · Approach</p>
+        <h2 class="pf-sec__title" id="h-approach">Map every PRD rule, surface hidden gaps, refine with client.</h2>
+      </div>
+      <p class="pf-prose">Enterprise forms fail when edge cases hide in text specs. Turning the PRD into visual flow diagrams revealed missing screen elements early enough to fix collaboratively with Pentana.</p>
+      <div class="pf-grid pf-grid--6"><div class="pf-cell"><span class="pf-cell__kicker">01</span><h3 class="pf-cell__title">PRD Breakdown</h3><p class="pf-cell__body">Extracted all three registration types, ownership rules, and validation triggers.</p></div><div class="pf-cell"><span class="pf-cell__kicker">02</span><h3 class="pf-cell__title">Gap Identification</h3><p class="pf-cell__body">Flagged incomplete PRD behaviors and ecosystem pattern mismatches.</p></div><div class="pf-cell"><span class="pf-cell__kicker">03</span><h3 class="pf-cell__title">Flow Blueprint</h3><p class="pf-cell__body">Mapped conditional branching across Retail vs Demonstrator registrations.</p></div><div class="pf-cell"><span class="pf-cell__kicker">04</span><h3 class="pf-cell__title">Layout Trade-off</h3><p class="pf-cell__body">Tested 3-step accordions vs dedicated 5-step progression with Pentana.</p></div><div class="pf-cell"><span class="pf-cell__kicker">05</span><h3 class="pf-cell__title">Smart Defaults</h3><p class="pf-cell__body">Defined auto-populated dealer, owner, and warranty fields from Step 1 unit data.</p></div><div class="pf-cell"><span class="pf-cell__kicker">06</span><h3 class="pf-cell__title">UI &amp; HTML Build</h3><p class="pf-cell__body">Delivered both Create New Registration wizard and Registration List views.</p></div></div>
+      <figure class="pf-figure" data-lightbox-item>
+  <div class="pf-figure__frame">
+    <div class="pf-media pf-media--contain">
+      <img src="../../assets/img/pentana-registration/overview-context.png" width="1135" height="688" alt="DistributorPower Registration module context connecting corporate teams and external dealer networks" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <figcaption><span>Platform overview mapping corporate versus dealer-connect data visibility across shared registration workflows.</span><span class="pf-figure__hint">Click to zoom</span></figcaption>
+</figure><figure class="pf-figure" data-lightbox-item>
+  <div class="pf-figure__frame">
+    <div class="pf-media pf-media--contain">
+      <img src="../../assets/img/pentana-registration/prd-userflow.jpg" width="1471" height="1500" alt="Registration requirement userflow and early mockup extracted directly from the PRD specification" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <figcaption><span>Requirement userflow translating dense PRD business rules into concrete conditional screens.</span><span class="pf-figure__hint">Click to zoom</span></figcaption>
+</figure>
+    </section>
+
+    <section class="pf-sec" id="deep-dive" aria-labelledby="h-deep-dive">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">05 · Adaptive 5-Step Flow &amp; Role Visibility</p>
+        <h2 class="pf-sec__title" id="h-deep-dive">Making complex branching feel effortless.</h2>
+      </div>
+      <p class="pf-prose">Instead of forcing users to decode which fields apply to their sale type, the stepper adapts dynamically the moment a user picks Registration Type and Unit in Step 1. A pinned Unit Information bar remains visible across Steps 2 to 5 so staff never lose track of the VIN or stock number they are editing.</p>
+      <div class="pf-table-wrap">
+        <table class="pf-table">
+          <thead><tr><th>Registration Type</th><th>Step 4 (Specifications)</th><th>Intelligent Field Defaulting</th></tr></thead>
+          <tbody><tr><td>Retail Sale</td><td>Visible and required (Engine capacity, power, torque specs).</td><td>Auto-fills Selling Dealer and Unit metadata from Step 1; exposes Retail Owner, Fleet PO, and Leasing fields.</td></tr><tr><td>Dealer Demonstrator</td><td>Automatically skipped to shorten flow.</td><td>Auto-populates Selling Dealer as Registered Demo Owner, Purpose Code, and default Warranty Start Date.</td></tr><tr><td>Company Demonstrator</td><td>Automatically skipped to shorten flow.</td><td>Applies internal corporate ownership context and role-gated fields automatically.</td></tr></tbody>
+        </table>
+      </div>
+      
+      <figure class="pf-figure" data-lightbox-item>
+  <div class="pf-figure__frame">
+    <div class="pf-media pf-media--contain">
+      <img src="../../assets/img/pentana-registration/design-decisions.png" width="867" height="526" alt="Annotated design decision board highlighting missing PRD states and DistributorPower consistency fixes" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <figcaption><span>Design decision audit resolving undocumented PRD states and aligning controls with DistributorPower patterns.</span><span class="pf-figure__hint">Click to zoom</span></figcaption>
+</figure>
+    </section>
+
+    <section class="pf-sec" id="solutions" aria-labelledby="h-solutions">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">06 · Key solutions</p>
+        <h2 class="pf-sec__title" id="h-solutions">Structured progression backed by high-density clarity.</h2>
+      </div>
+      <div class="pf-sub"><h3 class="pf-sub__title">1. Dedicated 5-step stepper with persistent unit summary.</h3><p class="pf-prose">An early concept compressed the first three sections into one accordion step to minimize clicks. Together with Pentana, we found that stacking too many compliance fields on one screen increased error risk.</p><p class="pf-prose">The final five-step horizontal stepper (Unit Selection, Registration Information, Owner Detail, Specification, Summary) gives staff unmistakable progress, inline validation before advancing, and a final Summary review combining Unit Information, Rebates totals (Ex-GST and GST), and Specifications.</p><figure class="pf-figure" data-lightbox-item>
+  <div class="pf-figure__frame">
+    <div class="pf-media pf-media--contain">
+      <img src="../../assets/img/pentana-registration/stepper-flow.jpg" width="1600" height="664" alt="All five screens of the New Registration stepper from Unit Selection through Registration Information, Owner Detail, Specification, and Summary with Rebates" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <figcaption><span>Complete 5-step New Registration wizard featuring persistent Unit Information strip and structured final Summary with Rebates breakdown.</span><span class="pf-figure__hint">Click to zoom</span></figcaption>
+</figure></div><div class="pf-sub"><h3 class="pf-sub__title">2. Conditional steps and auto-population that cut repetitive typing.</h3><p class="pf-prose">Selecting a Demonstrator type automatically bypasses Step 4 (Specifications) and pre-fills predictable fields including Selling Dealer and Registered Demo Owner straight from the unit chosen in Step 1.</p><p class="pf-prose">Combined with early inline validation on VIN eligibility and warranty rules, staff fix issues immediately in context rather than restarting from scratch.</p><figure class="pf-figure" data-lightbox-item>
+  <div class="pf-figure__frame">
+    <div class="pf-media pf-media--contain">
+      <img src="../../assets/img/pentana-registration/conditional-steps.png" width="2541" height="847" alt="Detailed comparison of conditional stepper behavior and auto-populated fields across Retail and Demonstrator types" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <figcaption><span>Conditional logic in action: auto-populated unit and dealer fields plus dynamic step visibility based on Registration Type.</span><span class="pf-figure__hint">Click to zoom</span></figcaption>
+</figure></div><div class="pf-sub"><h3 class="pf-sub__title">3. Centralized Registrations workbench for daily management.</h3><p class="pf-prose">Alongside creation, the Registrations List provides a crisp operational hub featuring VIN/Stock/Dealer search, a Parts/Units segmented control, saved Column and Filter pickers, and color-coded status pills (Dealer Stock, Frozen, Campaign, Registered, Unregistered, Damaged).</p><p class="pf-prose">Every visual token stays aligned with Pentana Reporting so users moving between DistributorPower modules face zero relearning.</p><figure class="pf-figure" data-lightbox-item>
+  <div class="pf-figure__frame">
+    <div class="pf-media pf-media--contain">
+      <img src="../../assets/img/pentana-registration/registration-list.jpg" width="1600" height="917" alt="High-fidelity Registrations data table showing status tags, hold reasons, and toolbar controls" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <figcaption><span>Registrations List UI: semantic status pills, instant hold-reason scanning, and consistent DistributorPower table chrome.</span><span class="pf-figure__hint">Click to zoom</span></figcaption>
+</figure></div>
+    </section>
+
+    <section class="pf-sec" id="tradeoffs" aria-labelledby="h-tradeoffs">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">07 · Trade-offs</p>
+        <h2 class="pf-sec__title" id="h-tradeoffs">Clarity over artificial click-count reduction.</h2>
+      </div>
+      <div class="pf-tradeoffs"><div class="pf-tradeoff"><span class="pf-tradeoff__pair">3-Step Accordion vs 5-Step Wizard</span><p class="pf-tradeoff__text">Our first draft tried capping the flow at 3 steps using accordions. Moving to 5 focused steps slightly increased step clicks, yet markedly lowered cognitive overload and matched dealer mental models.</p></div><div class="pf-tradeoff"><span class="pf-tradeoff__pair">Manual Entry vs Smart Defaults</span><p class="pf-tradeoff__text">Auto-filling Selling Dealer and Demo Owner eliminated repetitive typing while keeping fields editable so exceptions never hit a dead end.</p></div><div class="pf-tradeoff"><span class="pf-tradeoff__pair">Separate Dealer App vs Role-Aware UI</span><p class="pf-tradeoff__text">Enforcing ownership rules inside shared components required careful state mapping upfront, saving Pentana from maintaining two divergent products.</p></div></div>
+    </section>
+
+    <section class="pf-sec" id="outcome" aria-labelledby="h-outcome">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">08 · Outcome</p>
+        <h2 class="pf-sec__title" id="h-outcome">Strong client approval across both wizard and workbench.</h2>
+      </div>
+      <ul class="pf-outcomes"><li>Delivered both the adaptive 5-step Create New Registration flow and the centralized Registrations List with strong stakeholder satisfaction from Pentana.</li><li>Worked directly with Pentana in peer-to-peer collaboration across multiple DistributorPower modules, balancing UI design, design system governance, PRD research, and front-end build.</li><li>Established repeatable stepper, inline validation, and table patterns reused across the broader automotive distributor platform.</li></ul>
+      <p class="pf-prose">Completed in direct collaboration with Pentana Solutions and BA Matthew as part of the DistributorPower suite.</p>
+      
+    </section>
+
+    <section class="pf-sec" id="reflection" aria-labelledby="h-reflection">
+      <div class="pf-sec__head">
+        <p class="pf-sec__num">09 · Reflection</p>
+        <h2 class="pf-sec__title" id="h-reflection">What I learned.</h2>
+      </div>
+      <div class="pf-grid pf-grid--3"><div class="pf-cell"><h3 class="pf-cell__title">Fewer steps are not always faster.</h3><p class="pf-cell__body">Cramming dense compliance data into fewer screens creates cognitive friction; clean progressive disclosure lets experienced operators move faster with fewer mistakes.</p></div><div class="pf-cell"><h3 class="pf-cell__title">PRDs are a starting point, not the finished UX.</h3><p class="pf-cell__body">Drawing every state visually uncovered edge cases and missing fields that text specifications naturally gloss over.</p></div><div class="pf-cell"><h3 class="pf-cell__title">Shared system fluency multiplies impact.</h3><p class="pf-cell__body">Owning UI, design system tokens, and Angular markup together meant design intent survived intact all the way into production.</p></div></div>
+    </section>
+
+    <a class="pf-next" href="../zonie/">
+      <div>
+        <span class="pf-next__kicker">Read next <i class="pf-dot" aria-hidden="true"></i> Personal Project · Solo UI &amp; AI Front-end</span>
+        <p class="pf-next__title">Zonie: From solo idea to a 108-file native iOS app built with AI.</p>
+      </div>
+      <span class="pf-next__arrow" aria-hidden="true">→</span>
+    </a>
+
+    <footer class="pf-foot" id="contact">
+      <a class="pf-talk" href="mailto:trungnguyenminh1994@gmail.com" aria-label="Email Trung Nguyen at trungnguyenminh1994@gmail.com">
+        <span class="pf-talk__track" aria-hidden="true"><span>Let's Talk<i class="pf-dot pf-dot--lg" aria-hidden="true"></i></span><span>Let's Talk<i class="pf-dot pf-dot--lg" aria-hidden="true"></i></span><span>Let's Talk<i class="pf-dot pf-dot--lg" aria-hidden="true"></i></span><span>Let's Talk<i class="pf-dot pf-dot--lg" aria-hidden="true"></i></span><span>Let's Talk<i class="pf-dot pf-dot--lg" aria-hidden="true"></i></span></span>
+      </a>
+      <div class="pf-foot__bar">
+        <p>Trung Nguyen · UX/UI Designer · Ho Chi Minh City</p>
+        <p>© 2026 All rights reserved</p>
+      </div>
+    </footer>
+  </article>
+
+  <!-- Right sticky column: project specs + persistent "Contact me" block -->
+  <aside class="pf-right" aria-label="Project specifications and contact">
+    <div class="pf-spec pf-fade-late">
+      <p class="pf-spec__head">Project Specs</p>
+      <dl><div class="pf-spec__row"><dt>Role</dt><dd>UI Designer &amp; Angular Front-end</dd></div><div class="pf-spec__row"><dt>Client</dt><dd>Pentana Solutions</dd></div><div class="pf-spec__row"><dt>Team</dt><dd>Trung Nguyen (UI/FE), Matthew (BA)</dd></div><div class="pf-spec__row"><dt>Tools</dt><dd>VS Code (Primary), Figma</dd></div><div class="pf-spec__row"><dt>Platform</dt><dd>Enterprise Web App (Angular)</dd></div></dl>
+      
+    </div>
+    <div class="pf-contact pf-fade-late">
+      <div class="pf-contact__group">
+        <p class="pf-contact__cap">Contact me</p>
+        <div class="pf-contact__links">
+          <span class="pf-mail-row">
+            <a class="pf-mail" href="mailto:trungnguyenminh1994@gmail.com">trungnguyenminh1994@gmail.com</a>
+            <button type="button" class="pf-copy-btn" data-copy-email="trungnguyenminh1994@gmail.com" aria-label="Copy email address">Copy</button>
+          </span>
+          <a class="pf-tel" href="tel:+84907993453">+84 907 99 3453</a>
+        </div>
+      </div>
+      <span class="pf-year">© 2026</span>
+    </div>
+  </aside>
+</main>
+
+<script src="../../assets/js/portfolio.js" defer></script>
+</body>
+</html>

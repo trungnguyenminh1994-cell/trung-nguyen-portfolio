@@ -1,0 +1,305 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200" role="img" aria-label="Zonie iOS app three-screen showcase: Map discovery, Zone Canvas, and Focus Mode">
+  <defs>
+    <pattern id="dotgrid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="1.4" fill="#D8D8D8"/>
+    </pattern>
+    <pattern id="canvasdots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="8" r="1.2" fill="#D6D6D6"/>
+    </pattern>
+    <filter id="phShadow" x="-15%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#121212" flood-opacity="0.16"/>
+    </filter>
+    <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#121212" flood-opacity="0.12"/>
+    </filter>
+    <clipPath id="clipL"><rect x="136" y="218" width="384" height="804" rx="44"/></clipPath>
+    <clipPath id="clipC"><rect x="608" y="138" width="384" height="804" rx="44"/></clipPath>
+    <clipPath id="clipR"><rect x="1080" y="218" width="384" height="804" rx="44"/></clipPath>
+  </defs>
+
+  <!-- Background studio dot-grid paper -->
+  <rect width="1600" height="1200" fill="#F3F3F3"/>
+  <rect width="1600" height="1200" fill="url(#dotgrid)"/>
+
+  <!-- Subtle top studio caption strip -->
+  <text x="64" y="72" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" letter-spacing="0.06em" fill="#666666">ZONIE · IOS SWIFTUI · PERSONAL PROJECT</text>
+  <text x="1536" y="72" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="500" fill="#666666">MAP · ZONE CANVAS · FOCUS MODE</text>
+
+  <!-- ==================== LEFT PHONE: MAP SCREEN ==================== -->
+  <g filter="url(#phShadow)">
+    <rect x="124" y="206" width="408" height="828" rx="54" fill="#181818"/>
+    <rect x="136" y="218" width="384" height="804" rx="44" fill="#F6F6F6"/>
+  </g>
+  <g clip-path="url(#clipL)">
+    <!-- Stylized HCMC Map base -->
+    <rect x="136" y="218" width="384" height="804" fill="#EFECE6"/>
+    <!-- Parks & water -->
+    <path d="M 410 218 L 520 218 L 520 560 L 455 520 Q 430 430 410 218 Z" fill="#D6E6F2"/>
+    <rect x="165" y="455" width="118" height="92" rx="18" fill="#DCEBD5"/>
+    <rect x="330" y="650" width="130" height="85" rx="16" fill="#DCEBD5"/>
+    <!-- Streets -->
+    <g stroke="#FFFFFF" stroke-linecap="round" fill="none">
+      <path d="M 120 340 L 535 415" stroke-width="10"/>
+      <path d="M 120 540 L 535 610" stroke-width="8"/>
+      <path d="M 240 210 L 295 1030" stroke-width="11"/>
+      <path d="M 385 210 L 345 1030" stroke-width="8"/>
+      <path d="M 120 740 L 535 690" stroke-width="6"/>
+      <path d="M 160 880 L 520 820" stroke-width="6"/>
+    </g>
+    <!-- 6km Discovery circle & cluster tint -->
+    <circle cx="315" cy="600" r="165" fill="#FF24BD" fill-opacity="0.06" stroke="#FF24BD" stroke-opacity="0.28" stroke-width="1.5" stroke-dasharray="6 6"/>
+    <!-- Direction curved arc -->
+    <path d="M 282 652 Q 320 560 368 485" fill="none" stroke="#FF24BD" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 6"/>
+    <!-- Cluster bubble -->
+    <g transform="translate(368, 485)">
+      <circle r="38" fill="#FF24BD" fill-opacity="0.16"/>
+      <circle r="24" fill="#FF24BD"/>
+      <text y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">4</text>
+    </g>
+    <!-- User location dot (Amber #FFB400) -->
+    <g transform="translate(282, 652)">
+      <circle r="22" fill="#FFB400" fill-opacity="0.22"/>
+      <circle r="10" fill="#FFB400" stroke="#FFFFFF" stroke-width="3"/>
+    </g>
+    <!-- Status bar -->
+    <text x="166" y="246" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#212121">9:41</text>
+    <rect x="282" y="230" width="92" height="24" rx="12" fill="#181818"/>
+    <!-- Top floating search bar + avatar -->
+    <g filter="url(#cardShadow)">
+      <rect x="156" y="272" width="292" height="44" rx="22" fill="#FFFFFF"/>
+      <circle cx="478" cy="294" r="22" fill="#FFB400" stroke="#FFFFFF" stroke-width="2.5"/>
+    </g>
+    <text x="180" y="299" font-family="Inter, sans-serif" font-size="13" fill="#8C8C8C">Search zones near you...</text>
+    <text x="478" y="299" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2B1D00">TN</text>
+
+    <!-- New reaction badge + Floating Zone Pill Card -->
+    <g filter="url(#cardShadow)" transform="translate(158, 360)">
+      <rect x="12" y="-12" width="104" height="22" rx="11" fill="#FFB400"/>
+      <text x="64" y="3" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#2B1D00">New reaction</text>
+      <rect x="0" y="6" width="270" height="82" rx="18" fill="#FFFFFF" stroke="#FFB400" stroke-width="2"/>
+      <!-- Collage thumbnail -->
+      <rect x="10" y="16" width="62" height="62" rx="12" fill="#F3F3F3"/>
+      <rect x="15" y="22" width="26" height="32" rx="4" fill="#FFB400" transform="rotate(-6 28 38)"/>
+      <rect x="38" y="28" width="28" height="36" rx="4" fill="#FF24BD" transform="rotate(8 52 46)"/>
+      <circle cx="58" cy="24" r="7" fill="#3FBF5F"/>
+      <!-- Text -->
+      <text x="84" y="36" font-family="Inter, sans-serif" font-size="15" font-weight="800" fill="#212121">Ben Thanh Coffee</text>
+      <text x="84" y="54" font-family="Inter, sans-serif" font-size="11" fill="#6E6E6E">District 1, Ho Chi Minh City</text>
+      <text x="84" y="74" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FF24BD">+3 newest Notes</text>
+    </g>
+
+    <!-- Second Zone Pill Card -->
+    <g filter="url(#cardShadow)" transform="translate(174, 718)">
+      <rect x="0" y="0" width="256" height="76" rx="18" fill="#FFFFFF" stroke="#E4E4E4" stroke-width="1"/>
+      <rect x="10" y="10" width="56" height="56" rx="12" fill="#F3F3F3"/>
+      <rect x="18" y="18" width="40" height="40" rx="8" fill="#212121"/>
+      <circle cx="38" cy="38" r="10" fill="#FFB400"/>
+      <text x="78" y="30" font-family="Inter, sans-serif" font-size="14" font-weight="800" fill="#212121">Thao Dien Alley</text>
+      <text x="78" y="47" font-family="Inter, sans-serif" font-size="11" fill="#6E6E6E">Thu Duc · 1.4 km away</text>
+      <text x="78" y="64" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#6E6E6E">12 notes · Open 24h</text>
+    </g>
+
+    <!-- Off-screen radar pill -->
+    <g filter="url(#cardShadow)" transform="translate(382, 578)">
+      <circle cx="24" cy="24" r="22" fill="#212121" stroke="#FFB400" stroke-width="2.5"/>
+      <text x="24" y="29" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFB400">YOU</text>
+    </g>
+
+    <!-- Floating Bottom Bar (76pt chrome) -->
+    <g filter="url(#cardShadow)" transform="translate(174, 926)">
+      <rect width="308" height="64" rx="32" fill="#FFFFFF"/>
+      <rect x="8" y="8" width="94" height="48" rx="24" fill="#FFB400"/>
+      <text x="55" y="37" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#2B1D00">Zones</text>
+      <text x="158" y="37" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#6E6E6E">Saved</text>
+      <text x="252" y="37" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#6E6E6E">Friends</text>
+    </g>
+  </g>
+
+  <!-- ==================== CENTER HERO PHONE: ZONE CANVAS ==================== -->
+  <g filter="url(#phShadow)">
+    <rect x="596" y="126" width="408" height="828" rx="54" fill="#181818"/>
+    <rect x="608" y="138" width="384" height="804" rx="44" fill="#F6F6F6"/>
+  </g>
+  <g clip-path="url(#clipC)">
+    <rect x="608" y="138" width="384" height="804" fill="#F6F6F6"/>
+    <rect x="608" y="138" width="384" height="804" fill="url(#canvasdots)"/>
+    <!-- Status bar -->
+    <text x="638" y="166" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#212121">9:41</text>
+    <rect x="754" y="150" width="92" height="24" rx="12" fill="#181818"/>
+
+    <!-- Zone Header -->
+    <g filter="url(#cardShadow)" transform="translate(626, 190)">
+      <circle cx="20" cy="20" r="20" fill="#FFFFFF"/>
+      <path d="M 23 14 L 17 20 L 23 26" fill="none" stroke="#212121" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="52" y="0" width="244" height="40" rx="20" fill="#FFFFFF"/>
+      <text x="174" y="18" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#212121">BEN THANH COFFEE</text>
+      <text x="174" y="32" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6E6E6E">18 Notes · Open for 6 days</text>
+      <circle cx="328" cy="20" r="20" fill="#FFFFFF"/>
+      <circle cx="322" cy="20" r="2" fill="#212121"/><circle cx="328" cy="20" r="2" fill="#212121"/><circle cx="334" cy="20" r="2" fill="#212121"/>
+    </g>
+
+    <!-- Board 1: YOUR BOARD (Amber #FFB400) -->
+    <g filter="url(#cardShadow)" transform="translate(632, 278)">
+      <!-- Owner label -->
+      <rect x="0" y="-28" width="82" height="22" rx="11" fill="#FFB400"/>
+      <text x="41" y="-13" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#2B1D00">You · TN</text>
+      <!-- Square board -->
+      <rect width="166" height="166" rx="18" fill="#FFFFFF" stroke="#FFB400" stroke-width="2.5"/>
+      <!-- Mini collage inside -->
+      <rect x="16" y="18" width="70" height="86" rx="8" fill="#212121" transform="rotate(-5 51 61)"/>
+      <rect x="21" y="23" width="60" height="62" rx="4" fill="#FFB400" fill-opacity="0.85" transform="rotate(-5 51 61)"/>
+      <path d="M 92 48 Q 118 24 142 54 T 148 92" fill="none" stroke="#FF24BD" stroke-width="4" stroke-linecap="round"/>
+      <rect x="78" y="102" width="76" height="30" rx="8" fill="#FFF3D6"/>
+      <text x="116" y="121" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="800" fill="#212121">Iced latte!</text>
+      <!-- Reaction capsule underneath -->
+      <rect x="0" y="174" width="96" height="24" rx="12" fill="#FFFFFF" stroke="#FFB400" stroke-width="1.5"/>
+      <text x="48" y="190" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">🔥 4 · ✨ 2</text>
+    </g>
+
+    <!-- Board 2: NEWEST NOTE (Magenta #FF24BD) -->
+    <g filter="url(#cardShadow)" transform="translate(814, 344)">
+      <rect x="0" y="-28" width="112" height="22" rx="11" fill="#FF24BD"/>
+      <text x="56" y="-13" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">Hana · Newest</text>
+      <rect width="154" height="154" rx="18" fill="#FFFFFF" stroke="#FF24BD" stroke-width="2.5"/>
+      <rect x="18" y="20" width="74" height="92" rx="8" fill="#FFE0F7" transform="rotate(4 55 66)"/>
+      <circle cx="114" cy="54" r="22" fill="#3FBF5F" fill-opacity="0.85"/>
+      <text x="77" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">Rainy afternoon</text>
+    </g>
+
+    <!-- Board 3: Friend board -->
+    <g filter="url(#cardShadow)" transform="translate(646, 534)">
+      <rect x="0" y="-28" width="76" height="22" rx="11" fill="#FFFFFF" stroke="#E4E4E4"/>
+      <text x="38" y="-13" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">Minh</text>
+      <rect width="150" height="150" rx="18" fill="#FFFFFF" stroke="#E4E4E4" stroke-width="1.2"/>
+      <rect x="18" y="18" width="114" height="72" rx="10" fill="#212121"/>
+      <rect x="30" y="34" width="90" height="10" rx="5" fill="#FFB400"/>
+      <rect x="30" y="54" width="60" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.5"/>
+      <text x="75" y="122" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#6E6E6E">30s Lo-fi Loop</text>
+      <!-- Friend cover badge -->
+      <circle cx="132" cy="132" r="11" fill="#3FBF5F" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+
+    <!-- Board 4: Partial board peeking bottom-right -->
+    <g filter="url(#cardShadow)" transform="translate(822, 574)">
+      <rect x="0" y="-28" width="70" height="22" rx="11" fill="#FFFFFF" stroke="#E4E4E4"/>
+      <text x="35" y="-13" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">Linh</text>
+      <rect width="146" height="146" rx="18" fill="#FFFFFF" stroke="#E4E4E4" stroke-width="1.2"/>
+      <path d="M 28 96 Q 62 34 114 78" fill="none" stroke="#2F8CFF" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="52" cy="48" r="14" fill="#FFB400"/>
+    </g>
+
+    <!-- Zone Canvas Radar Anchor Pin -->
+    <g filter="url(#cardShadow)" transform="translate(920, 748)">
+      <circle cx="24" cy="24" r="22" fill="#212121" stroke="#FFFFFF" stroke-width="2.5"/>
+      <text x="24" y="28" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#FFB400">+2</text>
+    </g>
+
+    <!-- Pinned Bottom Action Bar -->
+    <g filter="url(#cardShadow)" transform="translate(656, 846)">
+      <rect width="288" height="64" rx="32" fill="#FFFFFF"/>
+      <circle cx="38" cy="32" r="22" fill="#F3F3F3"/>
+      <text x="38" y="36" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">Chat</text>
+      <rect x="74" y="10" width="140" height="44" rx="22" fill="#FFB400"/>
+      <text x="144" y="36" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2B1D00">Edit my board</text>
+      <circle cx="250" cy="32" r="22" fill="#F3F3F3"/>
+      <text x="250" y="36" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">List</text>
+    </g>
+  </g>
+
+  <!-- ==================== RIGHT PHONE: FOCUS MODE ==================== -->
+  <g filter="url(#phShadow)">
+    <rect x="1068" y="206" width="408" height="828" rx="54" fill="#181818"/>
+    <rect x="1080" y="218" width="384" height="804" rx="44" fill="#FFFFFF"/>
+  </g>
+  <g clip-path="url(#clipR)">
+    <rect x="1080" y="218" width="384" height="804" fill="#FCFCFC"/>
+    <rect x="1080" y="218" width="384" height="804" fill="url(#canvasdots)"/>
+    <text x="1110" y="246" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#212121">9:41</text>
+    <rect x="1226" y="230" width="92" height="24" rx="12" fill="#181818"/>
+
+    <!-- Focus Mode Header -->
+    <g filter="url(#cardShadow)" transform="translate(1098, 270)">
+      <circle cx="20" cy="20" r="20" fill="#FFFFFF"/>
+      <path d="M 23 14 L 17 20 L 23 26" fill="none" stroke="#212121" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="52" y="0" width="224" height="40" rx="20" fill="#FFFFFF"/>
+      <text x="164" y="24" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="800" fill="#212121">YOUR BOARD · FOCUS</text>
+      <rect x="288" y="4" width="60" height="32" rx="16" fill="#212121"/>
+      <text x="318" y="24" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">Done</text>
+    </g>
+
+    <!-- Freeform Board Canvas Items -->
+    <!-- Photo Polaroid with selection handles -->
+    <g transform="translate(1126, 376) rotate(-4)">
+      <g filter="url(#cardShadow)">
+        <rect width="174" height="214" rx="12" fill="#FFFFFF" stroke="#FFB400" stroke-width="2.5"/>
+        <rect x="12" y="12" width="150" height="156" rx="8" fill="#212121"/>
+        <!-- Abstract sunny rooftop art -->
+        <circle cx="118" cy="54" r="24" fill="#FFB400"/>
+        <path d="M 12 132 L 64 88 L 112 126 L 162 96 L 162 168 L 12 168 Z" fill="#FF24BD" fill-opacity="0.75"/>
+        <text x="87" y="194" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#212121">District 1 Sunset</text>
+      </g>
+      <!-- 3 Fixed-size Action Handles -->
+      <circle cx="0" cy="0" r="14" fill="#212121"/>
+      <text x="0" y="4" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#FFFFFF">↑</text>
+      <circle cx="174" cy="0" r="14" fill="#EE2233"/>
+      <text x="174" y="4" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">×</text>
+      <circle cx="174" cy="214" r="14" fill="#FFB400"/>
+      <text x="174" y="218" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="800" fill="#2B1D00">⤢</text>
+    </g>
+
+    <!-- Freeform glow marker stroke -->
+    <path d="M 1268 424 C 1320 390, 1388 412, 1364 468 C 1344 514, 1412 522, 1424 476" fill="none" stroke="#FF24BD" stroke-width="10" stroke-linecap="round" stroke-opacity="0.28"/>
+    <path d="M 1268 424 C 1320 390, 1388 412, 1364 468 C 1344 514, 1412 522, 1424 476" fill="none" stroke="#FF24BD" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Music clip card -->
+    <g filter="url(#cardShadow)" transform="translate(1254, 548) rotate(3)">
+      <rect width="170" height="62" rx="16" fill="#212121"/>
+      <circle cx="28" cy="31" r="16" fill="#FFB400"/>
+      <polygon points="24,24 24,38 35,31" fill="#2B1D00"/>
+      <text x="54" y="28" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">Saigon Midnight</text>
+      <text x="54" y="44" font-family="Inter, sans-serif" font-size="10" fill="#A4A4A4">Openverse · 0:30 clip</text>
+    </g>
+
+    <!-- Styled Text Item -->
+    <g transform="translate(1118, 654) rotate(-2)">
+      <rect width="194" height="44" rx="12" fill="#FFB400"/>
+      <text x="97" y="28" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="800" letter-spacing="0.02em" fill="#2B1D00">BEST SPOT IN D1!</text>
+    </g>
+
+    <!-- Visitor Reaction Card -->
+    <g filter="url(#cardShadow)" transform="translate(1224, 734)">
+      <rect width="204" height="66" rx="14" fill="#FFFFFF" stroke="#E4E4E4"/>
+      <circle cx="0" cy="0" r="14" fill="#FF24BD" stroke="#FFFFFF" stroke-width="2.5"/>
+      <text x="0" y="4" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="700" fill="#FFFFFF">H</text>
+      <text x="20" y="27" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">Hana reacted 🔥</text>
+      <text x="20" y="46" font-family="Inter, sans-serif" font-size="11" fill="#6E6E6E">See you here on Friday!</text>
+    </g>
+
+    <!-- Active Draw Status Pill -->
+    <g filter="url(#cardShadow)" transform="translate(1188, 868)">
+      <rect width="168" height="34" rx="17" fill="#FFFFFF" stroke="#E4E4E4"/>
+      <circle cx="20" cy="17" r="7" fill="#FF24BD"/>
+      <text x="36" y="21" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">Brush: Glow · Med</text>
+    </g>
+
+    <!-- Focus Mode 4-Tool Bar -->
+    <g filter="url(#cardShadow)" transform="translate(1118, 926)">
+      <rect width="308" height="64" rx="32" fill="#FFFFFF"/>
+      <text x="46" y="37" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#212121">Camera</text>
+      <text x="118" y="37" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#212121">Sticker</text>
+      <rect x="156" y="10" width="72" height="44" rx="22" fill="#212121"/>
+      <text x="192" y="37" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Draw</text>
+      <text x="266" y="37" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#212121">Text</text>
+    </g>
+  </g>
+
+  <!-- Bottom clean labels under phones -->
+  <text x="328" y="1096" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#121212">01 · Map Discovery</text>
+  <text x="328" y="1118" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#666666">6 km radius · Clusters · Radar pins</text>
+
+  <text x="800" y="1016" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#121212">02 · Zone Canvas (4000×4000)</text>
+  <text x="800" y="1038" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#666666">Collision-free board drag · Live reactions</text>
+
+  <text x="1272" y="1096" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#121212">03 · Focus Mode</text>
+  <text x="1272" y="1118" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#666666">Camera · Stickers · Glow draw · 30s music</text>
+</svg>

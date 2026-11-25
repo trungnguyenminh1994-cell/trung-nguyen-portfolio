@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img" aria-label="Zonie zero-native SwiftUI design system: Light and Dark color tokens, typography, chrome math, and component library">
+  <rect width="1600" height="1000" fill="#F7F7F7"/>
+  <!-- Outer hairline container -->
+  <rect x="36" y="36" width="1528" height="928" fill="#FFFFFF" stroke="#E3E3E3" stroke-width="1"/>
+
+  <!-- Header -->
+  <text x="76" y="88" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="0.06em" fill="#666666">ZONIE DESIGN SYSTEM · ZONIE/DESIGNSYSTEM/ (ZERO NATIVE SWIFTUI CHROME)</text>
+  <text x="76" y="126" font-family="Geist, Inter, system-ui, sans-serif" font-size="30" font-weight="600" letter-spacing="-0.03em" fill="#121212">Semantic Tokens: Dual-Accent Identity &amp; Light / Dark Architecture</text>
+  <line x1="76" y1="154" x2="1524" y2="154" stroke="#E3E3E3" stroke-width="1"/>
+
+  <!-- Row 1: Color Tokens (Left: Brand Meaning, Right: Light vs Dark) -->
+  <text x="76" y="196" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#121212">01 · ZColor — Load-Bearing Color Semantics</text>
+  <text x="76" y="218" font-family="Inter, sans-serif" font-size="12" fill="#666666">Color alone tells you whether an element belongs to you (#FFB400) or to a real-world place / fresh activity (#FF24BD).</text>
+
+  <!-- Primary Swatch -->
+  <g transform="translate(76, 244)">
+    <rect width="268" height="148" fill="#FFB400"/>
+    <text x="20" y="34" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#2B1D00">PRIMARY · "THIS IS YOU"</text>
+    <text x="20" y="102" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="#2B1D00">#FFB400</text>
+    <text x="20" y="126" font-family="Inter, sans-serif" font-size="11" fill="#2B1D00">User dot · Own board · Reaction highlight</text>
+  </g>
+  <!-- Tertiary Swatch -->
+  <g transform="translate(364, 244)">
+    <rect width="268" height="148" fill="#FF24BD"/>
+    <text x="20" y="34" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">TERTIARY · "PLACE / NEW"</text>
+    <text x="20" y="102" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">#FF24BD</text>
+    <text x="20" y="126" font-family="Inter, sans-serif" font-size="11" fill="#FFFFFF">Zone clusters · Newest Notes · Route line</text>
+  </g>
+  <!-- Semantic Accents -->
+  <g transform="translate(652, 244)">
+    <rect width="176" height="68" fill="#3FBF5F"/>
+    <text x="14" y="28" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">decoGreen</text>
+    <text x="14" y="50" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF">#3FBF5F · Live badge</text>
+
+    <rect y="80" width="176" height="68" fill="#EE2233"/>
+    <text x="14" y="108" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">danger</text>
+    <text x="14" y="130" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF">#EE2233 · Destructive</text>
+  </g>
+
+  <!-- Light vs Dark Surface Pair -->
+  <g transform="translate(860, 244)">
+    <!-- Light -->
+    <rect width="322" height="148" fill="#F6F6F6" stroke="#E3E3E3"/>
+    <text x="20" y="30" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#212121">LIGHT MODE SURFACES</text>
+    <rect x="20" y="46" width="134" height="38" fill="#FFFFFF" stroke="#E4E4E4"/>
+    <text x="32" y="69" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#212121">card #FFFFFF</text>
+    <rect x="168" y="46" width="134" height="38" fill="#212121"/>
+    <text x="180" y="69" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF">ink #212121</text>
+    <rect x="20" y="96" width="282" height="36" fill="#FFFFFF" stroke="#E4E4E4"/>
+    <text x="32" y="118" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#6E6E6E">inkSoft #6E6E6E (Audited WCAG AA ≥ 4.5:1)</text>
+
+    <!-- Dark -->
+    <rect x="342" width="322" height="148" fill="#161616"/>
+    <text x="362" y="30" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#F2F2F2">DARK MODE SURFACES</text>
+    <rect x="362" y="46" width="134" height="38" fill="#1E1E1E" stroke="#333333"/>
+    <text x="374" y="69" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#F2F2F2">card #1E1E1E</text>
+    <rect x="510" y="46" width="134" height="38" fill="#232323" stroke="#3D3D3D"/>
+    <text x="522" y="69" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#F2F2F2">paper2 #232323</text>
+    <rect x="362" y="96" width="282" height="36" fill="#1E1E1E" stroke="#333333"/>
+    <text x="374" y="118" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#9A9A9A">inkSoft #9A9A9A · dotGrid #3A3A3A</text>
+  </g>
+
+  <line x1="76" y1="432" x2="1524" y2="432" stroke="#E3E3E3" stroke-width="1"/>
+
+  <!-- Row 2: Typography & Chrome Math -->
+  <g transform="translate(76, 464)">
+    <text y="12" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#121212">02 · ZFont — UI Scale &amp; 6 Bundled Canvas Fonts</text>
+    <rect y="32" width="684" height="218" fill="#FAFAFA" stroke="#E3E3E3"/>
+    <text x="24" y="84" font-family="Impact, 'Arial Narrow', sans-serif" font-size="42" letter-spacing="0.02em" fill="#212121">ZONIE DISPLAY</text>
+    <text x="356" y="78" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#666666">Anton · displayXL 64 / L 24 / M 20 / S 16</text>
+    <line x1="24" y1="106" x2="660" y2="106" stroke="#E3E3E3"/>
+    <text x="24" y="138" font-family="Inter, sans-serif" font-size="18" font-weight="600" fill="#212121">Inter UI Body 16 · Caption 12 · Micro 10</text>
+    <text x="24" y="162" font-family="Inter, sans-serif" font-size="12" fill="#666666">Dynamic Type supported up to .xxLarge; scaled smoothly via ZFont.scale (393pt base).</text>
+    <line x1="24" y1="184" x2="660" y2="184" stroke="#E3E3E3"/>
+    <text x="24" y="210" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#666666">CANVAS FONTS:</text>
+    <text x="128" y="210" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#212121">Modern · Classic · Strong · Handwritten · Bubble · Pixel</text>
+  </g>
+
+  <g transform="translate(804, 464)">
+    <text y="12" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#121212">03 · ZChrome, ZSpace &amp; ZAnim — Formula-Driven Layout</text>
+    <rect y="32" width="720" height="218" fill="#FAFAFA" stroke="#E3E3E3"/>
+    <!-- Formula blocks -->
+    <rect x="24" y="54" width="320" height="74" fill="#FFFFFF" stroke="#E3E3E3"/>
+    <text x="40" y="78" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#666666">ZChrome.bottomBar = 76pt</text>
+    <text x="40" y="102" font-family="monospace" font-size="12" fill="#121212">primary(52) + sm(8)*2 + sm(8)</text>
+
+    <rect x="364" y="54" width="332" height="74" fill="#FFFFFF" stroke="#E3E3E3"/>
+    <text x="380" y="78" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#666666">ZChrome.aboveBottomBar = 92pt</text>
+    <text x="380" y="102" font-family="monospace" font-size="12" fill="#121212">bottomBar(76) + lg(16) → clamp/toast</text>
+
+    <rect x="24" y="144" width="672" height="84" fill="#FFFFFF" stroke="#E3E3E3"/>
+    <text x="40" y="170" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#666666">ZAnim &amp; ZMotionPolicy (Performance + Thermal-Aware Motion)</text>
+    <text x="40" y="194" font-family="Inter, sans-serif" font-size="12" fill="#121212">press spring(0.25, 0.7) · cameraFlight(0.45s) · InertiaScroller(0.998/ms)</text>
+    <text x="40" y="214" font-family="Inter, sans-serif" font-size="12" fill="#666666">Auto-pauses decorative loops under Reduce Motion, Low Power Mode, or thermal ≥ .serious.</text>
+  </g>
+
+  <line x1="76" y1="744" x2="1524" y2="744" stroke="#E3E3E3" stroke-width="1"/>
+
+  <!-- Row 3: Custom Component Strip -->
+  <g transform="translate(76, 774)">
+    <text y="12" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#121212">04 · Custom Zero-Native SwiftUI Component Kit</text>
+    <!-- Primary pill -->
+    <g transform="translate(0, 38)">
+      <rect width="168" height="44" rx="22" fill="#FFB400"/>
+      <text x="84" y="27" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#2B1D00">ZPillButton · Primary</text>
+      <text x="0" y="68" font-family="Inter, sans-serif" font-size="11" fill="#666666">minTap 44pt · scale 0.96</text>
+    </g>
+    <!-- Outline pill -->
+    <g transform="translate(196, 38)">
+      <rect width="164" height="44" rx="22" fill="#FFFFFF" stroke="#E4E4E4" stroke-width="1.5"/>
+      <text x="82" y="27" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#212121">ZPillButton · Outline</text>
+      <text x="0" y="68" font-family="Inter, sans-serif" font-size="11" fill="#666666">ZStroke.regular 1.5pt</text>
+    </g>
+    <!-- Destructive pill -->
+    <g transform="translate(388, 38)">
+      <rect width="160" height="44" rx="22" fill="#EE2233"/>
+      <text x="80" y="27" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Leave / Report</text>
+      <text x="0" y="68" font-family="Inter, sans-serif" font-size="11" fill="#666666">ZConfirmModal · Destructive</text>
+    </g>
+    <!-- Icon button + Radar pin -->
+    <g transform="translate(580, 38)">
+      <circle cx="22" cy="22" r="22" fill="#FFFFFF" stroke="#D6D6D6"/>
+      <text x="22" y="27" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#212121">+</text>
+      <circle cx="80" cy="22" r="22" fill="#212121" stroke="#FF24BD" stroke-width="2.5"/>
+      <text x="80" y="26" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#FFFFFF">NEW</text>
+      <text x="0" y="68" font-family="Inter, sans-serif" font-size="11" fill="#666666">ZIconButton · RadarPin</text>
+    </g>
+    <!-- ZNavRow preview -->
+    <g transform="translate(760, 34)">
+      <rect width="340" height="52" rx="12" fill="#FFFFFF" stroke="#E4E4E4"/>
+      <circle cx="26" cy="26" r="10" fill="#F3F3F3"/>
+      <text x="48" y="30" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#212121">ZNavRow · Settings Item</text>
+      <text x="316" y="30" text-anchor="end" font-family="Inter, sans-serif" font-size="13" fill="#6E6E6E">›</text>
+      <text x="0" y="72" font-family="Inter, sans-serif" font-size="11" fill="#666666">Full-row hit target · ZOpacity.faint press</text>
+    </g>
+    <!-- Scale metric summary -->
+    <g transform="translate(1136, 34)">
+      <rect width="312" height="52" fill="#121212"/>
+      <text x="156" y="31" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">18 DS Files · 255 Passing Tests</text>
+      <text x="0" y="72" font-family="Inter, sans-serif" font-size="11" fill="#666666">100% Material Symbols SVG · 0 SF Symbols</text>
+    </g>
+  </g>
+</svg>
