@@ -8,7 +8,62 @@
 <link rel="stylesheet" href="vendor/MarkerCluster.css">
 <link rel="stylesheet" href="vendor/MarkerCluster.Default.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Caacupe+One&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap" rel="stylesheet">
+<style id="pf-local-fonts">
+@font-face {
+  font-family: 'Caacupe One';
+  src: url('vendor/CaacupeOne-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('vendor/Inter_18pt-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('vendor/Inter_18pt-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('vendor/Inter_18pt-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('vendor/Inter_18pt-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('vendor/Inter_18pt-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  src: url('vendor/material-symbols.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+.msi {
+  font-family: 'Material Symbols Outlined' !important;
+  font-feature-settings: 'liga' 1;
+  -webkit-font-feature-settings: 'liga' 1;
+}
+</style>
 <style>
 .msi{font-family:'Material Symbols Outlined'; font-weight:normal; font-style:normal; font-size:22px; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-smoothing:antialiased; vertical-align:middle; font-variation-settings:'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
 .msi.msi-fill{font-variation-settings:'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;}
@@ -723,7 +778,7 @@ if (location.search.indexOf('embed=1') !== -1) {
           <span class="msi">close</span> Remove Direction
         </button>
         <div class="bottom-bar">
-          <button id="btnFav" title="Favorite zones"><span class="msi">favorite_border</span></button>
+          <button id="btnFav" title="Favorite zones"><span class="msi">favorite</span></button>
           <button id="btnJoined" title="Joined zones"><span class="msi">add_location</span></button>
         </div>
         <button class="locate-btn" id="btnLocate" title="My location"><span class="msi">my_location</span></button>
