@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 920" width="1600" height="920" role="img" aria-label="BMW AU Online Service Booking Enhance and AI Integration 5-step architecture rebuilt on BMW Design System v0.2.0">
+  <rect width="1600" height="920" fill="#F7F7F7"/>
+  <rect x="36" y="36" width="1528" height="848" fill="#FFFFFF" stroke="#E3E3E3" stroke-width="1"/>
+
+  <text x="76" y="88" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" letter-spacing="0.06em" fill="#666666">BMW AU OSB · ENHANCE &amp; AI INTEGRATION · DESIGN SYSTEM V0.2.0 (#2A53EE · BMW TYPE NEXT PRO)</text>
+  <text x="76" y="126" font-family="Geist, Inter, system-ui, sans-serif" font-size="30" font-weight="600" letter-spacing="-0.03em" fill="#121212">From Aria Widget Concept to Complete 5-Step Online Service Booking</text>
+  <line x1="76" y1="154" x2="1524" y2="154" stroke="#E3E3E3"/>
+
+  <!-- Top Shared Bar: Persistent Dual-Mode Switcher -->
+  <g transform="translate(76, 184)">
+    <rect width="1448" height="68" fill="#121212"/>
+    <circle cx="34" cy="34" r="14" fill="#FFFFFF"/>
+    <path d="M 34 20 A 14 14 0 0 1 48 34 L 34 34 Z M 20 34 A 14 14 0 0 0 34 48 L 34 34 Z" fill="#121212"/>
+    <text x="64" y="39" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">BMW AU Online Service Booking (EasyServ Shell)</text>
+    <rect x="926" y="16" width="234" height="36" fill="#2A53EE"/>
+    <text x="1043" y="39" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">✦ Chat With Aria (Live Sync)</text>
+    <rect x="1176" y="16" width="244" height="36" fill="none" stroke="#666666"/>
+    <text x="1298" y="39" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#E3E3E3">Manual 5-Step Flow · Shared Draft</text>
+  </g>
+
+  <!-- 5 OSB Step Cards -->
+  <g transform="translate(76, 282)">
+    <!-- Step 1 -->
+    <g>
+      <rect width="272" height="352" fill="#FAFAFA" stroke="#E3E3E3"/>
+      <rect width="272" height="5" fill="#2A53EE"/>
+      <text x="20" y="36" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#2A53EE">STEP 01 · SELECT VEHICLE</text>
+      <text x="20" y="64" font-family="Geist, Inter, sans-serif" font-size="18" font-weight="600" fill="#121212">REGO, BSI &amp; Aria</text>
+      <line x1="20" y1="82" x2="252" y2="82" stroke="#E3E3E3"/>
+      <text x="20" y="110" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• State + REGO lookup</text>
+      <text x="30" y="128" font-family="Inter, sans-serif" font-size="11" fill="#666666">DEMO01 / DEMO06 suggestions</text>
+      <text x="20" y="156" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Warning-light callback</text>
+      <text x="30" y="174" font-family="Inter, sans-serif" font-size="11" fill="#666666">Photo upload → Concierge modal</text>
+      <text x="20" y="202" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Active BSI &amp; CBS cards</text>
+      <text x="30" y="220" font-family="Inter, sans-serif" font-size="11" fill="#666666">Service Inclusive + 2 due items</text>
+      <text x="20" y="248" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Aria Live chat panel</text>
+      <text x="30" y="266" font-family="Inter, sans-serif" font-size="11" fill="#666666">Prefills manual steps directly</text>
+      <rect x="20" y="294" width="232" height="36" fill="#FFFFFF" stroke="#E3E3E3"/>
+      <text x="136" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#121212">select-vehicle · aria-chat.js</text>
+    </g>
+
+    <!-- Step 2 -->
+    <g transform="translate(294, 0)">
+      <rect width="272" height="352" fill="#FAFAFA" stroke="#E3E3E3"/>
+      <rect width="272" height="5" fill="#2A53EE"/>
+      <text x="20" y="36" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#2A53EE">STEP 02 · SERVICES</text>
+      <text x="20" y="64" font-family="Geist, Inter, sans-serif" font-size="18" font-weight="600" fill="#121212">Grouped &amp; Priced</text>
+      <line x1="20" y1="82" x2="252" y2="82" stroke="#E3E3E3"/>
+      <text x="20" y="110" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• CBS "Due now" highlight</text>
+      <text x="30" y="128" font-family="Inter, sans-serif" font-size="11" fill="#666666">Engine Oil $259 · Rear Brake $89</text>
+      <text x="20" y="156" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Battery &amp; Tyre groups</text>
+      <text x="30" y="174" font-family="Inter, sans-serif" font-size="11" fill="#666666">Searchable multi-select catalog</text>
+      <text x="20" y="202" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• BSI Service List modal</text>
+      <text x="30" y="220" font-family="Inter, sans-serif" font-size="11" fill="#666666">Explains covered inclusions</text>
+      <text x="20" y="248" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Live Booking Summary</text>
+      <text x="30" y="266" font-family="Inter, sans-serif" font-size="11" fill="#666666">Sticky sidebar + estimated total</text>
+      <rect x="20" y="294" width="232" height="36" fill="#FFFFFF" stroke="#E3E3E3"/>
+      <text x="136" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#121212">select-services · 17 items</text>
+    </g>
+
+    <!-- Step 3 -->
+    <g transform="translate(588, 0)">
+      <rect width="272" height="352" fill="#FAFAFA" stroke="#E3E3E3"/>
+      <rect width="272" height="5" fill="#2A53EE"/>
+      <text x="20" y="36" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#2A53EE">STEP 03 · APPOINTMENT</text>
+      <text x="20" y="64" font-family="Geist, Inter, sans-serif" font-size="18" font-weight="600" fill="#121212">Slots &amp; Fast Lane</text>
+      <line x1="20" y1="82" x2="252" y2="82" stroke="#E3E3E3"/>
+      <text x="20" y="110" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Date strip + Calendar</text>
+      <text x="30" y="128" font-family="Inter, sans-serif" font-size="11" fill="#666666">6-day strip &amp; full month picker</text>
+      <text x="20" y="156" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Morning / Afternoon slots</text>
+      <text x="30" y="174" font-family="Inter, sans-serif" font-size="11" fill="#666666">Paginated 07:30 to 18:00 grid</text>
+      <text x="20" y="202" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Smart Fast Lane check</text>
+      <text x="30" y="220" font-family="Inter, sans-serif" font-size="11" fill="#666666">Auto-disabled for cars &gt; 3 yrs</text>
+      <text x="20" y="248" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Loan Car fallback</text>
+      <text x="30" y="266" font-family="Inter, sans-serif" font-size="11" fill="#666666">Conditional mobility selection</text>
+      <rect x="20" y="294" width="232" height="36" fill="#FFFFFF" stroke="#E3E3E3"/>
+      <text x="136" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#121212">select-appointment · rules</text>
+    </g>
+
+    <!-- Step 4 -->
+    <g transform="translate(882, 0)">
+      <rect width="272" height="352" fill="#FAFAFA" stroke="#E3E3E3"/>
+      <rect width="272" height="5" fill="#2A53EE"/>
+      <text x="20" y="36" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#2A53EE">STEP 04 · CONTACT</text>
+      <text x="20" y="64" font-family="Geist, Inter, sans-serif" font-size="18" font-weight="600" fill="#121212">Driver &amp; Callback</text>
+      <line x1="20" y1="82" x2="252" y2="82" stroke="#E3E3E3"/>
+      <text x="20" y="110" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Dealer assurance banner</text>
+      <text x="30" y="128" font-family="Inter, sans-serif" font-size="11" fill="#666666">Dealer calls to confirm slot</text>
+      <text x="20" y="156" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Streamlined form</text>
+      <text x="30" y="174" font-family="Inter, sans-serif" font-size="11" fill="#666666">Name, Mobile, Email, Address</text>
+      <text x="20" y="202" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Optional notes &amp; Co.</text>
+      <text x="30" y="220" font-family="Inter, sans-serif" font-size="11" fill="#666666">Carries Aria / callback context</text>
+      <text x="20" y="248" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Persistent right summary</text>
+      <text x="30" y="266" font-family="Inter, sans-serif" font-size="11" fill="#666666">Edit vehicle or services inline</text>
+      <rect x="20" y="294" width="232" height="36" fill="#FFFFFF" stroke="#E3E3E3"/>
+      <text x="136" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#121212">contact-details · validation</text>
+    </g>
+
+    <!-- Step 5 -->
+    <g transform="translate(1176, 0)">
+      <rect width="272" height="352" fill="#FAFAFA" stroke="#E3E3E3"/>
+      <rect width="272" height="5" fill="#121212"/>
+      <text x="20" y="36" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#121212">STEP 05 · CONFIRMATION</text>
+      <text x="20" y="64" font-family="Geist, Inter, sans-serif" font-size="18" font-weight="600" fill="#121212">Confirmed &amp; Survey</text>
+      <line x1="20" y1="82" x2="252" y2="82" stroke="#E3E3E3"/>
+      <text x="20" y="110" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Instant WIP booking ref</text>
+      <text x="30" y="128" font-family="Inter, sans-serif" font-size="11" fill="#666666">Dealer address + date/time</text>
+      <text x="20" y="156" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Itemized service receipt</text>
+      <text x="30" y="174" font-family="Inter, sans-serif" font-size="11" fill="#666666">BSI covered + Estimated total</text>
+      <text x="20" y="202" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Add To Calendar CTA</text>
+      <text x="30" y="220" font-family="Inter, sans-serif" font-size="11" fill="#666666">One-tap appointment reminder</text>
+      <text x="20" y="248" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#121212">• Base Survey &amp; Account</text>
+      <text x="30" y="266" font-family="Inter, sans-serif" font-size="11" fill="#666666">Post-booking feedback + invite</text>
+      <rect x="20" y="294" width="232" height="36" fill="#121212"/>
+      <text x="136" y="316" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">confirmation · Base parity</text>
+    </g>
+  </g>
+
+  <!-- Bottom Aria Live Bridge Strip -->
+  <g transform="translate(76, 672)">
+    <rect width="1448" height="170" fill="#FAFAFA" stroke="#E3E3E3"/>
+    <text x="28" y="38" font-family="Inter, sans-serif" font-size="12" font-weight="700" letter-spacing="0.05em" fill="#2A53EE">BI-DIRECTIONAL ARIA LIVE ↔ MANUAL DRAFT SYNCHRONIZATION</text>
+    <text x="28" y="64" font-family="Inter, sans-serif" font-size="14" fill="#4A4A4A">Unlike standalone chatbots that trap users in a dead end, Aria Live writes directly into BMW's shared booking draft (vehicle, BSI/CBS items, slot, pickup):</text>
+
+    <rect x="28" y="88" width="432" height="58" fill="#FFFFFF" stroke="#E3E3E3"/>
+    <text x="48" y="114" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#121212">1. Conversational Triage (Aria Live)</text>
+    <text x="48" y="133" font-family="Inter, sans-serif" font-size="11" fill="#666666">Detects severity, flashes CBS card, suggests earliest slots</text>
+
+    <line x1="460" y1="117" x2="504" y2="117" stroke="#2A53EE" stroke-width="2"/>
+    <polygon points="504,112 514,117 504,122" fill="#2A53EE"/>
+
+    <rect x="514" y="88" width="432" height="58" fill="#FFFFFF" stroke="#2A53EE" stroke-width="1.5"/>
+    <text x="534" y="114" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#121212">2. Live Context Cards Beside Thread</text>
+    <text x="534" y="133" font-family="Inter, sans-serif" font-size="11" fill="#666666">Vehicle card, BSI expiry, CBS due items &amp; editable Booking Summary</text>
+
+    <line x1="946" y1="117" x2="990" y2="117" stroke="#2A53EE" stroke-width="2"/>
+    <polygon points="990,112 1000,117 990,122" fill="#2A53EE"/>
+
+    <rect x="1000" y="88" width="420" height="58" fill="#121212"/>
+    <text x="1020" y="114" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">3. One-Click Confirm or Manual Edit</text>
+    <text x="1020" y="133" font-family="Inter, sans-serif" font-size="11" fill="#CFCFCF">Switch to Manual Booking anytime with zero lost progress</text>
+  </g>
+</svg>

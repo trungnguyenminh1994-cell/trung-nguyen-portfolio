@@ -202,4 +202,24 @@
       if (e.key === 'ArrowRight') render(cur + 1);
     });
   }
+
+  /* 7. Interactive prototype step/state tab switcher (e.g. BMW AU OSB Enhance & AI Integration) */
+  document.querySelectorAll('[data-proto-tabs]').forEach(function (group) {
+    var targetId = group.getAttribute('data-proto-tabs');
+    var iframe = document.getElementById(targetId);
+    if (!iframe) return;
+    var tabs = Array.prototype.slice.call(group.querySelectorAll('[data-proto-src]'));
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var src = btn.getAttribute('data-proto-src');
+        if (!src) return;
+        iframe.setAttribute('src', src);
+        tabs.forEach(function (t) {
+          var on = t === btn;
+          t.classList.toggle('is-active', on);
+          t.setAttribute('aria-pressed', String(on));
+        });
+      });
+    });
+  });
 })();
