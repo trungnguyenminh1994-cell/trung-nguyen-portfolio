@@ -417,6 +417,16 @@ ul, ol { list-style: none; }
   max-height: 100%;
   object-fit: contain;
 }
+.pf-card--brand-lg .pf-card__zoom {
+  padding: 6% 12%;
+}
+.pf-card--brand-lg .pf-card__zoom img {
+  width: auto;
+  height: 100%;
+  max-width: 78%;
+  max-height: 78%;
+  object-fit: contain;
+}
 .pf-card--brand:hover .pf-card__media,
 .pf-card--brand:focus-visible .pf-card__media {
   border-color: var(--pf-text-primary);
