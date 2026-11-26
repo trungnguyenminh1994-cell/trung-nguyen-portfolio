@@ -17,6 +17,6 @@ python3 -m http.server 8080
 
 ## Live website
 
-- Primary (Cloudflare Pages): https://trungnguyen-design.pages.dev/
+- Primary (Cloudflare Pages): https://trungnguyenminh.pages.dev/
 - Repository: https://github.com/trungnguyenminh1994-cell/trung-nguyen-portfolio
 

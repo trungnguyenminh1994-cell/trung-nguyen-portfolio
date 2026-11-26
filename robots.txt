@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://trungnguyen-design.pages.dev/sitemap.xml
+Sitemap: https://trungnguyenminh.pages.dev/sitemap.xml
