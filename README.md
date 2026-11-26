@@ -15,8 +15,8 @@ python3 -m http.server 8080
 # Open http://localhost:8080
 ```
 
-## Publish on GitHub Pages
+## Live website
 
-1. Push `main` branch to `https://github.com/trungnguyenminh1994-cell/trung-nguyen-portfolio`.
-2. In GitHub **Settings -> Pages**, choose **Source: GitHub Actions** (uses `.github/workflows/pages.yml`) or **Deploy from a branch (`main` / root)**.
-3. Live URL: https://trungnguyenminh1994-cell.github.io/trung-nguyen-portfolio/
+- Primary (Cloudflare Pages): https://trungnguyen-design.pages.dev/
+- Repository: https://github.com/trungnguyenminh1994-cell/trung-nguyen-portfolio
+
